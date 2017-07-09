@@ -10,5 +10,7 @@ target 'ProjectR' do
     pod 'Firebase/Database'
     pod 'Firebase/Auth'
     pod 'GoogleSignIn'
-    
+    pod 'JVFloatLabeledTextField'
+
+
 end

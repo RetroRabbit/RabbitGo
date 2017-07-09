@@ -8,10 +8,10 @@
 
 import UIKit
 import Firebase
-
+import GoogleSignIn
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
 
     var window: UIWindow?
     var NavigationStack: UINavigationController = NavigationController()
@@ -22,11 +22,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         InternalSetup()
         
         window = UIWindow(frame: UIScreen.main.bounds)
-        let rootController = homeController()
+        let rootController = signInController()
         
-        window!.rootViewController = NavigationController.init(rootViewController: rootController)
-        
-        NavigationStack = window!.rootViewController as! NavigationController
+        window!.rootViewController = rootController
         
         window!.makeKeyAndVisible()
         
@@ -54,11 +52,52 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    
+    @available(iOS 9.0, *)
+    func application(_ application: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any]) -> Bool {
+            return GIDSignIn.sharedInstance().handle(url, sourceApplication:options[UIApplicationOpenURLOptionsKey.sourceApplication] as? String, annotation: [:])
+    }
+    
+    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+        return GIDSignIn.sharedInstance().handle(url, sourceApplication: sourceApplication, annotation: annotation)
+    }
 
     func InternalSetup() {
         // Use Firebase library to configure APIs
         FirebaseApp.configure()
         
+        GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
+        GIDSignIn.sharedInstance().delegate = self
+
+    }
+    
+    func SetNavigationRoot(rootController: UIViewController) {
+        window!.rootViewController = NavigationController.init(rootViewController: rootController)
+        
+        NavigationStack = window!.rootViewController as! NavigationController
+    }
+    
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
+        
+        if let error = error {
+            
+            return
+        }
+        
+        guard let authentication = user.authentication else { return }
+        let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken, accessToken: authentication.accessToken)
+        
+        Auth.auth().signIn(with: credential) { (user, error) in
+            if let error = error {
+                // ...
+                return
+            }
+        }
+    }
+    
+    func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!) {
+        // Perform any operations when the user disconnects from app here.
+        // ...
     }
 
 }
