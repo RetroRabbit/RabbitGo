@@ -8,5 +8,6 @@ target 'ProjectR' do
     # Pods for ProjectR
     pod 'Firebase/Core'
     pod 'Firebase/Database'
+    pod 'Firebase/Auth'
     
 end
