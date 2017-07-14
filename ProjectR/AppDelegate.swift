@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         InternalSetup()
         
         window = UIWindow(frame: UIScreen.main.bounds)
-        let rootController = signInController()
+        let rootController = signInXController()
         
         window!.rootViewController = rootController
         
