@@ -12,14 +12,14 @@
 		56818B861F12598C006CD915 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56818B841F12598C006CD915 /* LaunchScreen.storyboard */; };
 		56818B8E1F125B5F006CD915 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 56818B8D1F125B5F006CD915 /* GoogleService-Info.plist */; };
 		5695DCA11F12605C00E55AAE /* homeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5695DCA01F12605C00E55AAE /* homeController.swift */; };
-		5695DCA31F1260A100E55AAE /* signInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5695DCA21F1260A100E55AAE /* signInController.swift */; };
 		72C0BC25DDF3DCB453E21494 /* Pods_ProjectR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3693F3043B239B34AE0E0676 /* Pods_ProjectR.framework */; };
-		E90942951F167AFC003342EF /* SignInXController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942941F167AFC003342EF /* SignInXController.swift */; };
+		E90942951F167AFC003342EF /* SignInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942941F167AFC003342EF /* SignInController.swift */; };
 		E909429A1F167CDB003342EF /* appColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942971F167CDB003342EF /* appColors.swift */; };
 		E909429B1F167CDB003342EF /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942981F167CDB003342EF /* NavigationController.swift */; };
 		E909429C1F167CDB003342EF /* signedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942991F167CDB003342EF /* signedController.swift */; };
 		E909429E1F167CEC003342EF /* StyleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E909429D1F167CEC003342EF /* StyleHelper.swift */; };
 		E90942A01F1687BA003342EF /* CGRect + ProjectR .swift in Sources */ = {isa = PBXBuildFile; fileRef = E909429F1F1687BA003342EF /* CGRect + ProjectR .swift */; };
+		E97CC95D1F1D32F800AE4A67 /* PopupHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97CC95C1F1D32F800AE4A67 /* PopupHelper.swift */; };
 		E9BDE7C71F17DF6100182960 /* gameInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9BDE7C61F17DF6100182960 /* gameInfoController.swift */; };
 		E9F421B21F17DA3400B3ED8F /* profileCreateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F421B11F17DA3400B3ED8F /* profileCreateController.swift */; };
 /* End PBXBuildFile section */
@@ -33,14 +33,14 @@
 		56818B871F12598C006CD915 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56818B8D1F125B5F006CD915 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5695DCA01F12605C00E55AAE /* homeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = homeController.swift; path = Controllers/homeController.swift; sourceTree = "<group>"; };
-		5695DCA21F1260A100E55AAE /* signInController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = signInController.swift; path = Controllers/signInController.swift; sourceTree = "<group>"; };
 		D3DE7480DB050A51D6CC9087 /* Pods-ProjectR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProjectR.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ProjectR/Pods-ProjectR.debug.xcconfig"; sourceTree = "<group>"; };
-		E90942941F167AFC003342EF /* SignInXController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SignInXController.swift; path = Controllers/SignInXController.swift; sourceTree = "<group>"; };
+		E90942941F167AFC003342EF /* SignInController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SignInController.swift; path = Controllers/SignInController.swift; sourceTree = "<group>"; };
 		E90942971F167CDB003342EF /* appColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appColors.swift; sourceTree = "<group>"; };
 		E90942981F167CDB003342EF /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		E90942991F167CDB003342EF /* signedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = signedController.swift; sourceTree = "<group>"; };
 		E909429D1F167CEC003342EF /* StyleHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleHelper.swift; sourceTree = "<group>"; };
 		E909429F1F1687BA003342EF /* CGRect + ProjectR .swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect + ProjectR .swift"; sourceTree = "<group>"; };
+		E97CC95C1F1D32F800AE4A67 /* PopupHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupHelper.swift; sourceTree = "<group>"; };
 		E9BDE7C61F17DF6100182960 /* gameInfoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = gameInfoController.swift; sourceTree = "<group>"; };
 		E9F421B11F17DA3400B3ED8F /* profileCreateController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = profileCreateController.swift; sourceTree = "<group>"; };
 		F306D2510C458A2CEB38E535 /* Pods-ProjectR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProjectR.release.xcconfig"; path = "Pods/Target Support Files/Pods-ProjectR/Pods-ProjectR.release.xcconfig"; sourceTree = "<group>"; };
@@ -93,6 +93,7 @@
 		5695DC981F125EE500E55AAE /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
+				E97CC95C1F1D32F800AE4A67 /* PopupHelper.swift */,
 				E90942971F167CDB003342EF /* appColors.swift */,
 				E90942981F167CDB003342EF /* NavigationController.swift */,
 				E90942991F167CDB003342EF /* signedController.swift */,
@@ -106,8 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				5695DCA01F12605C00E55AAE /* homeController.swift */,
-				5695DCA21F1260A100E55AAE /* signInController.swift */,
-				E90942941F167AFC003342EF /* SignInXController.swift */,
+				E90942941F167AFC003342EF /* SignInController.swift */,
 				E9F421B11F17DA3400B3ED8F /* profileCreateController.swift */,
 				E9BDE7C61F17DF6100182960 /* gameInfoController.swift */,
 			);
@@ -215,7 +215,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		5BBF5D24483659622FB8F798 /* [CP] Copy Pods Resources */ = {
@@ -259,13 +259,13 @@
 				5695DCA11F12605C00E55AAE /* homeController.swift in Sources */,
 				E909429B1F167CDB003342EF /* NavigationController.swift in Sources */,
 				E909429A1F167CDB003342EF /* appColors.swift in Sources */,
-				E90942951F167AFC003342EF /* SignInXController.swift in Sources */,
-				5695DCA31F1260A100E55AAE /* signInController.swift in Sources */,
+				E90942951F167AFC003342EF /* SignInController.swift in Sources */,
 				E909429E1F167CEC003342EF /* StyleHelper.swift in Sources */,
 				E9F421B21F17DA3400B3ED8F /* profileCreateController.swift in Sources */,
 				E909429C1F167CDB003342EF /* signedController.swift in Sources */,
 				56818B7C1F12598C006CD915 /* AppDelegate.swift in Sources */,
 				E9BDE7C71F17DF6100182960 /* gameInfoController.swift in Sources */,
+				E97CC95D1F1D32F800AE4A67 /* PopupHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

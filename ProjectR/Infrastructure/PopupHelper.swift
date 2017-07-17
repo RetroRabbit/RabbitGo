@@ -11,17 +11,7 @@ import UIKit
 import Material
 
 class popupHelper: UIViewController{
-    
-    let titleLabel:UILabel = {
-        let lbl = UILabel()
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        lbl.attributedText = NSAttributedString(string: "", attributes: Style.body)
-        lbl.numberOfLines = 0
-        lbl.lineBreakMode = NSLineBreakMode.byWordWrapping
-        return lbl
-    }()
-    
-    lazy var bodyLabel:UILabel = {
+    lazy var textLabel:UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.attributedText = NSAttributedString(string: "", attributes: Style.body)
@@ -51,10 +41,10 @@ class popupHelper: UIViewController{
     }()
     
     let popupContainer:UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.white
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
+        let v = UIView()
+        v.backgroundColor = UIColor.white
+        v.translatesAutoresizingMaskIntoConstraints = false
+        return v
     }()
     
     override func viewDidLoad() {
@@ -68,33 +58,26 @@ class popupHelper: UIViewController{
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
     }
     
-    func basePopUp(title:String, text:String, btnTitle:String){
-        
-        popupContainer.addSubview(titleLabel)
-        popupContainer.addSubview(bodyLabel)
-        popupContainer.addSubview(doneButton)
-
-        bodyLabel.attributedText = NSAttributedString(string: text, attributes: Style.body)
-        doneButton.setTitle(btnTitle, for: .normal)
-        
-        bodyLabel.frame = CGRect(x: 10, y: (Screen.height - bodyLabel.intrinsicContentSize.height)/2, width: Screen.width - 80, height: bodyLabel.intrinsicContentSize.height)
-        
-        doneButton.frame = CGRect(x: 10, y: bodyLabel.frame.bottom + 60, width: Screen.width - 80, height: 40)
-        
-        if !title.isEmpty{
-            
-            titleLabel.attributedText = NSAttributedString(string: title, attributes: Style.body)
-            titleLabel.frame = CGRect(x: (Screen.width - titleLabel.intrinsicContentSize.width)/2, y: bodyLabel.frame.top - 10, width: titleLabel.intrinsicContentSize.width, height: titleLabel.intrinsicContentSize.height)
-        }
+    func basePopUp(title: String, text:String, btnTitle:String){
         
         view.addSubview(popupContainer)
-        
-        popupContainer.frame = CGRect(x: 30, y: titleLabel.frame.top - 10, width: Screen.width - 60, height: doneButton.frame.bottom + 10)
-    }
+        view.addSubview(textLabel)
+        view.addSubview(doneButton)
 
+        textLabel.attributedText = NSAttributedString(string: text, attributes: Style.body)
+        
+        doneButton.setTitle(btnTitle, for: .normal)
+        
+        textLabel.preferredMaxLayoutWidth = Screen.width - 80
+        textLabel.frame = CGRect(x: (Screen.width - textLabel.intrinsicContentSize.width)/2, y: 140, width: Screen.width - 80, height: textLabel.intrinsicContentSize.height)
+        
+        doneButton.frame = CGRect(x: 40, y: textLabel.frame.bottom + 30, width: Screen.width - 80, height: 40)
+        
+        popupContainer.frame = CGRect(x: 30, y: 130, width: Screen.width - 60, height: textLabel.intrinsicContentSize.height + doneButton.frame.height + 50)
+        
+    }
 }
 
 extension popupHelper {
