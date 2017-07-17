@@ -14,6 +14,7 @@
 		5695DCA11F12605C00E55AAE /* homeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5695DCA01F12605C00E55AAE /* homeController.swift */; };
 		5695DCA31F1260A100E55AAE /* signInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5695DCA21F1260A100E55AAE /* signInController.swift */; };
 		72C0BC25DDF3DCB453E21494 /* Pods_ProjectR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3693F3043B239B34AE0E0676 /* Pods_ProjectR.framework */; };
+		C704F4201F1D225F00B6A816 /* TabNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C704F41F1F1D225F00B6A816 /* TabNavigationController.swift */; };
 		E90942951F167AFC003342EF /* SignInXController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942941F167AFC003342EF /* SignInXController.swift */; };
 		E909429A1F167CDB003342EF /* appColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942971F167CDB003342EF /* appColors.swift */; };
 		E909429B1F167CDB003342EF /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942981F167CDB003342EF /* NavigationController.swift */; };
@@ -34,6 +35,7 @@
 		56818B8D1F125B5F006CD915 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5695DCA01F12605C00E55AAE /* homeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = homeController.swift; path = Controllers/homeController.swift; sourceTree = "<group>"; };
 		5695DCA21F1260A100E55AAE /* signInController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = signInController.swift; path = Controllers/signInController.swift; sourceTree = "<group>"; };
+		C704F41F1F1D225F00B6A816 /* TabNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabNavigationController.swift; sourceTree = "<group>"; };
 		D3DE7480DB050A51D6CC9087 /* Pods-ProjectR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProjectR.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ProjectR/Pods-ProjectR.debug.xcconfig"; sourceTree = "<group>"; };
 		E90942941F167AFC003342EF /* SignInXController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SignInXController.swift; path = Controllers/SignInXController.swift; sourceTree = "<group>"; };
 		E90942971F167CDB003342EF /* appColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appColors.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				E90942941F167AFC003342EF /* SignInXController.swift */,
 				E9F421B11F17DA3400B3ED8F /* profileCreateController.swift */,
 				E9BDE7C61F17DF6100182960 /* gameInfoController.swift */,
+				C704F41F1F1D225F00B6A816 /* TabNavigationController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -258,6 +261,7 @@
 				E90942A01F1687BA003342EF /* CGRect + ProjectR .swift in Sources */,
 				5695DCA11F12605C00E55AAE /* homeController.swift in Sources */,
 				E909429B1F167CDB003342EF /* NavigationController.swift in Sources */,
+				C704F4201F1D225F00B6A816 /* TabNavigationController.swift in Sources */,
 				E909429A1F167CDB003342EF /* appColors.swift in Sources */,
 				E90942951F167AFC003342EF /* SignInXController.swift in Sources */,
 				5695DCA31F1260A100E55AAE /* signInController.swift in Sources */,
