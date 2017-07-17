@@ -215,7 +215,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		5BBF5D24483659622FB8F798 /* [CP] Copy Pods Resources */ = {
@@ -259,7 +259,6 @@
 				5695DCA11F12605C00E55AAE /* homeController.swift in Sources */,
 				E909429B1F167CDB003342EF /* NavigationController.swift in Sources */,
 				E909429A1F167CDB003342EF /* appColors.swift in Sources */,
-				E9429F471F180F560037278C /* popupHelper.swift in Sources */,
 				E90942951F167AFC003342EF /* SignInXController.swift in Sources */,
 				5695DCA31F1260A100E55AAE /* signInController.swift in Sources */,
 				E909429E1F167CEC003342EF /* StyleHelper.swift in Sources */,
