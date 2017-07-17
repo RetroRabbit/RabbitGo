@@ -44,14 +44,18 @@ PODS:
   - GTMSessionFetcher/Core (1.1.10)
   - GTMSessionFetcher/Full (1.1.10):
     - GTMSessionFetcher/Core (= 1.1.10)
-  - JVFloatLabeledTextField (1.1.1)
+  - Material (2.6.3):
+    - Material/Core (= 2.6.3)
+  - Material/Core (2.6.3)
+  - PureLayout (3.0.2)
 
 DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Core
   - Firebase/Database
   - GoogleSignIn
-  - JVFloatLabeledTextField
+  - Material
+  - PureLayout
 
 SPEC CHECKSUMS:
   Firebase: c7ad0731eab26d18a3fc547dd048b0f7cd9c63ae
@@ -64,8 +68,9 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   GTMOAuth2: 7fc9c10f5c745f4d9850419ea88889fe3baa6b7d
   GTMSessionFetcher: 30d874b96d0d76028f61fbd122801e3f030d47db
-  JVFloatLabeledTextField: 0e5524b097f102036214dd8279edc8ecf08b5e18
+  Material: af607a7ec0e9978ef85cf189a3d8ceeeb650400f
+  PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
 
-PODFILE CHECKSUM: fa0d5cfd551cedbf79a6a0a79d44f71dc90177e7
+PODFILE CHECKSUM: de0173ffdb16b5b183a49478800b8be34996ab69
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.2.0
