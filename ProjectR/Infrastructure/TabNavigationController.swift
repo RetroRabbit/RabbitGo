@@ -12,10 +12,11 @@ import Material
 class TabNavigationController: Material.BottomNavigationController {
     override init() {
         super.init(viewControllers: [
-            ToolNavigationController(rootViewController: FeedNavigationController.instance),
-            ToolNavigationController(rootViewController: NearbyNavigationControllerX.instance),
-            ToolNavigationController(rootViewController: ChatNavigationControllerX.instance),
-            ToolNavigationController(rootViewController: IntroNavigationController.instance)
+            ToolNavigationController(rootViewController: QuestionsController.instance),
+            ToolNavigationController(rootViewController: ScanQRController.instance),
+            ToolNavigationController(rootViewController: HomeController.instance),
+            ToolNavigationController(rootViewController: PrizesController.instance),
+            ToolNavigationController(rootViewController: ProfileController.instance)
             ])
     }
     
@@ -55,27 +56,11 @@ class TabNavigationController: Material.BottomNavigationController {
     }
 }
 
-// Keep whisper on all tabs
-
-extension TabNavigationController {
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        if let currentMessage = Whisper.getCurrentMessage() {
-            Whisper.whisper(currentMessage, action: .present)
-            if currentMessage.duration != .infinite {
-                ThreadService.delay(seconds: currentMessage.duration.rawValue) {
-                    UIViewController.hideWhisper()
-                }
-            }
-        } else {
-            Whisper.silence()
-        }
-    }
-}
-
 enum NavigationTab: Int {
-    case kalido = 0
-    case nearby = 1
-    case chat = 2
-    case introduce = 3
+    case questions = 0
+    case scanQR = 1
+    case home = 2
+    case prizes = 3
+    case myprofile = 4
 }
 
