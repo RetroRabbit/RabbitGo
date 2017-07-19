@@ -8,14 +8,12 @@
 
 import Foundation
 import UIKit
-import Firebase
-import FirebaseAuth
-import GoogleSignIn
 import Material
-import PureLayout
-
 
 class PrizesController: UIViewController{
+    
+    static let instance = PrizesController()
+
     
     fileprivate enum screenStates {
         case prizeOne
@@ -24,7 +22,7 @@ class PrizesController: UIViewController{
         case done
     }
     
-    var currentState:screenStates = screenStates.prizeOne
+    fileprivate var currentState:screenStates = screenStates.prizeOne
     
     private let titleLabel: UILabel = {
         let lbl = UILabel()
@@ -56,7 +54,7 @@ class PrizesController: UIViewController{
         return imgView
     }()
     
-    private let prizeContainer:UIVIew = {
+    private let prizeContainer:UIView = {
         let container = UIView()
         container.translatesAutoresizingMaskIntoConstraints = false
         container.backgroundColor = UIColor.white
@@ -95,6 +93,19 @@ class PrizesController: UIViewController{
         return btn
     }()
     
+    init() {
+    super.init(nibName: nil, bundle: nil)
+    //super.init()
+    //super.init(hiding: NavigationHide.toBottom)
+    navigationController?.title = "Leaderboard Position #43"
+    tabBarItem.title = "Prizes"
+    tabBarItem.image = Material.Icon.star
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -103,7 +114,7 @@ class PrizesController: UIViewController{
         view.backgroundColor = UIColor.retroGrey
         
         view.addSubview(titleLabel)
-        view.addSubview(firsnestPrizeImg)
+        view.addSubview(firstPrizeImg)
         view.addSubview(secondPrizeImg)
         view.addSubview(thirdPrizeImg)
         view.addSubview(prizeContainer)
@@ -119,23 +130,23 @@ class PrizesController: UIViewController{
         titleLabel.frame = CGRect(x: (Screen.width - titleLabel.intrinsicContentSize.width)/2, y: 120, width: titleLabel.intrinsicContentSize.width, height: titleLabel.intrinsicContentSize.height)
         
         //1st, 2nd and 3rd prize idication images:
-        firstPrizeImg.frame = CGRect(x: <#T##Int#>, y: <#T##Int#>, width: <#T##Int#>, height: <#T##Int#>)
+        firstPrizeImg.frame = CGRect(x: 40, y: titleLabel.frame.bottom + 15, width: 20, height: 20)
         
-        secondPrizeImg.frame = CGRect(x: <#T##Int#>, y: <#T##Int#>, width: <#T##Int#>, height: <#T##Int#>)
+        secondPrizeImg.frame = CGRect(x: firstPrizeImg.frame.right + 15, y: firstPrizeImg.frame.top, width: 20, height: 20)
 
-        thirdPrizeImg.frame = CGRect(x: <#T##Int#>, y: <#T##Int#>, width: <#T##Int#>, height: <#T##Int#>)
+        thirdPrizeImg.frame = CGRect(x: secondPrizeImg.frame.right + 15, y: firstPrizeImg.frame.top, width: 20, height: 20)
         
         //current displaying prize:
-        prizeTitleLBL.frame = CGRect(x: <#T##Int#>, y: <#T##Int#>, width: <#T##Int#>, height: <#T##Int#>)
+        prizeTitleLBL.frame = CGRect(x: 60, y: firstPrizeImg.frame.bottom + 25, width: prizeTitleLBL.intrinsicContentSize.width, height: prizeTitleLBL.intrinsicContentSize.height)
 
-        prizeImg.frame = CGRect(x: <#T##Int#>, y: <#T##Int#>, width: <#T##Int#>, height: <#T##Int#>)
+        prizeImg.frame = CGRect(x: 60, y: prizeTitleLBL.frame.bottom + 15, width: Screen.width - 120, height: Screen.width - 120)
 
-        prizeDescriptionLBL.frame = CGRect(x: <#T##Int#>, y: <#T##Int#>, width: <#T##Int#>, height: <#T##Int#>)
+        prizeDescriptionLBL.frame = CGRect(x: 60, y: prizeImg.frame.bottom, width: Screen.width - 120, height: prizeDescriptionLBL.intrinsicContentSize.height)
 
-        prizeContainer.frame = CGRect(x: <#T##Int#>, y: <#T##Int#>, width: <#T##Int#>, height: <#T##Int#>)
+        prizeContainer.frame = CGRect(x: 50, y: prizeTitleLBL.frame.top - 10, width: Screen.width - 100, height: prizeTitleLBL.frame.height + prizeDescriptionLBL.frame.height + prizeImg.frame.height + 20)
 
         //NextButton
-        nextButton.frame = CGRect(x: 40, y: Screen.height - 50 , width: Screen.width, height: 40)
+        nextButton.frame = CGRect(x: 40, y: Screen.height - 90 , width: Screen.width - 80, height: 40)
     }
 }
 
@@ -148,20 +159,20 @@ extension PrizesController{
             prizeDescriptionLBL.attributedText = NSAttributedString(string: "", attributes: Style.body)
             currentState = screenStates.prizeTwo
             break
-        case screenStates.prizeOne:
+        case screenStates.prizeTwo:
             prizeTitleLBL.attributedText = NSAttributedString(string: "2", attributes: Style.heading_2a)
             prizeImg.image = UIImage(named: "")
             prizeDescriptionLBL.attributedText = NSAttributedString(string: "", attributes: Style.body)
             currentState = screenStates.prizeThree
             break
-        case screenStates.prizeOne:
+        case screenStates.prizeThree:
             prizeTitleLBL.attributedText = NSAttributedString(string: "3", attributes: Style.heading_2a)
             prizeImg.image = UIImage(named: "")
             prizeDescriptionLBL.attributedText = NSAttributedString(string: "", attributes: Style.body)
             currentState = screenStates.done
             break
         case screenStates.done:
-            (UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: homeController())
+//            (UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: homeController())
             break
         }
     }
