@@ -20,6 +20,7 @@
 		E909429C1F167CDB003342EF /* signedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942991F167CDB003342EF /* signedController.swift */; };
 		E909429E1F167CEC003342EF /* StyleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E909429D1F167CEC003342EF /* StyleHelper.swift */; };
 		E90942A01F1687BA003342EF /* CGRect + ProjectR .swift in Sources */ = {isa = PBXBuildFile; fileRef = E909429F1F1687BA003342EF /* CGRect + ProjectR .swift */; };
+		E97CC95F1F1D406800AE4A67 /* PrizesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97CC95E1F1D406800AE4A67 /* PrizesController.swift */; };
 		E9BDE7C71F17DF6100182960 /* gameInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9BDE7C61F17DF6100182960 /* gameInfoController.swift */; };
 		E9F421B21F17DA3400B3ED8F /* profileCreateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F421B11F17DA3400B3ED8F /* profileCreateController.swift */; };
 /* End PBXBuildFile section */
@@ -41,6 +42,7 @@
 		E90942991F167CDB003342EF /* signedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = signedController.swift; sourceTree = "<group>"; };
 		E909429D1F167CEC003342EF /* StyleHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleHelper.swift; sourceTree = "<group>"; };
 		E909429F1F1687BA003342EF /* CGRect + ProjectR .swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect + ProjectR .swift"; sourceTree = "<group>"; };
+		E97CC95E1F1D406800AE4A67 /* PrizesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrizesController.swift; sourceTree = "<group>"; };
 		E9BDE7C61F17DF6100182960 /* gameInfoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = gameInfoController.swift; sourceTree = "<group>"; };
 		E9F421B11F17DA3400B3ED8F /* profileCreateController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = profileCreateController.swift; sourceTree = "<group>"; };
 		F306D2510C458A2CEB38E535 /* Pods-ProjectR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProjectR.release.xcconfig"; path = "Pods/Target Support Files/Pods-ProjectR/Pods-ProjectR.release.xcconfig"; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				E90942941F167AFC003342EF /* SignInXController.swift */,
 				E9F421B11F17DA3400B3ED8F /* profileCreateController.swift */,
 				E9BDE7C61F17DF6100182960 /* gameInfoController.swift */,
+				E97CC95E1F1D406800AE4A67 /* PrizesController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -215,7 +218,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		5BBF5D24483659622FB8F798 /* [CP] Copy Pods Resources */ = {
@@ -257,6 +260,7 @@
 			files = (
 				E90942A01F1687BA003342EF /* CGRect + ProjectR .swift in Sources */,
 				5695DCA11F12605C00E55AAE /* homeController.swift in Sources */,
+				E97CC95F1F1D406800AE4A67 /* PrizesController.swift in Sources */,
 				E909429B1F167CDB003342EF /* NavigationController.swift in Sources */,
 				E909429A1F167CDB003342EF /* appColors.swift in Sources */,
 				E90942951F167AFC003342EF /* SignInXController.swift in Sources */,
