@@ -85,6 +85,25 @@ struct Style {
     static let avenirl_medium_grey_light = [NSForegroundColorAttributeName: Style.color.grey_light, NSFontAttributeName: ProjectRFont.AvenirLightOblique(with: Style.font.font_medium), NSParagraphStyleAttributeName: left]
     static let avenirh_small_grey_light = [NSForegroundColorAttributeName: Style.color.grey_light, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_small), NSParagraphStyleAttributeName: left]
     static let avenir_medium_white = [NSForegroundColorAttributeName: Style.color.white, NSFontAttributeName: ProjectRFont.AvenirLightOblique(with: Style.font.font_medium), NSParagraphStyleAttributeName: left]
+    static let avenirh_small_grey_dark_center = [NSForegroundColorAttributeName: Style.color.grey_dark, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_small), NSParagraphStyleAttributeName: center]
+    static let avenirh_extra_large_grey_dark_center = [NSForegroundColorAttributeName: Style.color.grey_dark, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_extra_large), NSParagraphStyleAttributeName: center]
+    static let avenirh_extra_large_white = [NSForegroundColorAttributeName: Style.color.white, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_extra_large), NSParagraphStyleAttributeName: left]
+    static let avenirl_small_white = [NSForegroundColorAttributeName: Style.color.white, NSFontAttributeName: ProjectRFont.AvenirLightOblique(with: Style.font.font_small), NSParagraphStyleAttributeName: left]
+    static let avenirh_medium_white = [NSForegroundColorAttributeName: Style.color.white, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_medium), NSParagraphStyleAttributeName: left]
+    static let avenirl_extra_small_white = [NSForegroundColorAttributeName: Style.color.white, NSFontAttributeName: ProjectRFont.AvenirLightOblique(with: Style.font.font_extra_small), NSParagraphStyleAttributeName: left]
+    static let avenirh_small_white = [NSForegroundColorAttributeName:Style.color.white, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_small), NSParagraphStyleAttributeName: left]
+    static let avenirl_small_white_center = [NSForegroundColorAttributeName:Style.color.white, NSFontAttributeName: ProjectRFont.AvenirLightOblique(with: Style.font.font_small), NSParagraphStyleAttributeName: center]
+    static let rhino_big_green_center = [NSForegroundColorAttributeName:Style.color.green, NSFontAttributeName: ProjectRFont.RhinoRocks(with: Style.font.font_big), NSParagraphStyleAttributeName: center]
+    static let avenirh_small_grey_dark = [NSForegroundColorAttributeName:Style.color.grey_dark, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_small), NSParagraphStyleAttributeName: left]
+    static let rhino_big_green = [NSForegroundColorAttributeName:Style.color.green, NSFontAttributeName: ProjectRFont.RhinoRocks(with: Style.font.font_big), NSParagraphStyleAttributeName: left]
+    static let rhino_large_green = [NSForegroundColorAttributeName:Style.color.green, NSFontAttributeName: ProjectRFont.RhinoRocks(with: Style.font.font_large), NSParagraphStyleAttributeName: left]
+    static let avenirh_large_white = [NSForegroundColorAttributeName:Style.color.white, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_large), NSParagraphStyleAttributeName: left]
+    static let rhino_large_green_center = [NSForegroundColorAttributeName:Style.color.green, NSFontAttributeName: ProjectRFont.RhinoRocks(with: Style.font.font_large), NSParagraphStyleAttributeName: center]
+    static let avenirh_extra_large_white_right = [NSForegroundColorAttributeName:Style.color.white, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_extra_large), NSParagraphStyleAttributeName: right]
+    static let avenirh_extra_large_grey_dark_right = [NSForegroundColorAttributeName:Style.color.grey_dark, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_extra_large), NSParagraphStyleAttributeName: right]
+    static let avenirh_large_grey_dark = [NSForegroundColorAttributeName:Style.color.grey_dark, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_large), NSParagraphStyleAttributeName: left]
+    static let rhino_large_white_center = [NSForegroundColorAttributeName:Style.color.white, NSFontAttributeName: ProjectRFont.RhinoRocks(with: Style.font.font_large), NSParagraphStyleAttributeName: center]
+    
     
     static let heading_2a = [NSForegroundColorAttributeName: Color.blueGrey.darken4, NSFontAttributeName: RobotoFont.light(with: Style.font.m), NSParagraphStyleAttributeName: left]
     static let heading_2b = [NSForegroundColorAttributeName: Color.blueGrey.darken4, NSFontAttributeName: RobotoFont.regular(with: Style.font.m), NSParagraphStyleAttributeName: left]
@@ -252,5 +271,4 @@ class ProjectRNext: Button {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
 
