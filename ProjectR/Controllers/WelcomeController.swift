@@ -71,8 +71,7 @@ class WelcomeController: BaseSignInController {
     
     fileprivate let lblGoodLuck: UILabel = {
         let label = UILabel()
-        label.attributedText = NSAttributedString(string: "GOOD LUCK!", attributes: Style.rhino_large_white)
-        label.textColor = Material.Color.lime.base
+        label.attributedText = NSAttributedString(string: "GOOD LUCK!", attributes: Style.rhino_big_green_center)
         return label
     }()
     
@@ -93,11 +92,16 @@ class WelcomeController: BaseSignInController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        lblMainHead.frame = CGRect(x: Style.padding.xxl, y: Style.padding.xxl, width: Screen.width, height: lblMainHead.intrinsicContentSize.height)
-        lblBody.frame = CGRect(x: Style.padding.xxl, y: lblMainHead.height + lblMainHead.y + Style.padding.xxl, width: Screen.width, height: lblBody.intrinsicContentSize.height)
-        lblStatesHead.frame = CGRect(x: Style.padding.xxl, y: lblBody.y + Style.padding.xxl * 2, width: Screen.width, height: lblStatesHead.intrinsicContentSize.height)
-        lblSubImageText.frame = CGRect(x: Style.padding.xxl, y: lblStatesHead.y + Style.padding.xxl, width: Screen.width, height: lblSubImageText.intrinsicContentSize.height)
-        lblGoodLuck.frame = CGRect(x: Style.padding.xxl, y: lblSubImageText.y + Style.padding.xxl, width: Screen.width, height: lblGoodLuck.intrinsicContentSize.height)
+        let margin = Style.padding.xxl
+        
+        lblMainHead.frame = CGRect(x: margin, y: margin, width: Screen.width, height: lblMainHead.intrinsicContentSize.height)
+        
+        lblBody.preferredMaxLayoutWidth = Screen.width - margin * 2
+        lblBody.frame = CGRect(x: margin, y: lblMainHead.frame.bottom + margin, width: lblBody.intrinsicContentSize.width, height: lblBody.intrinsicContentSize.height)
+        
+        lblStatesHead.frame = CGRect(x: margin, y: lblBody.frame.bottom + margin * 2, width: Screen.width, height: lblStatesHead.intrinsicContentSize.height)
+        lblSubImageText.frame = CGRect(x: 0, y: lblStatesHead.frame.bottom + margin, width: Screen.width, height: lblSubImageText.intrinsicContentSize.height)
+        lblGoodLuck.frame = CGRect(x: 0, y: lblSubImageText.frame.bottom + margin, width: Screen.width, height: lblGoodLuck.intrinsicContentSize.height)
         logo.frame = CGRect()
     }
     
