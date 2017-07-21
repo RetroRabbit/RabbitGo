@@ -91,11 +91,6 @@ class gameInfoController: UIViewController{
 extension gameInfoController {
     func onNext() {
         
-        //let popUp = popupHelper()
-        //popUp.basePopUp(title: "NIELL", text: "is awsome", btnTitle: "Jy weet dit")
-        
-        //self.present(popUp, animated: true, completion: {action -> Void in})
-        
-//        (UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: homeController())
+        (UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: PrizesController())
     }
 }
