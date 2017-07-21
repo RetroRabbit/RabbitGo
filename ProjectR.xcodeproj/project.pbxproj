@@ -12,6 +12,7 @@
 		56818B8E1F125B5F006CD915 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 56818B8D1F125B5F006CD915 /* GoogleService-Info.plist */; };
 		5695DCA11F12605C00E55AAE /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5695DCA01F12605C00E55AAE /* HomeController.swift */; };
 		72C0BC25DDF3DCB453E21494 /* Pods_ProjectR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3693F3043B239B34AE0E0676 /* Pods_ProjectR.framework */; };
+		9AE8FB091F2261B50000EDDE /* WelcomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE8FB081F2261B50000EDDE /* WelcomeController.swift */; };
 		C704F4241F1D333000B6A816 /* TabNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C704F4231F1D333000B6A816 /* TabNavigationController.swift */; };
 		C704F4261F1D335400B6A816 /* QuestionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C704F4251F1D335400B6A816 /* QuestionsController.swift */; };
 		C704F4281F1D339F00B6A816 /* ScanQRController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C704F4271F1D339F00B6A816 /* ScanQRController.swift */; };
@@ -43,6 +44,7 @@
 		56818B871F12598C006CD915 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56818B8D1F125B5F006CD915 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5695DCA01F12605C00E55AAE /* HomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HomeController.swift; path = Controllers/HomeController.swift; sourceTree = "<group>"; };
+		9AE8FB081F2261B50000EDDE /* WelcomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WelcomeController.swift; path = Controllers/WelcomeController.swift; sourceTree = "<group>"; };
 		C704F4231F1D333000B6A816 /* TabNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabNavigationController.swift; sourceTree = "<group>"; };
 		C704F4251F1D335400B6A816 /* QuestionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionsController.swift; sourceTree = "<group>"; };
 		C704F4271F1D339F00B6A816 /* ScanQRController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanQRController.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				C704F42A1F1D33D900B6A816 /* PrizesController.swift */,
 				C704F42C1F1D33F800B6A816 /* ProfileController.swift */,
 				C7136DDC1F223F46001D0695 /* BaseSignInController.swift */,
+				9AE8FB081F2261B50000EDDE /* WelcomeController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -267,7 +270,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		5BBF5D24483659622FB8F798 /* [CP] Copy Pods Resources */ = {
@@ -322,6 +325,7 @@
 				E9F421B21F17DA3400B3ED8F /* profileCreateController.swift in Sources */,
 				C7136DDB1F2222C7001D0695 /* ProjectRFont.swift in Sources */,
 				E909429C1F167CDB003342EF /* signedController.swift in Sources */,
+				9AE8FB091F2261B50000EDDE /* WelcomeController.swift in Sources */,
 				56818B7C1F12598C006CD915 /* AppDelegate.swift in Sources */,
 				E9BDE7C71F17DF6100182960 /* gameInfoController.swift in Sources */,
 				E97CC95D1F1D32F800AE4A67 /* PopupHelper.swift in Sources */,
