@@ -62,7 +62,7 @@ class signInController: UIViewController {
         btn.layer.borderWidth = 2
         btn.titleLabel?.textColor = UIColor.retroGreen
         btn.tintColor = UIColor.retroGreen
-        btn.addTarget(self, action: #selector(signInController.onNext), for: UIControlEvents.touchUpInside)
+        btn.addTarget(self, action: #selector(signInXController.onNext), for: UIControlEvents.touchUpInside)
         return btn
     }()
     
