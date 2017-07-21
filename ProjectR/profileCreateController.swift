@@ -174,7 +174,7 @@ extension profileCreateController {
             if  let email = snapshot.childSnapshot(forPath: "email").value as? String,
                 let displayName = snapshot.childSnapshot(forPath: "displayName").value as? String {
                 snapshot.ref.setValue(Player(email: email, displayName: displayName, university: university, degree: degree, year: year).formatted(), withCompletionBlock: { (error, ref) in
-                    self?.navigationController?.pushViewController(gameInfoController(), animated: true)
+                    self?.navigationController?.pushViewController(WelcomeController(), animated: true)
                 })
             }
         })

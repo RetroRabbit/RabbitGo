@@ -16,8 +16,6 @@ import PureLayout
 import RxSwift
 
 class SignInController: BaseSignInController {
-    /*Data*/
-    
     /*UI*/
     fileprivate let txtName: ProjectRTextField = {
         let entry = ProjectRTextField()
