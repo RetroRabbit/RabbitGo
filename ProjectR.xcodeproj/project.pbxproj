@@ -32,7 +32,6 @@
 		E909429E1F167CEC003342EF /* StyleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E909429D1F167CEC003342EF /* StyleHelper.swift */; };
 		E90942A01F1687BA003342EF /* CGRect + ProjectR .swift in Sources */ = {isa = PBXBuildFile; fileRef = E909429F1F1687BA003342EF /* CGRect + ProjectR .swift */; };
 		E97CC95D1F1D32F800AE4A67 /* PopupHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97CC95C1F1D32F800AE4A67 /* PopupHelper.swift */; };
-		E9BDE7C71F17DF6100182960 /* gameInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9BDE7C61F17DF6100182960 /* gameInfoController.swift */; };
 		E9F421B21F17DA3400B3ED8F /* profileCreateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F421B11F17DA3400B3ED8F /* profileCreateController.swift */; };
 /* End PBXBuildFile section */
 
@@ -65,7 +64,6 @@
 		E909429D1F167CEC003342EF /* StyleHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleHelper.swift; sourceTree = "<group>"; };
 		E909429F1F1687BA003342EF /* CGRect + ProjectR .swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect + ProjectR .swift"; sourceTree = "<group>"; };
 		E97CC95C1F1D32F800AE4A67 /* PopupHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupHelper.swift; sourceTree = "<group>"; };
-		E9BDE7C61F17DF6100182960 /* gameInfoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = gameInfoController.swift; sourceTree = "<group>"; };
 		E9F421B11F17DA3400B3ED8F /* profileCreateController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = profileCreateController.swift; sourceTree = "<group>"; };
 		F306D2510C458A2CEB38E535 /* Pods-ProjectR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProjectR.release.xcconfig"; path = "Pods/Target Support Files/Pods-ProjectR/Pods-ProjectR.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -137,7 +135,6 @@
 				5695DCA01F12605C00E55AAE /* HomeController.swift */,
 				E90942941F167AFC003342EF /* SignInController.swift */,
 				E9F421B11F17DA3400B3ED8F /* profileCreateController.swift */,
-				E9BDE7C61F17DF6100182960 /* gameInfoController.swift */,
 				C704F4251F1D335400B6A816 /* QuestionsController.swift */,
 				C704F4271F1D339F00B6A816 /* ScanQRController.swift */,
 				C704F42A1F1D33D900B6A816 /* PrizesController.swift */,
@@ -327,7 +324,6 @@
 				E909429C1F167CDB003342EF /* signedController.swift in Sources */,
 				9AE8FB091F2261B50000EDDE /* WelcomeController.swift in Sources */,
 				56818B7C1F12598C006CD915 /* AppDelegate.swift in Sources */,
-				E9BDE7C71F17DF6100182960 /* gameInfoController.swift in Sources */,
 				E97CC95D1F1D32F800AE4A67 /* PopupHelper.swift in Sources */,
 				C7136DDD1F223F46001D0695 /* BaseSignInController.swift in Sources */,
 				C704F42F1F1D36DE00B6A816 /* ToolNavigationController.swift in Sources */,

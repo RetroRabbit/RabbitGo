@@ -58,6 +58,9 @@ struct Style {
         static let xl: CGFloat = 88.0
     }
     
+    static let image_small: CGFloat = 90.0
+    static let image_medium: CGFloat = 100.0
+    
     static let divider: CGFloat = 0.5
     static let radius: CGFloat = 2.0
     

@@ -59,6 +59,6 @@ class profileCreateController: BaseSignInController{
 
 extension profileCreateController {
     func onLogin() {
-        (UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: gameInfoController())
+       // (UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: gameInfoController())
     }
 }

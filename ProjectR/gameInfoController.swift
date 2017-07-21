@@ -91,6 +91,6 @@ class gameInfoController: UIViewController{
 extension gameInfoController {
     func onNext() {
         
-        (UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: PrizesController())
+        (UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: gameInfoController())
     }
 }

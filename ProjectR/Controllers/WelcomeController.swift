@@ -11,8 +11,10 @@ import UIKit
 import PureLayout
 import Material
 
-class WelcomeController: BaseSignInController {
+class WelcomeController: UIViewController, UIScrollViewDelegate {
     /* UI */
+    fileprivate let scrollView = UIScrollView(forAutoLayout: ())
+    
     fileprivate let lblMainHead: UILabel = {
         let label = UILabel()
         label.attributedText = NSAttributedString(string: "Welcome\nto Rabbittania", attributes: Style.avenirh_extra_large_white)
@@ -21,7 +23,9 @@ class WelcomeController: BaseSignInController {
         label.lineBreakMode = .byWordWrapping
         return label
     }()
-    
+
+    fileprivate var imgViewDivider: UIImageView
+
     fileprivate let lblBody: UILabel = {
         let label = UILabel()
         let str = "For your quest today, scan as many QR codes as you can find! Each QR code unlocks a new rabbit, but don’t be fooled, as this is not the rabbit’s final form! Answer their questions too & discover all the great secrets of Rabbitania! You may ask any Rabbit for the answers to the questions, but you’ll have to enter their unique Rabbit- codes to submit & verify your answers!"
@@ -60,6 +64,10 @@ class WelcomeController: BaseSignInController {
         return label
     }()
     
+    fileprivate var imgLocked: UIImageView
+    fileprivate var imgUnlocked: UIImageView
+    fileprivate var imgAnswered: UIImageView
+    
     fileprivate let lblSubImageText: UILabel = {
         let label = UILabel()
         label.attributedText = NSAttributedString(string: "The one who answers all the\nquestions first, WINS!", attributes: Style.avenirl_small_white_center)
@@ -75,18 +83,55 @@ class WelcomeController: BaseSignInController {
         return label
     }()
     
+    internal let nextButton:ProjectRNext = ProjectRNext()
+    
+    init() {
+        imgViewDivider = UIImageView(image: UIImage(named: "textfield_line"))
+        imgViewDivider.contentMode = .scaleAspectFit
+        imgViewDivider.clipsToBounds = true
+        
+        imgLocked = UIImageView(image: UIImage(named: "image_square_grey"))
+        imgLocked.contentMode = .scaleAspectFit
+        imgLocked.clipsToBounds = true
+        
+        imgUnlocked = UIImageView(image: UIImage(named: "image_square_white"))
+        imgUnlocked.contentMode = .scaleAspectFit
+        imgUnlocked.clipsToBounds = true
+        
+        imgAnswered = UIImageView(image: UIImage(named: "image_square_green"))
+        imgAnswered.contentMode = .scaleAspectFit
+        imgAnswered.clipsToBounds = true
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(lblMainHead)
-        view.addSubview(lblBody)
-        view.addSubview(lblStatesHead)
-        view.addSubview(lblLocked)
-        view.addSubview(lblUnlocked)
-        view.addSubview(lblAnswered)
-        view.addSubview(lblSubImageText)
-        view.addSubview(lblGoodLuck)
+        navigationController?.isNavigationBarHidden = true
+        view.backgroundColor = Style.color.grey_dark
+
+        view.addSubview(scrollView)
+        scrollView.delegate = self
         
-        nextButton.addTarget(self, action: #selector(temp), for: UIControlEvents.touchUpInside)
+        scrollView.addSubview(lblMainHead)
+        scrollView.addSubview(imgViewDivider)
+        scrollView.addSubview(lblBody)
+        scrollView.addSubview(lblStatesHead)
+        scrollView.addSubview(lblLocked)
+        scrollView.addSubview(lblUnlocked)
+        scrollView.addSubview(lblAnswered)
+        scrollView.addSubview(imgLocked)
+        scrollView.addSubview(imgUnlocked)
+        scrollView.addSubview(imgAnswered)
+        scrollView.addSubview(lblSubImageText)
+        scrollView.addSubview(lblGoodLuck)
+        scrollView.addSubview(nextButton)
+        
+        nextButton.addTarget(self, action: #selector(onNext), for: UIControlEvents.touchUpInside)
     }
     
     override func viewDidLayoutSubviews() {
@@ -94,23 +139,35 @@ class WelcomeController: BaseSignInController {
         
         let margin = Style.padding.xxl
         
+        scrollView.autoPinEdgesToSuperviewEdges()
+        
         lblMainHead.frame = CGRect(x: margin, y: margin, width: Screen.width, height: lblMainHead.intrinsicContentSize.height)
+        
+        imgViewDivider.frame = CGRect(x: margin, y: margin + lblMainHead.height / 2, width: imgViewDivider.frame.width, height: imgViewDivider.frame.height)
         
         lblBody.preferredMaxLayoutWidth = Screen.width - margin * 2
         lblBody.frame = CGRect(x: margin, y: lblMainHead.frame.bottom + margin, width: lblBody.intrinsicContentSize.width, height: lblBody.intrinsicContentSize.height)
         
         lblStatesHead.frame = CGRect(x: margin, y: lblBody.frame.bottom + margin * 2, width: Screen.width, height: lblStatesHead.intrinsicContentSize.height)
-        lblSubImageText.frame = CGRect(x: 0, y: lblStatesHead.frame.bottom + margin, width: Screen.width, height: lblSubImageText.intrinsicContentSize.height)
+        
+        let imgTopPadding = lblStatesHead.frame.bottom + margin * 2
+        let imgInterSpacing = (Screen.width - margin * 2 - Style.image_medium * 3) / 2
+        imgLocked.frame = CGRect(x: margin, y: imgTopPadding, width: Style.image_medium, height: Style.image_medium)
+        imgUnlocked.frame = CGRect(x: imgLocked.frame.right + imgInterSpacing, y: imgTopPadding, width: Style.image_medium, height: Style.image_medium)
+        imgAnswered.frame = CGRect(x: imgUnlocked.frame.right + imgInterSpacing, y: imgTopPadding, width: Style.image_medium, height: Style.image_medium)
+        
+        lblSubImageText.frame = CGRect(x: 0, y: imgLocked.frame.bottom + margin, width: Screen.width, height: lblSubImageText.intrinsicContentSize.height)
         lblGoodLuck.frame = CGRect(x: 0, y: lblSubImageText.frame.bottom + margin, width: Screen.width, height: lblGoodLuck.intrinsicContentSize.height)
-        logo.frame = CGRect()
+        
+        nextButton.frame = CGRect(x: (Screen.width - Style.button_width)/2, y: lblGoodLuck.frame.bottom + 30, width: Style.button_width, height: Style.button_height)
+        
+        scrollView.contentSize = CGSize(width: Screen.width, height: nextButton.frame.bottom)
     }
     
-    func temp() {
-        navigationController?.pushViewController(SignInController(), animated: true)
+    func onNext() {
+        (UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: TabNavigationController())
     }
 }
-
-
 
 
 
