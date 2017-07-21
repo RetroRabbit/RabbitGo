@@ -25,6 +25,7 @@
 		E909429C1F167CDB003342EF /* signedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942991F167CDB003342EF /* signedController.swift */; };
 		E909429E1F167CEC003342EF /* StyleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E909429D1F167CEC003342EF /* StyleHelper.swift */; };
 		E90942A01F1687BA003342EF /* CGRect + ProjectR .swift in Sources */ = {isa = PBXBuildFile; fileRef = E909429F1F1687BA003342EF /* CGRect + ProjectR .swift */; };
+		E97CC95D1F1D32F800AE4A67 /* PopupHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97CC95C1F1D32F800AE4A67 /* PopupHelper.swift */; };
 		E9BDE7C71F17DF6100182960 /* gameInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9BDE7C61F17DF6100182960 /* gameInfoController.swift */; };
 		E9F421B21F17DA3400B3ED8F /* profileCreateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F421B11F17DA3400B3ED8F /* profileCreateController.swift */; };
 /* End PBXBuildFile section */
@@ -51,6 +52,7 @@
 		E90942991F167CDB003342EF /* signedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = signedController.swift; sourceTree = "<group>"; };
 		E909429D1F167CEC003342EF /* StyleHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleHelper.swift; sourceTree = "<group>"; };
 		E909429F1F1687BA003342EF /* CGRect + ProjectR .swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect + ProjectR .swift"; sourceTree = "<group>"; };
+		E97CC95C1F1D32F800AE4A67 /* PopupHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupHelper.swift; sourceTree = "<group>"; };
 		E9BDE7C61F17DF6100182960 /* gameInfoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = gameInfoController.swift; sourceTree = "<group>"; };
 		E9F421B11F17DA3400B3ED8F /* profileCreateController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = profileCreateController.swift; sourceTree = "<group>"; };
 		F306D2510C458A2CEB38E535 /* Pods-ProjectR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProjectR.release.xcconfig"; path = "Pods/Target Support Files/Pods-ProjectR/Pods-ProjectR.release.xcconfig"; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 		5695DC981F125EE500E55AAE /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
+				E97CC95C1F1D32F800AE4A67 /* PopupHelper.swift */,
 				C704F4231F1D333000B6A816 /* TabNavigationController.swift */,
 				E90942971F167CDB003342EF /* appColors.swift */,
 				E90942981F167CDB003342EF /* NavigationController.swift */,
@@ -230,7 +233,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		5BBF5D24483659622FB8F798 /* [CP] Copy Pods Resources */ = {
@@ -285,6 +288,7 @@
 				E909429C1F167CDB003342EF /* signedController.swift in Sources */,
 				56818B7C1F12598C006CD915 /* AppDelegate.swift in Sources */,
 				E9BDE7C71F17DF6100182960 /* gameInfoController.swift in Sources */,
+				E97CC95D1F1D32F800AE4A67 /* PopupHelper.swift in Sources */,
 				C704F42F1F1D36DE00B6A816 /* ToolNavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

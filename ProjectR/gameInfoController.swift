@@ -15,21 +15,21 @@ import Material
 import PureLayout
 
 class gameInfoController: UIViewController{
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.attributedText = NSAttributedString(string: "Project R", attributes: Style.extra_large_blue_grey)
         return lbl
     }()
     
-    let headingLabel: UILabel = {
+    private let headingLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.attributedText = NSAttributedString(string: "Dear Rabbiteer", attributes: Style.extra_large_blue_grey)
         return lbl
     }()
     
-    let bodyLabel: UILabel = {
+    private let bodyLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.attributedText = NSAttributedString(string: "Welcome to Rabbittania! \nFor your quest today, you have to scan as many QR codes to unlock different questions about the magical Rabbittania! \n\nYou may ask any Rabbit for the answers to the answers, but you have to enter their unique Rabbit- codes to submit your answers! \n\nThe one who answers all of the questions first, WINS!", attributes: Style.body)
@@ -39,14 +39,14 @@ class gameInfoController: UIViewController{
         return lbl
     }()
     
-    let bottomLabel: UILabel = {
+    private let bottomLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.attributedText = NSAttributedString(string: "Good Luck!", attributes: Style.extra_large_blue_grey)
         return lbl
     }()
     
-    lazy var nextButton:Button = {
+    private lazy var nextButton:Button = {
         let btn = Button()
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.setTitle("NEXT", for: .normal)

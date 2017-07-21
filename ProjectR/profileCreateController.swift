@@ -14,21 +14,21 @@ import Material
 import PureLayout
 
 class profileCreateController: UIViewController{
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.attributedText = NSAttributedString(string: "Project R", attributes: Style.extra_large_blue_grey)
         return lbl
     }()
     
-    let headingLabel: UILabel = {
+    private let headingLabel: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.attributedText = NSAttributedString(string: "LOGIN", attributes: Style.heading3)
         return lbl
     }()
     
-    let universityEntry: TextField = {
+    private let universityEntry: TextField = {
         let entry = TextField()
         entry.translatesAutoresizingMaskIntoConstraints = false
         entry.placeholder = "University"
@@ -37,7 +37,7 @@ class profileCreateController: UIViewController{
         return entry
     }()
     
-    let degreeEntry: TextField = {
+    private let degreeEntry: TextField = {
         let entry = TextField()
         entry.translatesAutoresizingMaskIntoConstraints = false
         entry.placeholder = "Course/Degree"
@@ -46,7 +46,7 @@ class profileCreateController: UIViewController{
         return entry
     }()
     
-    let yearEntry: TextField = {
+    private let yearEntry: TextField = {
         let entry = TextField()
         entry.translatesAutoresizingMaskIntoConstraints = false
         entry.placeholder = "Year"
@@ -55,7 +55,7 @@ class profileCreateController: UIViewController{
         return entry
     }()
     
-    lazy var loginButton:Button = {
+    private lazy var loginButton:Button = {
         let btn = Button()
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.setTitle("LOGIN", for: .normal)

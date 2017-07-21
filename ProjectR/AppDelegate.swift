@@ -22,7 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         InternalSetup()
         
         window = UIWindow(frame: UIScreen.main.bounds)
-        let rootController = TabNavigationController()
+        let rootController = signInController()
+        //let rootController = TabNavigationController()
         
         window!.rootViewController = rootController
         
