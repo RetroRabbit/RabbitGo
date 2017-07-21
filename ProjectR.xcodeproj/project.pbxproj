@@ -25,6 +25,7 @@
 		C7136DDD1F223F46001D0695 /* BaseSignInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7136DDC1F223F46001D0695 /* BaseSignInController.swift */; };
 		C7136DDF1F224D2A001D0695 /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7136DDE1F224D2A001D0695 /* Global.swift */; };
 		C7136DE11F225DFD001D0695 /* BaseNextController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7136DE01F225DFD001D0695 /* BaseNextController.swift */; };
+		C7136DE31F2270FD001D0695 /* AutoCompleteTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7136DE21F2270FD001D0695 /* AutoCompleteTextField.swift */; };
 		E90942951F167AFC003342EF /* SignInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942941F167AFC003342EF /* SignInController.swift */; };
 		E909429A1F167CDB003342EF /* appColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942971F167CDB003342EF /* appColors.swift */; };
 		E909429B1F167CDB003342EF /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942981F167CDB003342EF /* NavigationController.swift */; };
@@ -57,6 +58,7 @@
 		C7136DDC1F223F46001D0695 /* BaseSignInController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseSignInController.swift; sourceTree = "<group>"; };
 		C7136DDE1F224D2A001D0695 /* Global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
 		C7136DE01F225DFD001D0695 /* BaseNextController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseNextController.swift; sourceTree = "<group>"; };
+		C7136DE21F2270FD001D0695 /* AutoCompleteTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoCompleteTextField.swift; sourceTree = "<group>"; };
 		D3DE7480DB050A51D6CC9087 /* Pods-ProjectR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProjectR.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ProjectR/Pods-ProjectR.debug.xcconfig"; sourceTree = "<group>"; };
 		E90942941F167AFC003342EF /* SignInController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SignInController.swift; path = Controllers/SignInController.swift; sourceTree = "<group>"; };
 		E90942971F167CDB003342EF /* appColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appColors.swift; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 				C704F42E1F1D36DE00B6A816 /* ToolNavigationController.swift */,
 				C7136DDA1F2222C7001D0695 /* ProjectRFont.swift */,
 				C7136DDE1F224D2A001D0695 /* Global.swift */,
+				C7136DE21F2270FD001D0695 /* AutoCompleteTextField.swift */,
 			);
 			path = Infrastructure;
 			sourceTree = "<group>";
@@ -323,6 +326,7 @@
 				E909429A1F167CDB003342EF /* appColors.swift in Sources */,
 				E90942951F167AFC003342EF /* SignInController.swift in Sources */,
 				E909429E1F167CEC003342EF /* StyleHelper.swift in Sources */,
+				C7136DE31F2270FD001D0695 /* AutoCompleteTextField.swift in Sources */,
 				E9F421B21F17DA3400B3ED8F /* profileCreateController.swift in Sources */,
 				C7136DDB1F2222C7001D0695 /* ProjectRFont.swift in Sources */,
 				E909429C1F167CDB003342EF /* signedController.swift in Sources */,

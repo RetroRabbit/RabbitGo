@@ -18,6 +18,7 @@ var RABBITS = "rabbits"
 var RABBIT_BOARD = "rabbit_board"
 var RABBIT_TEAM_BOARD = "rabbit_team_board"
 var PROFILE_PICS = "profile_pics"
+var AutoCompleteS = "autocomplete"
 
 var auth = Auth.auth()
 var ref = Database.database().reference()
@@ -28,6 +29,7 @@ var refDegrees = ref.child(DEGREES)
 var refRabbits = ref.child(RABBITS)
 var refRabbitTeamBoard = ref.child(RABBIT_TEAM_BOARD)
 var refRabbitBoard = ref.child(RABBIT_BOARD)
+var refAutoComplete = ref.child(AutoCompleteS)
 func currentUserId() -> String { return auth.currentUser!.uid }
 func refCurrentUser() -> DatabaseReference { return refRabbiteers.child(currentUserId()) }
 func refCurrentUserQuestions() -> DatabaseReference { return refCurrentUser().child(QUESTIONS) }
@@ -47,15 +49,19 @@ class Player {
     var score: NSNumber = 0
     var university: NSString = ""
     var degree: NSString = ""
-    var year: NSNumber = 1900
+    var year: NSString = ""
     
     init(email: String?, displayName: String?) {
-        if let _email = email as NSString? {
-            self.email = _email
-        }
-        if let _displayName = displayName as NSString? {
-            self.displayName = _displayName
-        }
+        if let _email = email as NSString? { self.email = _email }
+        if let _displayName = displayName as NSString? { self.displayName = _displayName }
+    }
+    
+    init(email: String?, displayName: String?, university: String?, degree: String?, year: String?) {
+        if let _email = email as NSString? { self.email = _email }
+        if let _displayName = displayName as NSString? { self.displayName = _displayName }
+        if let _university = university as NSString? { self.university = _university }
+        if let _degree = degree as NSString? { self.degree = _degree }
+        if let _year = year as NSString? { self.year = _year }
     }
     
     func formatted() -> [String:Any] {
@@ -146,8 +152,13 @@ class PlayerQuestion {
 }
 
 class AutoComplete {
-    var name: NSString? = nil
-    var nick: NSString? = nil
+    var name: String? = nil
+    var nick: String? = nil
+    
+    init(name: String, nick: String) {
+        self.name = name
+        self.nick = nick
+    }
     
     func toString() -> String {
         return "\(name) \(nick)"

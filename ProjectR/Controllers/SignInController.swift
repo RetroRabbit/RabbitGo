@@ -57,6 +57,9 @@ class SignInController: BaseSignInController {
         view.addSubview(facebookButton)
         view.addSubview(googleButton)
         
+        txtName.addTarget(self, action: #selector(onNameChanged), for: .editingChanged)
+        txtEmail.addTarget(self, action: #selector(onEmailChanged), for: .editingChanged)
+        
         nextButton.addTarget(self, action: #selector(SignInController.onNext), for: UIControlEvents.touchUpInside)
     }
     
@@ -75,6 +78,30 @@ class SignInController: BaseSignInController {
     }
 }
 
+extension SignInController {
+    @objc fileprivate func onNameChanged() {
+        // Validate UI
+        if let text = txtName.text, !text.isEmpty {
+            txtName.detail = ""
+            txtName.isErrorRevealed = false
+        } else {
+            txtName.detail = "Required"
+            txtName.isErrorRevealed = true
+        }
+    }
+    
+    @objc fileprivate func onEmailChanged() {
+        // Validate UI
+        if let text = txtEmail.text, !text.isEmpty {
+            txtEmail.detail = ""
+            txtEmail.isErrorRevealed = false
+        } else {
+            txtEmail.detail = "Required"
+            txtEmail.isErrorRevealed = true
+        }
+    }
+}
+
 /* event handlers */
 extension SignInController {
     func onNext() {
@@ -84,11 +111,13 @@ extension SignInController {
             !email.isEmpty
             else {
                 if let fullname = txtName.text, fullname.isEmpty {
-                    txtName.isValid = false
+                    txtName.detail = "Required"
+                    txtName.isErrorRevealed = true
                 }
                 
                 if let email = txtEmail.text, email.isEmpty {
-                    txtEmail.isValid = false
+                    txtEmail.detail = "Required"
+                    txtEmail.isErrorRevealed = true
                 }
                 return
         }
@@ -134,6 +163,8 @@ extension SignInController {
             } else {
                 if !snapshot.hasChild("questions") {
                     self?.createQuestions()
+                } else {
+                    self?.navigateToDetails()
                 }
             }
         })
@@ -147,10 +178,23 @@ extension SignInController {
                 }
             }
         })
+        navigateToDetails()
+    }
+    
+    private func navigateToDetails() {
         if isRabbit(user: auth.currentUser) {
             //TODO: add user leadboard redirect
         } else {
-            self.navigationController?.pushViewController(profileCreateController(), animated: true)
+            refCurrentUser().observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
+                if let year = snapshot.childSnapshot(forPath: "year").value as? String,
+                    let degree = snapshot.childSnapshot(forPath: "degree").value as? String,
+                    let university = snapshot.childSnapshot(forPath: "university").value as? String,
+                    year.isEmpty, degree.isEmpty, university.isEmpty {
+                    self.navigationController?.pushViewController(profileCreateController(), animated: true)
+                } else {
+                    (UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: UINavigationController(rootViewController: TabNavigationController()))
+                }
+            })
         }
     }
 }

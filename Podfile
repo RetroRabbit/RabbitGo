@@ -14,6 +14,7 @@ target 'ProjectR' do
     pod 'PureLayout'
     pod 'Material'
     pod 'RxSwift'
+    pod 'RxCocoa'
     pod 'FBSDKLoginKit'
 
 end

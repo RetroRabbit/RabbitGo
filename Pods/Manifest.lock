@@ -65,6 +65,8 @@ PODS:
     - Material/Core (= 2.6.3)
   - Material/Core (2.6.3)
   - PureLayout (3.0.2)
+  - RxCocoa (3.5.0):
+    - RxSwift (~> 3.4)
   - RxSwift (3.5.0)
 
 DEPENDENCIES:
@@ -76,6 +78,7 @@ DEPENDENCIES:
   - GoogleSignIn
   - Material
   - PureLayout
+  - RxCocoa
   - RxSwift
 
 SPEC CHECKSUMS:
@@ -95,8 +98,9 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 30d874b96d0d76028f61fbd122801e3f030d47db
   Material: af607a7ec0e9978ef85cf189a3d8ceeeb650400f
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
+  RxCocoa: a0a09f45d0e5b48ecb6a4a7b4b4c89c88d3f633f
   RxSwift: 18ee9d78b45edb3b0b7e79916b47a116e6dbc842
 
-PODFILE CHECKSUM: 6dad95da4f37ce107f6dd43e2de855c784064ec8
+PODFILE CHECKSUM: f1a75c0849894c8048ed42f33c0b21cecaf707b2
 
 COCOAPODS: 1.2.0

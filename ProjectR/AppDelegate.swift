@@ -19,10 +19,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         return w
     }()
     
-    
-    // Current root view controller
-    var root: UIViewController?
-    
     var NavigationStack: UINavigationController = NavigationController()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -109,6 +105,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         // Perform any operations when the user disconnects from app here.
         // ...
     }
-
+    
+    static var rootViewController: UIViewController? {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        return appDelegate.window?.rootViewController
+    }
+    
+    static func topViewController(_ base: UIViewController? = rootViewController) -> UIViewController {
+        if  let nav = base as? UINavigationController,
+            let visibleViewController = nav.visibleViewController {
+            return visibleViewController
+        }
+        
+        if  let tab = base as? UITabBarController,
+            let selected = tab.selectedViewController {
+            return topViewController(selected)
+        }
+        
+        if let presented = base?.presentedViewController {
+            return topViewController(presented)
+        }
+        
+        return base ?? UIViewController() // crashes :(
+    }
 }
 

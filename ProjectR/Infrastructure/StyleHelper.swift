@@ -172,6 +172,11 @@ class ProjectRTextField: ErrorTextField {
         dividerColor = Material.Color.clear
         dividerActiveColor = Material.Color.clear
         
+        detailLabel.font = RobotoFont.light(with: Style.font.xs)
+        detailLabel.textColor = Color.red.base
+        detailLabel.textAlignment = .right
+        detailVerticalOffset = 8
+        
         let imgViewDivider = UIImageView(image: UIImage(named: "textfield_line"))
         imgViewDivider.contentMode = .scaleAspectFit
         imgViewDivider.clipsToBounds = true
