@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         //if Auth.auth().currentUser != nil {
           //  window?.rootViewController = UINavigationController(rootViewController: TabNavigationController())
         //} else {
-            window?.rootViewController = UINavigationController(rootViewController: SignInController())
+            window?.rootViewController = UINavigationController(rootViewController: profileCreateController())
         //}
         
         window?.makeKeyAndVisible()

@@ -182,31 +182,31 @@ extension profileCreateController {
 }
 
 final class UniversityAutoCompleteProvider: AutoCompleteProvider {
-    func provideSuggestionsForAutoCompleteTextField(_ textField: AutoCompleteTextField, forString string: String, toCallback callback: @escaping ([String]) -> Void) {
+    func provideSuggestionsForAutoCompleteTextField(_ textField: AutoCompleteTextField, forString string: String, toCallback callback: @escaping ([AutoCompleteTextField.Suggestion]) -> Void) {
         callback(profileCreateController.university.filter { object -> Bool in
             return object.toString().lowercased().contains(string.lowercased())
-            }.flatMap({ object -> String? in
-                object.name
+            }.map({ object -> AutoCompleteTextField.Suggestion in
+                return AutoCompleteTextField.Suggestion(text: object.name ?? "", subtext: object.nick ?? "")
             }))
     }
 }
 
 final class DegreeAutoCompleteProvider: AutoCompleteProvider {
-    func provideSuggestionsForAutoCompleteTextField(_ textField: AutoCompleteTextField, forString string: String, toCallback callback: @escaping ([String]) -> Void) {
+    func provideSuggestionsForAutoCompleteTextField(_ textField: AutoCompleteTextField, forString string: String, toCallback callback: @escaping ([AutoCompleteTextField.Suggestion]) -> Void) {
         callback(profileCreateController.degree.filter { object -> Bool in
             return object.toString().lowercased().contains(string.lowercased())
-            }.flatMap({ object -> String? in
-                object.name
+            }.map({ object -> AutoCompleteTextField.Suggestion in
+                return AutoCompleteTextField.Suggestion(text: object.name ?? "", subtext: object.nick ?? "")
             }))
     }
 }
 
 final class YearAutoCompleteProvider: AutoCompleteProvider {
-    func provideSuggestionsForAutoCompleteTextField(_ textField: AutoCompleteTextField, forString string: String, toCallback callback: @escaping ([String]) -> Void) {
+    func provideSuggestionsForAutoCompleteTextField(_ textField: AutoCompleteTextField, forString string: String, toCallback callback: @escaping ([AutoCompleteTextField.Suggestion]) -> Void) {
         callback(profileCreateController.year.filter { object -> Bool in
             return object.toString().lowercased().contains(string.lowercased())
-            }.flatMap({ object -> String? in
-                object.name
+            }.map({ object -> AutoCompleteTextField.Suggestion in
+                return AutoCompleteTextField.Suggestion(text: object.name ?? "", subtext: object.nick ?? "")
             }))
     }
 }

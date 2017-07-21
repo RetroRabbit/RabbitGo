@@ -12,16 +12,27 @@ import RxSwift
 
 @objc protocol AutoCompleteProvider {
     // for async
-    func provideSuggestionsForAutoCompleteTextField(_ textField: AutoCompleteTextField, forString string: String, toCallback callback: @escaping ([String]) -> Void)
+    func provideSuggestionsForAutoCompleteTextField(_ textField: AutoCompleteTextField, forString string: String, toCallback callback: @escaping ([AutoCompleteTextField.Suggestion]) -> Void)
     @objc optional func disposeFetchForAutoCompleteTextField(_ textField: AutoCompleteTextField)
 }
 
 class AutoCompleteTextField: ProjectRTextField, UITableViewDelegate, UITableViewDataSource {
+    class Suggestion: NSObject {
+        let text: String
+        let subtext: String
+        
+        init(text: String, subtext: String) {
+            self.text = text
+            self.subtext = subtext
+        }
+    }
+    
     // public interface
     var autocompleteDelay: TimeInterval = 0.5
     weak var autoCompleteProvider: AutoCompleteProvider?
     
     var autoCompleteFont: UIFont = ProjectRFont.AvenirLightOblique(with: Style.font.font_medium)
+    var autoCompleteSubfont: UIFont = ProjectRFont.AvenirLightOblique(with: Style.font.font_small)
     var autoCompleteTextColor: UIColor = Style.color.white
     var autoCompleteBackgroundColor: UIColor = Style.color.grey_dark
     var autoCompleteSeparatorsEnabled: Bool = false
@@ -35,7 +46,7 @@ class AutoCompleteTextField: ProjectRTextField, UITableViewDelegate, UITableView
     fileprivate var tableViewHeightConstraint: NSLayoutConstraint?
     
     // data
-    fileprivate var autoCompleteSuggestionStrings: [String] = []
+    fileprivate var suggestions: [Suggestion] = []
     fileprivate let reuseIdentifier = "cell"
     fileprivate let disposeBag = DisposeBag()
     
@@ -82,26 +93,33 @@ class AutoCompleteTextField: ProjectRTextField, UITableViewDelegate, UITableView
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return autoCompleteSuggestionStrings.count
+        return suggestions.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: reuseIdentifier)
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: reuseIdentifier)
         cell.backgroundColor = autoCompleteBackgroundColor
-        let suggestion = autoCompleteSuggestionStrings[(indexPath as IndexPath).row]
+        let suggestion = suggestions[(indexPath as IndexPath).row]
         if let label = cell.textLabel {
-            label.text = suggestion
+            label.text = suggestion.text
             label.font = autoCompleteFont
             label.textColor = autoCompleteTextColor
         }
+        
+        if let label = cell.detailTextLabel {
+            label.text = suggestion.subtext
+            label.font = autoCompleteSubfont
+            label.textColor = autoCompleteTextColor
+        }
+        
         cell.addGestureRecognizer(
             UITapGestureRecognizer(target: self, action: #selector(didSelectSuggestion(_:))))
         cell.isUserInteractionEnabled = true
         return cell
     }
     
-    func presentAutoCompleteSuggestions(_ suggestions: [String]) {
-        autoCompleteSuggestionStrings = suggestions
+    func presentAutoCompleteSuggestions(_ suggestions: [Suggestion]) {
+        self.suggestions = suggestions
         completionsTableView.reloadData()
         completionsTableView.isAccessibilityElement = true
         completionsTableView.accessibilityIdentifier = "completionsTableView"
@@ -134,7 +152,7 @@ class AutoCompleteTextField: ProjectRTextField, UITableViewDelegate, UITableView
     }
     
     func dismissAutoCompleteSuggestions() {
-        autoCompleteSuggestionStrings = []
+        suggestions = []
         completionsTableView.reloadData()
         
         completionsTableView.removeFromSuperview()

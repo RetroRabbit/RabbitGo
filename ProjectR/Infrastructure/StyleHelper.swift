@@ -155,6 +155,15 @@ struct Style {
 }
 
 class ProjectRTextField: ErrorTextField {
+    private let imgViewDivider = UIImageView(image: UIImage(named: "textfield_line")?.withRenderingMode(.alwaysTemplate))
+    override var isErrorRevealed: Bool {
+        didSet {
+            detailLabel.isHidden = !isErrorRevealed
+            imgViewDivider.tintColor = isErrorRevealed ? Color.red.base : Style.color.green
+            layoutSubviews()
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -177,7 +186,6 @@ class ProjectRTextField: ErrorTextField {
         detailLabel.textAlignment = .right
         detailVerticalOffset = 8
         
-        let imgViewDivider = UIImageView(image: UIImage(named: "textfield_line"))
         imgViewDivider.contentMode = .scaleAspectFit
         imgViewDivider.clipsToBounds = true
         
