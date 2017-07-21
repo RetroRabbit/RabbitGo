@@ -41,61 +41,120 @@ var profilePicsRef = storeRef.child(PROFILE_PICS)
 var currentUserProfilePic = profilePicsRef.child("${currentUserId()}.jpg")
 
 class Player {
-    var email: String? = nil
-    var displayName: String? = nil
+    var email: NSString? = nil
+    var displayName: NSString? = nil
     //var questions: HashMap<String, PlayerQuestion>? = nil
-    var score = 0
-    var university = ""
-    var degree = ""
-    var year = 1900
+    var score: NSNumber = 0
+    var university: NSString = ""
+    var degree: NSString = ""
+    var year: NSNumber = 1900
     
     init(email: String?, displayName: String?) {
-        self.email = email
-        self.displayName = displayName
+        if let _email = email as NSString? {
+            self.email = _email
+        }
+        if let _displayName = displayName as NSString? {
+            self.displayName = _displayName
+        }
+    }
+    
+    func formatted() -> [String:Any] {
+        var value: [String:Any] = [:]
+        if let _email = email {
+            value["email"] = _email
+        }
+        
+        if let _displayName = displayName {
+            value["displayName"] = _displayName
+        }
+        
+        value["score"] = score
+        value["university"] = university
+        value["degree"] = degree
+        value["year"] = year
+        
+        return value
     }
 }
 
 class Rabbit {
-    var email: String? = nil
-    var displayName: String? = nil
-    var code: String? = nil
-    var team: String? = nil
+    var email: NSString? = nil
+    var displayName: NSString? = nil
+    var code: NSString? = nil
+    var team: NSString? = nil
+    
+    func formatted() -> [String:Any] {
+        var value: [String:Any] = [:]
+        if let _email = email { value["email"] = _email }
+        if let _displayName = displayName { value["displayName"] = _displayName }
+        if let _code = code { value["code"] = _code }
+        if let _team = team { value["team"] = _team }
+        
+        return value
+    }
 }
 
 class Question {
-    var text: String? = nil
-    var multiple: [String]? = nil
-    var free: String? = nil
-    var answer: Int? = nil
+    var text: NSString? = nil
+    var multiple: [NSString]? = nil
+    var free: NSString? = nil
+    var answer: NSNumber? = nil
+    
+    func formatted() -> [String:Any] {
+        var value: [String:Any] = [:]
+        if let _text = text { value["text"] = _text }
+        if let _free = free { value["free"] = _free }
+        if let _answer = answer { value["answer"] = _answer }
+        if let _multiple = multiple { value["multiple"] = _multiple }
+    
+        return value
+    }
 }
 
 class PlayerQuestion {
-    var state: Int? = nil
-    var answer: String? = nil
-    var rabbitCode: String? = nil
+    var state: NSNumber? = nil
+    var answer: NSString? = nil
+    var rabbitCode: NSString? = nil
     
     
-    init(state: Int?) {
-        self.state = state
+    init(state: NSNumber?) {
+        if let _state = state as NSNumber? {
+            self.state = _state
+        }
     }
     
-    init(state: Int?, answer: String?, rabbitCode: String?) {
+    init(state: NSNumber?, answer: String?, rabbitCode: String?) {
         self.state = state
-        self.answer = answer
-        self.rabbitCode = rabbitCode
+        
+        if let _answer = answer as NSString? {
+            self.answer = _answer
+        }
+        
+        if let _rabbitCode = rabbitCode as NSString? {
+            self.rabbitCode = _rabbitCode
+        }
+    }
+    
+    func formatted() -> [String:Any] {
+        var value: [String:Any] = [:]
+        if let _state = state { value["state"] = _state }
+        if let _answer = answer { value["answer"] = _answer }
+        if let _rabbitCode = rabbitCode { value["rabbitCode"] = _rabbitCode }
+        
+        return value
     }
 }
 
 class AutoComplete {
-    var name: String? = nil
-    var nick: String? = nil
+    var name: NSString? = nil
+    var nick: NSString? = nil
     
     func toString() -> String {
         return "\(name) \(nick)"
     }
 }
 
-enum QuestionState: Int {
+enum QuestionState: NSNumber {
     case locked = 0
     case unlocked = 1
     case done = 2

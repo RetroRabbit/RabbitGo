@@ -128,7 +128,7 @@ extension SignInController {
         
         refCurrentUser().observeSingleEvent(of: DataEventType.value, with: { [weak self] (snapshot) in
             if (!snapshot.hasChildren()) {
-                snapshot.ref.setValue(Player(email: auth.currentUser?.email, displayName: fullname), withCompletionBlock: { (error, ref) in
+                snapshot.ref.setValue(Player(email: auth.currentUser?.email, displayName: fullname).formatted(), withCompletionBlock: { (error, ref) in
                     self?.createQuestions()
                 })
             } else {
@@ -143,7 +143,7 @@ extension SignInController {
         refQuestions.observeSingleEvent(of: .value, with: { (questionSnapshot) in
             for child in questionSnapshot.children {
                 if let snap = child as? DataSnapshot {
-                    refCurrentUserQuestions().child(snap.key).setValue(PlayerQuestion(state: QuestionState.locked.rawValue))
+                    refCurrentUserQuestions().child(snap.key).setValue(PlayerQuestion(state: QuestionState.locked.rawValue).formatted())
                 }
             }
         })
