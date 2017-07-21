@@ -9,9 +9,11 @@ target 'ProjectR' do
     pod 'Firebase/Core'
     pod 'Firebase/Database'
     pod 'Firebase/Auth'
+    pod 'Firebase/Storage'
     pod 'GoogleSignIn'
     pod 'PureLayout'
     pod 'Material'
-
+    pod 'RxSwift'
+    pod 'FBSDKLoginKit'
 
 end

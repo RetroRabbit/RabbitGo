@@ -13,98 +13,148 @@ import FirebaseAuth
 import GoogleSignIn
 import Material
 import PureLayout
+import RxSwift
 
-class signInController: UIViewController {
-    private let titleLabel: UILabel = {
-        let lbl = UILabel()
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        lbl.attributedText = NSAttributedString(string: "Project R", attributes: Style.extra_large_blue_grey)
-        return lbl
-    }()
+class SignInController: BaseSignInController {
+    /*Data*/
     
-    private let headingLabel: UILabel = {
-        let lbl = UILabel()
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        lbl.attributedText = NSAttributedString(string: "LOGIN", attributes: Style.heading3)
-        return lbl
-    }()
-    
-    private let nameEntry: TextField = {
-        let entry = TextField()
-        entry.translatesAutoresizingMaskIntoConstraints = false
+    /*UI*/
+    fileprivate let txtName: ProjectRTextField = {
+        let entry = ProjectRTextField()
         entry.placeholder = "Name & Surname"
-        entry.markedTextStyle = Style.heading3
         return entry
     }()
     
-    private let emailEntry: TextField = {
-        let entry = TextField()
-        entry.translatesAutoresizingMaskIntoConstraints = false
+    fileprivate let txtEmail: ProjectRTextField = {
+        let entry = ProjectRTextField()
         entry.placeholder = "Email"
-        entry.markedTextStyle = Style.heading3
         return entry
     }()
     
-    private let googleButton: GIDSignInButton = {
-        let btn = GIDSignInButton()
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        btn.colorScheme  = GIDSignInButtonColorScheme.dark
+    private lazy var facebookButton: ProjectRButton = {
+        let btn = ProjectRButton()
+        btn.setTitle("FACEBOOK", for: .normal)
+        btn.addTarget(self, action: #selector(onFacebook), for: UIControlEvents.touchUpInside)
         return btn
     }()
     
-    private lazy var nextButton:Button = {
-       let btn = Button()
-        btn.translatesAutoresizingMaskIntoConstraints = false
-//        btn.setAttributedTitle(NSAttributedString(string: "NEXT", attributes: Style.heading3), for: .normal)
-        btn.setTitle("NEXT", for: .normal)
-        btn.backgroundColor = UIColor.retroBlack
-        btn.layer.cornerRadius = 2
-        btn.layer.borderWidth = 2
-        btn.titleLabel?.textColor = UIColor.retroGreen
-        btn.tintColor = UIColor.retroGreen
-        btn.addTarget(self, action: #selector(signInXController.onNext), for: UIControlEvents.touchUpInside)
+    private lazy var googleButton: ProjectRButton = {
+        let btn = ProjectRButton()
+        btn.setTitle("GOOGLE +", for: .normal)
+        btn.addTarget(self, action: #selector(onGoogle), for: UIControlEvents.touchUpInside)
         return btn
     }()
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.retroGrey
         
         GIDSignIn.sharedInstance().uiDelegate = self
         
-        view.addSubview(titleLabel)
-        view.addSubview(headingLabel)
-        view.addSubview(nameEntry)
-        view.addSubview(emailEntry)
+        headingLabel.attributedText = NSAttributedString(string: "LOGIN", attributes: Style.rhino_large_white)
+        
+        view.addSubview(txtName)
+        view.addSubview(txtEmail)
+        view.addSubview(facebookButton)
         view.addSubview(googleButton)
-        view.addSubview(nextButton)
+        
+        nextButton.addTarget(self, action: #selector(SignInController.onNext), for: UIControlEvents.touchUpInside)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        titleLabel.frame = CGRect(x: (Screen.width - titleLabel.intrinsicContentSize.width)/2, y: 80, width: titleLabel.intrinsicContentSize.width, height: titleLabel.intrinsicContentSize.height)
+        txtName.frame = CGRect(x: 40, y: headingLabel.frame.bottom + 30 , width: Screen.width - 80, height: 40)
         
-        headingLabel.frame = CGRect.init(x: 40, y: titleLabel.frame.bottom + 60, width: Screen.width - 80, height: 40)
+        txtEmail.frame = CGRect(x: 40, y: txtName.frame.bottom + 30, width: Screen.width - 80, height: 40)
         
-        nameEntry.frame = CGRect(x: 40, y: headingLabel.frame.bottom + 20 , width: Screen.width - 80, height: 40)
+        let width = Screen.width - (Style.button_width * 2) - 20
         
-        emailEntry.frame = CGRect(x: 40, y: nameEntry.frame.bottom + 20, width: Screen.width - 80, height: 40)
+        facebookButton.frame = CGRect(x: width/2, y: txtEmail.frame.bottom + 30, width: Style.button_width, height: Style.button_height)
         
-        googleButton.frame = CGRect(x: 40, y: emailEntry.frame.bottom + 20, width: Screen.width - 80, height: 500)
-        
-        nextButton.frame = CGRect(x: 40, y: googleButton.frame.bottom + 60, width: Screen.width - 80, height: 40)
+        googleButton.frame = CGRect(x: facebookButton.frame.right + 20, y: txtEmail.frame.bottom + 30, width: Style.button_width, height: Style.button_height)
     }
 }
 
 /* event handlers */
-extension signInController {
+extension SignInController {
     func onNext() {
-        (UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: profileCreateController())
+        guard let fullname = txtName.text,
+            let email = txtEmail.text,
+            !fullname.isEmpty,
+            !email.isEmpty
+            else {
+                if let fullname = txtName.text, fullname.isEmpty {
+                    txtName.isValid = false
+                }
+                
+                if let email = txtEmail.text, email.isEmpty {
+                    txtEmail.isValid = false
+                }
+                return
+        }
+        
+        Auth.auth().createUser(withEmail: email, password: email) { [weak self] (user, error) in
+            if let _ = error {
+                Auth.auth().signIn(withEmail: email, password: email, completion: { (user, error) in
+                    if let _ = error {
+                        NSLog("Firebase SigIn error")
+                    } else {
+                        self?.checkRedirect()
+                    }
+                })
+            } else {
+                self?.checkRedirect()
+            }
+        }
+    }
+    
+    func onGoogle() {
+        GIDSignIn.sharedInstance().signIn()
+    }
+    
+    func onFacebook() {
+        
+    }
+    
+    private func checkRedirect() {
+        guard let fullname = txtName.text,
+            !fullname.isEmpty
+            else {
+                if let fullname = txtName.text, fullname.isEmpty {
+                    txtName.isValid = false
+                }
+                return
+        }
+        
+        refCurrentUser().observeSingleEvent(of: DataEventType.value, with: { [weak self] (snapshot) in
+            if (!snapshot.hasChildren()) {
+                snapshot.ref.setValue(Player(email: auth.currentUser?.email, displayName: fullname), withCompletionBlock: { (error, ref) in
+                    self?.createQuestions()
+                })
+            } else {
+                if !snapshot.hasChild("questions") {
+                    self?.createQuestions()
+                }
+            }
+        })
+    }
+    
+    private func createQuestions() {
+        refQuestions.observeSingleEvent(of: .value, with: { (questionSnapshot) in
+            for child in questionSnapshot.children {
+                if let snap = child as? DataSnapshot {
+                    refCurrentUserQuestions().child(snap.key).setValue(PlayerQuestion(state: QuestionState.locked.rawValue))
+                }
+            }
+        })
+        if isRabbit(user: auth.currentUser) {
+            //TODO: add user leadboard redirect
+        } else {
+            self.navigationController?.pushViewController(profileCreateController(), animated: true)
+        }
     }
 }
 
-extension signInController: GIDSignInUIDelegate {
+extension SignInController: GIDSignInUIDelegate {
     
 }

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		56818B7C1F12598C006CD915 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56818B7B1F12598C006CD915 /* AppDelegate.swift */; };
-		56818B831F12598C006CD915 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56818B821F12598C006CD915 /* Assets.xcassets */; };
 		56818B861F12598C006CD915 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56818B841F12598C006CD915 /* LaunchScreen.storyboard */; };
 		56818B8E1F125B5F006CD915 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 56818B8D1F125B5F006CD915 /* GoogleService-Info.plist */; };
 		5695DCA11F12605C00E55AAE /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5695DCA01F12605C00E55AAE /* HomeController.swift */; };
@@ -19,6 +18,12 @@
 		C704F42B1F1D33D900B6A816 /* PrizesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C704F42A1F1D33D900B6A816 /* PrizesController.swift */; };
 		C704F42D1F1D33F800B6A816 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C704F42C1F1D33F800B6A816 /* ProfileController.swift */; };
 		C704F42F1F1D36DE00B6A816 /* ToolNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C704F42E1F1D36DE00B6A816 /* ToolNavigationController.swift */; };
+		C7136DD61F22219A001D0695 /* Avenir.ttc in Resources */ = {isa = PBXBuildFile; fileRef = C7136DD41F22219A001D0695 /* Avenir.ttc */; };
+		C7136DD71F22219A001D0695 /* Rhinos-rocks.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7136DD51F22219A001D0695 /* Rhinos-rocks.ttf */; };
+		C7136DD91F2221AE001D0695 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7136DD81F2221AE001D0695 /* Assets.xcassets */; };
+		C7136DDB1F2222C7001D0695 /* ProjectRFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7136DDA1F2222C7001D0695 /* ProjectRFont.swift */; };
+		C7136DDD1F223F46001D0695 /* BaseSignInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7136DDC1F223F46001D0695 /* BaseSignInController.swift */; };
+		C7136DDF1F224D2A001D0695 /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7136DDE1F224D2A001D0695 /* Global.swift */; };
 		E90942951F167AFC003342EF /* SignInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942941F167AFC003342EF /* SignInController.swift */; };
 		E909429A1F167CDB003342EF /* appColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942971F167CDB003342EF /* appColors.swift */; };
 		E909429B1F167CDB003342EF /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942981F167CDB003342EF /* NavigationController.swift */; };
@@ -34,7 +39,6 @@
 		3693F3043B239B34AE0E0676 /* Pods_ProjectR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProjectR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		56818B781F12598C006CD915 /* ProjectR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProjectR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		56818B7B1F12598C006CD915 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		56818B821F12598C006CD915 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		56818B851F12598C006CD915 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		56818B871F12598C006CD915 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56818B8D1F125B5F006CD915 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -45,6 +49,12 @@
 		C704F42A1F1D33D900B6A816 /* PrizesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrizesController.swift; sourceTree = "<group>"; };
 		C704F42C1F1D33F800B6A816 /* ProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		C704F42E1F1D36DE00B6A816 /* ToolNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolNavigationController.swift; sourceTree = "<group>"; };
+		C7136DD41F22219A001D0695 /* Avenir.ttc */ = {isa = PBXFileReference; lastKnownFileType = file; path = Avenir.ttc; sourceTree = "<group>"; };
+		C7136DD51F22219A001D0695 /* Rhinos-rocks.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Rhinos-rocks.ttf"; sourceTree = "<group>"; };
+		C7136DD81F2221AE001D0695 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ProjectR/Resources/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		C7136DDA1F2222C7001D0695 /* ProjectRFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectRFont.swift; sourceTree = "<group>"; };
+		C7136DDC1F223F46001D0695 /* BaseSignInController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseSignInController.swift; sourceTree = "<group>"; };
+		C7136DDE1F224D2A001D0695 /* Global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
 		D3DE7480DB050A51D6CC9087 /* Pods-ProjectR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProjectR.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ProjectR/Pods-ProjectR.debug.xcconfig"; sourceTree = "<group>"; };
 		E90942941F167AFC003342EF /* SignInController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SignInController.swift; path = Controllers/SignInController.swift; sourceTree = "<group>"; };
 		E90942971F167CDB003342EF /* appColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appColors.swift; sourceTree = "<group>"; };
@@ -91,11 +101,11 @@
 		56818B7A1F12598C006CD915 /* ProjectR */ = {
 			isa = PBXGroup;
 			children = (
+				C7136DD21F22210C001D0695 /* Resources */,
 				5695DC991F125EEE00E55AAE /* Controllers */,
 				5695DC981F125EE500E55AAE /* Infrastructure */,
 				56818B8D1F125B5F006CD915 /* GoogleService-Info.plist */,
 				56818B7B1F12598C006CD915 /* AppDelegate.swift */,
-				56818B821F12598C006CD915 /* Assets.xcassets */,
 				56818B841F12598C006CD915 /* LaunchScreen.storyboard */,
 				56818B871F12598C006CD915 /* Info.plist */,
 			);
@@ -113,6 +123,8 @@
 				E909429D1F167CEC003342EF /* StyleHelper.swift */,
 				E909429F1F1687BA003342EF /* CGRect + ProjectR .swift */,
 				C704F42E1F1D36DE00B6A816 /* ToolNavigationController.swift */,
+				C7136DDA1F2222C7001D0695 /* ProjectRFont.swift */,
+				C7136DDE1F224D2A001D0695 /* Global.swift */,
 			);
 			path = Infrastructure;
 			sourceTree = "<group>";
@@ -128,6 +140,7 @@
 				C704F4271F1D339F00B6A816 /* ScanQRController.swift */,
 				C704F42A1F1D33D900B6A816 /* PrizesController.swift */,
 				C704F42C1F1D33F800B6A816 /* ProfileController.swift */,
+				C7136DDC1F223F46001D0695 /* BaseSignInController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -147,6 +160,25 @@
 				F306D2510C458A2CEB38E535 /* Pods-ProjectR.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		C7136DD21F22210C001D0695 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C7136DD31F22219A001D0695 /* Fonts */,
+				C7136DD81F2221AE001D0695 /* Assets.xcassets */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		C7136DD31F22219A001D0695 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				C7136DD41F22219A001D0695 /* Avenir.ttc */,
+				C7136DD51F22219A001D0695 /* Rhinos-rocks.ttf */,
+			);
+			name = Fonts;
+			path = Resources/Fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -184,7 +216,7 @@
 				TargetAttributes = {
 					56818B771F12598C006CD915 = {
 						CreatedOnToolsVersion = 8.3;
-						DevelopmentTeam = MWL86J36DE;
+						DevelopmentTeam = NDH97745WS;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -212,8 +244,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7136DD61F22219A001D0695 /* Avenir.ttc in Resources */,
+				C7136DD71F22219A001D0695 /* Rhinos-rocks.ttf in Resources */,
 				56818B861F12598C006CD915 /* LaunchScreen.storyboard in Resources */,
-				56818B831F12598C006CD915 /* Assets.xcassets in Resources */,
+				C7136DD91F2221AE001D0695 /* Assets.xcassets in Resources */,
 				56818B8E1F125B5F006CD915 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -233,7 +267,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		5BBF5D24483659622FB8F798 /* [CP] Copy Pods Resources */ = {
@@ -281,14 +315,17 @@
 				C704F42B1F1D33D900B6A816 /* PrizesController.swift in Sources */,
 				C704F4281F1D339F00B6A816 /* ScanQRController.swift in Sources */,
 				C704F42D1F1D33F800B6A816 /* ProfileController.swift in Sources */,
+				C7136DDF1F224D2A001D0695 /* Global.swift in Sources */,
 				E909429A1F167CDB003342EF /* appColors.swift in Sources */,
 				E90942951F167AFC003342EF /* SignInController.swift in Sources */,
 				E909429E1F167CEC003342EF /* StyleHelper.swift in Sources */,
 				E9F421B21F17DA3400B3ED8F /* profileCreateController.swift in Sources */,
+				C7136DDB1F2222C7001D0695 /* ProjectRFont.swift in Sources */,
 				E909429C1F167CDB003342EF /* signedController.swift in Sources */,
 				56818B7C1F12598C006CD915 /* AppDelegate.swift in Sources */,
 				E9BDE7C71F17DF6100182960 /* gameInfoController.swift in Sources */,
 				E97CC95D1F1D32F800AE4A67 /* PopupHelper.swift in Sources */,
+				C7136DDD1F223F46001D0695 /* BaseSignInController.swift in Sources */,
 				C704F42F1F1D36DE00B6A816 /* ToolNavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -405,7 +442,7 @@
 			baseConfigurationReference = D3DE7480DB050A51D6CC9087 /* Pods-ProjectR.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = MWL86J36DE;
+				DEVELOPMENT_TEAM = NDH97745WS;
 				INFOPLIST_FILE = ProjectR/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -421,7 +458,7 @@
 			baseConfigurationReference = F306D2510C458A2CEB38E535 /* Pods-ProjectR.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = MWL86J36DE;
+				DEVELOPMENT_TEAM = NDH97745WS;
 				INFOPLIST_FILE = ProjectR/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

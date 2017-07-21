@@ -9,7 +9,24 @@
 import Material
 
 struct Style {
+    struct color {
+        static let green = UIColor(red: 171/255, green: 255/255, blue: 79/255, alpha: 1)
+        static let grey_dark = UIColor(red: 33/255, green: 33/255, blue: 33/255, alpha: 1)
+        static let grey_medium = UIColor(red: 65/255, green: 65/255, blue: 65/255, alpha: 1)
+        static let grey_light = UIColor(red: 117/255, green: 117/255, blue: 117/255, alpha: 1)
+        static let black = UIColor.black
+        static let white = UIColor.white
+    }
+    
     struct font {
+        static let font_mega: CGFloat = 85
+        static let font_big: CGFloat = 55
+        static let font_extra_large: CGFloat = 35
+        static let font_large: CGFloat = 25
+        static let font_medium: CGFloat = 18
+        static let font_small: CGFloat = 14
+        static let font_extra_small: CGFloat = 12
+        
         static let xxs: CGFloat = 10.0
         static let xs: CGFloat = 12.0
         static let s: CGFloat = 14.0
@@ -31,14 +48,7 @@ struct Style {
     }
     
     struct icon {
-        static let xxs: CGFloat = 8.0
-        static let xs: CGFloat = 12.0
-        static let s: CGFloat = 16.0
-        static let m: CGFloat = 20.0
-        static let l: CGFloat = 24.0
-        static let xl: CGFloat = 32.0
-        static let xxl: CGFloat = 60.0
-        static let mega: CGFloat = 100.0
+        static let medium: CGFloat = 20.0
     }
     
     struct image {
@@ -71,6 +81,11 @@ struct Style {
     }()
     
     // Design Made This
+    static let rhino_large_white = [NSForegroundColorAttributeName: Style.color.white, NSFontAttributeName: ProjectRFont.RhinoRocks(with: Style.font.font_large), NSParagraphStyleAttributeName: left]
+    static let avenirl_medium_grey_light = [NSForegroundColorAttributeName: Style.color.grey_light, NSFontAttributeName: ProjectRFont.AvenirLightOblique(with: Style.font.font_medium), NSParagraphStyleAttributeName: left]
+    static let avenirh_small_grey_light = [NSForegroundColorAttributeName: Style.color.grey_light, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_small), NSParagraphStyleAttributeName: left]
+    static let avenir_medium_white = [NSForegroundColorAttributeName: Style.color.white, NSFontAttributeName: ProjectRFont.AvenirLightOblique(with: Style.font.font_medium), NSParagraphStyleAttributeName: left]
+    
     static let heading_2a = [NSForegroundColorAttributeName: Color.blueGrey.darken4, NSFontAttributeName: RobotoFont.light(with: Style.font.m), NSParagraphStyleAttributeName: left]
     static let heading_2b = [NSForegroundColorAttributeName: Color.blueGrey.darken4, NSFontAttributeName: RobotoFont.regular(with: Style.font.m), NSParagraphStyleAttributeName: left]
     static let heading_2b_center = [NSForegroundColorAttributeName: Color.blueGrey.darken4, NSFontAttributeName: RobotoFont.regular(with: Style.font.m), NSParagraphStyleAttributeName: center]
@@ -134,4 +149,108 @@ struct Style {
     static let extra_large_orange = [NSForegroundColorAttributeName: Color.orange.accent4, NSFontAttributeName: RobotoFont.medium(with: Style.font.xl), NSParagraphStyleAttributeName: left]
     static let extra_large_orange_center = [NSForegroundColorAttributeName: Color.orange.accent4, NSFontAttributeName: RobotoFont.medium(with: Style.font.xl), NSParagraphStyleAttributeName: center]
     static let bottom_button_hight: CGFloat = 44
+    
+    static let button_height: CGFloat = 40
+    static let button_width: CGFloat = 116
 }
+
+class ProjectRTextField: ErrorTextField {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        textColor = Style.color.white
+        
+        font = ProjectRFont.AvenirLightOblique(with: Style.font.font_medium)
+        placeholderLabel.font =  ProjectRFont.AvenirLightOblique(with: Style.font.font_medium)
+        
+        placeholderNormalColor = Style.color.grey_light
+        placeholderActiveColor = Style.color.white
+        
+        
+        placeholderVerticalOffset = Style.padding.xs // ???
+        
+        dividerColor = Material.Color.clear
+        dividerActiveColor = Material.Color.clear
+        
+        let imgViewDivider = UIImageView(image: UIImage(named: "textfield_line"))
+        imgViewDivider.contentMode = .scaleAspectFit
+        imgViewDivider.clipsToBounds = true
+        
+        addSubview(imgViewDivider)
+        
+        imgViewDivider.autoPinEdge(toSuperviewEdge: .left)
+        imgViewDivider.autoPinEdge(toSuperviewEdge: .right)
+        imgViewDivider.autoPinEdge(toSuperviewEdge: .bottom, withInset: -20)
+    }
+    
+    convenience init(placeholder: String, frame: CGRect = CGRect.zero) {
+        self.init(frame: frame)
+        self.placeholder = placeholder
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    /* Set this to highlight invalid text fields */
+    internal var isValid: Bool = true {
+        didSet {
+            if isValid {
+                dividerColor = Color.blueGrey.base
+                dividerActiveColor = Color.orange.accent4
+                
+            } else {
+                dividerColor = Color.red.darken4
+                dividerActiveColor = Color.red.darken4
+            }
+        }
+    }
+}
+
+class ProjectRButton: Button {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        backgroundColor = Style.color.grey_dark
+        titleColor = Style.color.grey_light
+        titleLabel?.textColor = Style.color.grey_light
+        titleLabel?.font = ProjectRFont.AvenirHeavy(with: Style.font.font_small)
+        pulseColor = Style.color.grey_dark
+        
+        let imgView = UIImageView(image: UIImage(named: "button_block_1"))
+        imgView.contentMode = .scaleAspectFit
+        imgView.clipsToBounds = true
+        
+        addSubview(imgView)
+        sendSubview(toBack: imgView)
+        imgView.autoPinEdgesToSuperviewEdges()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+class ProjectRNext: Button {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = Style.color.grey_dark
+        titleLabel?.textColor = Style.color.grey_light
+        titleLabel?.font = ProjectRFont.AvenirHeavy(with: Style.font.font_small)
+        pulseColor = Color.clear
+        
+        let imgView = UIImageView(image: UIImage(named: "arrow_right"))
+        imgView.contentMode = .scaleAspectFit
+        imgView.clipsToBounds = true
+        
+        addSubview(imgView)
+        sendSubview(toBack: imgView)
+        imgView.autoPinEdgesToSuperviewEdges()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+

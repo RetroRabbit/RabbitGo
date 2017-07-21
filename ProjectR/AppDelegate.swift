@@ -9,11 +9,20 @@
 import UIKit
 import Firebase
 import GoogleSignIn
+import Material
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
-
-    var window: UIWindow?
+    var window: UIWindow? = {
+        let w = UIWindow(frame: UIScreen.main.bounds)
+        w.backgroundColor = Material.Color.white
+        return w
+    }()
+    
+    
+    // Current root view controller
+    var root: UIViewController?
+    
     var NavigationStack: UINavigationController = NavigationController()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -21,13 +30,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         
         InternalSetup()
         
-        window = UIWindow(frame: UIScreen.main.bounds)
-        let rootController = signInController()
-        //let rootController = TabNavigationController()
+        //if Auth.auth().currentUser != nil {
+          //  window?.rootViewController = UINavigationController(rootViewController: TabNavigationController())
+        //} else {
+            window?.rootViewController = UINavigationController(rootViewController: SignInController())
+        //}
         
-        window!.rootViewController = rootController
-        
-        window!.makeKeyAndVisible()
+        window?.makeKeyAndVisible()
         
         return true
     }
