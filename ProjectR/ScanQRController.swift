@@ -24,7 +24,7 @@ class ScanQRController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
         //super.init(hiding: NavigationHide.toBottom)
 //        navigationController?.title = "Leaderboard Position #43"
         tabBarItem.title = "ScanQR"
-        tabBarItem.image = Material.Icon.photoCamera
+        tabBarItem.image = UIImage(named: "camera")
     }
     
     required init?(coder aDecoder: NSCoder) {

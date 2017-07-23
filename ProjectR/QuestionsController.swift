@@ -18,7 +18,7 @@ class QuestionsController: UICollectionViewController {
         //super.init(hiding: NavigationHide.toBottom)
         navigationController?.title = "Leaderboard Position #43"
         tabBarItem.title = "Questions"
-        tabBarItem.image = Material.Icon.search
+        tabBarItem.image = UIImage(named: "questions")
     }
     
     required init?(coder aDecoder: NSCoder) {

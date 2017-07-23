@@ -99,7 +99,7 @@ class PrizesController: UIViewController{
     //super.init(hiding: NavigationHide.toBottom)
     navigationController?.title = "Leaderboard Position #43"
     tabBarItem.title = "Prizes"
-    tabBarItem.image = Material.Icon.star
+    tabBarItem.image = UIImage(named: "trophy")
     }
     
     required init?(coder aDecoder: NSCoder) {

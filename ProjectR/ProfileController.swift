@@ -98,7 +98,7 @@ class ProfileController: UIViewController {
         //super.init(hiding: NavigationHide.toBottom)
         navigationController?.title = "Leaderboard Position #43"
         tabBarItem.title = "My Profile"
-        tabBarItem.image = Material.Icon.pen
+        tabBarItem.image = UIImage(named: "profile")
     }
     
     required init?(coder aDecoder: NSCoder) {

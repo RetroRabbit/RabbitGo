@@ -59,7 +59,7 @@ class HomeController : UITableViewController {
         //super.init(hiding: NavigationHide.toBottom)
         navigationController?.title = "Leaderboard Position #43"
         tabBarItem.title = "Home"
-        tabBarItem.image = Material.Icon.home
+        tabBarItem.image = UIImage(named: "home")
         tableView.allowsMultipleSelectionDuringEditing = false
     }
     

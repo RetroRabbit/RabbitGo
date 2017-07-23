@@ -13,7 +13,7 @@ class TabNavigationController: Material.BottomNavigationController {
     override init() {
         super.init(viewControllers: [
             // TODO: Fix CollectionView layout, should not be nil
- //           ToolNavigationController(rootViewController: QuestionsController.instance),
+            ToolNavigationController(rootViewController: QuestionsController.instance),
             ToolNavigationController(rootViewController: ScanQRController.instance),
             ToolNavigationController(rootViewController: HomeController.instance),
             ToolNavigationController(rootViewController: PrizesController.instance),
@@ -32,7 +32,7 @@ class TabNavigationController: Material.BottomNavigationController {
     }
     
     fileprivate func prepareTabBar() {
-        tabBar.backgroundColor = Color.blueGrey.darken4
+        tabBar.backgroundColor = Material.Color.black
         
         tabBar.selectionIndicatorImage =
             imageWithColor(
