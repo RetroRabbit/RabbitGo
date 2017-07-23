@@ -90,18 +90,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
         
+        // Google sign-in error
         if let error = error {
-            
+            print("Google authentication fail: \(error.localizedDescription)")
             return
         }
+        
+        let fullName: String = user.profile.name
+        let email: String = user.profile.email
         
         guard let authentication = user.authentication else { return }
         let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken, accessToken: authentication.accessToken)
         
         Auth.auth().signIn(with: credential) { (user, error) in
             if let error = error {
-                // ...
+                print("Firebase authentication fail: \(error.localizedDescription)")
                 return
+            } else {
+                // Sign-in success - Send user details to sign in controller vis Notification Center
+                let userDetails = Notification.Name(rawValue:"UserDetails")
+                let nc = NotificationCenter.default
+                nc.post(name: userDetails,
+                        object: nil,
+                        userInfo:["fullName": "\(fullName)", "email": "\(email)"])
             }
         }
     }

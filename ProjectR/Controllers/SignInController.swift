@@ -16,6 +16,9 @@ import PureLayout
 import RxSwift
 
 class SignInController: BaseSignInController, UITextFieldDelegate {
+    /* Data */
+    let userDetails = Notification.Name(rawValue:"UserDetails")
+    
     /*UI*/
     fileprivate let txtName: ProjectRTextField = {
         let entry = ProjectRTextField()
@@ -63,6 +66,10 @@ class SignInController: BaseSignInController, UITextFieldDelegate {
         txtEmail.addTarget(self, action: #selector(onEmailChanged), for: .editingChanged)
         
         nextButton.addTarget(self, action: #selector(SignInController.onNext), for: UIControlEvents.touchUpInside)
+        
+        // Get authenticated user details via notification center from AppDelegate
+        let nc = NotificationCenter.default
+        nc.addObserver(forName: userDetails, object:nil, queue:nil, using: onAuthenticate)
     }
     
     override func viewDidLayoutSubviews() {
@@ -77,6 +84,17 @@ class SignInController: BaseSignInController, UITextFieldDelegate {
         facebookButton.frame = CGRect(x: width/2, y: txtEmail.frame.bottom + 30, width: Style.button_width, height: Style.button_height)
         
         googleButton.frame = CGRect(x: facebookButton.frame.right + 20, y: txtEmail.frame.bottom + 30, width: Style.button_width, height: Style.button_height)
+    }
+    
+    func onAuthenticate(notification: Notification) {
+        guard let userInfo = notification.userInfo,
+            let fullName: String = userInfo["fullName"] as? String,
+            let email: String = userInfo["email"] as? String else { return }
+
+        txtName.text = fullName
+        txtEmail.text = email
+        
+        onNext()
     }
 }
 
