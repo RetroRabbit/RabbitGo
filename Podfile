@@ -16,5 +16,6 @@ target 'ProjectR' do
     pod 'RxSwift'
     pod 'RxCocoa'
     pod 'FBSDKLoginKit'
+    pod 'IQKeyboardManagerSwift', '4.0.10'
 
 end

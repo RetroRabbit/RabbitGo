@@ -15,7 +15,7 @@ import Material
 import PureLayout
 import RxSwift
 
-class SignInController: BaseSignInController {
+class SignInController: BaseSignInController, UITextFieldDelegate {
     /*UI*/
     fileprivate let txtName: ProjectRTextField = {
         let entry = ProjectRTextField()
@@ -27,6 +27,7 @@ class SignInController: BaseSignInController {
         let entry = ProjectRTextField()
         entry.placeholder = "Email"
         entry.autocapitalizationType = .none
+        entry.tag = 1
         return entry
     }()
     
@@ -56,7 +57,9 @@ class SignInController: BaseSignInController {
         view.addSubview(facebookButton)
         view.addSubview(googleButton)
         
+        txtName.delegate = self
         txtName.addTarget(self, action: #selector(onNameChanged), for: .editingChanged)
+        txtEmail.delegate = self
         txtEmail.addTarget(self, action: #selector(onEmailChanged), for: .editingChanged)
         
         nextButton.addTarget(self, action: #selector(SignInController.onNext), for: UIControlEvents.touchUpInside)
@@ -195,6 +198,14 @@ extension SignInController {
                 }
             })
         }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        if textField.tag == 0 && txtEmail.text == "" {
+            _ = txtEmail.becomeFirstResponder()
+        }
+        return false
     }
 }
 
