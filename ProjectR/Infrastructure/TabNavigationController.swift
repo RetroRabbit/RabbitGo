@@ -12,7 +12,8 @@ import Material
 class TabNavigationController: Material.BottomNavigationController {
     override init() {
         super.init(viewControllers: [
-            ToolNavigationController(rootViewController: QuestionsController.instance),
+            // TODO: Fix CollectionView layout, should not be nil
+ //           ToolNavigationController(rootViewController: QuestionsController.instance),
             ToolNavigationController(rootViewController: ScanQRController.instance),
             ToolNavigationController(rootViewController: HomeController.instance),
             ToolNavigationController(rootViewController: PrizesController.instance),
