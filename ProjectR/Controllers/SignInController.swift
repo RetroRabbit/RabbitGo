@@ -26,6 +26,7 @@ class SignInController: BaseSignInController {
     fileprivate let txtEmail: ProjectRTextField = {
         let entry = ProjectRTextField()
         entry.placeholder = "Email"
+        entry.autocapitalizationType = .none
         return entry
     }()
     

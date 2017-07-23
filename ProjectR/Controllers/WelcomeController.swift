@@ -28,7 +28,7 @@ class WelcomeController: UIViewController, UIScrollViewDelegate {
 
     fileprivate let lblBody: UILabel = {
         let label = UILabel()
-        let str = "For your quest today, scan as many QR codes as you can find! Each QR code unlocks a new rabbit, but don’t be fooled, as this is not the rabbit’s final form! Answer their questions too & discover all the great secrets of Rabbitania! You may ask any Rabbit for the answers to the questions, but you’ll have to enter their unique Rabbit- codes to submit & verify your answers!"
+        let str = "For your quest today, scan as many QR codes as you can find! Each QR code unlocks a new rabbit, but don’t be fooled, as this is not the rabbit’s final form! Answer their questions too & discover all the great secrets of Rabbitania!\n\nYou may ask any Rabbit for the answers to the questions, but you’ll have to enter their unique Rabbit- codes to submit & verify your answers!"
         label.attributedText = NSAttributedString(string: str, attributes: Style.avenirl_small_white)
         label.textColor = Material.Color.white
         label.numberOfLines = 0
@@ -152,9 +152,15 @@ class WelcomeController: UIViewController, UIScrollViewDelegate {
         
         let imgTopPadding = lblStatesHead.frame.bottom + margin * 2
         let imgInterSpacing = (Screen.width - margin * 2 - Style.image_medium * 3) / 2
+        let imgTextPosition = lblStatesHead.frame.bottom + margin
+        
         imgLocked.frame = CGRect(x: margin, y: imgTopPadding, width: Style.image_medium, height: Style.image_medium)
         imgUnlocked.frame = CGRect(x: imgLocked.frame.right + imgInterSpacing, y: imgTopPadding, width: Style.image_medium, height: Style.image_medium)
         imgAnswered.frame = CGRect(x: imgUnlocked.frame.right + imgInterSpacing, y: imgTopPadding, width: Style.image_medium, height: Style.image_medium)
+        
+        lblLocked.frame = CGRect(x: margin, y: imgTextPosition, width: lblLocked.intrinsicContentSize.width, height: lblLocked.intrinsicContentSize.height)
+        lblUnlocked.frame = CGRect(x: imgUnlocked.frame.left, y: imgTextPosition, width: lblUnlocked.intrinsicContentSize.width, height: lblUnlocked.intrinsicContentSize.height)
+        lblAnswered.frame = CGRect(x: imgAnswered.frame.left, y: imgTextPosition, width: lblAnswered.intrinsicContentSize.width, height: lblAnswered.intrinsicContentSize.height)
         
         lblSubImageText.frame = CGRect(x: 0, y: imgLocked.frame.bottom + margin, width: Screen.width, height: lblSubImageText.intrinsicContentSize.height)
         lblGoodLuck.frame = CGRect(x: 0, y: lblSubImageText.frame.bottom + margin, width: Screen.width, height: lblGoodLuck.intrinsicContentSize.height)
