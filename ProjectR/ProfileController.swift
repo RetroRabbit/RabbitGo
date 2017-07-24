@@ -34,47 +34,37 @@ class ProfileController: UIViewController {
         return lbl
     }()
     
-    let nameEntry: TextField = {
-        let entry = TextField()
-        entry.translatesAutoresizingMaskIntoConstraints = false
+    let nameEntry: ProjectRTextField = {
+        let entry = ProjectRTextField()
         entry.placeholder = "Name & Surname"
-        entry.markedTextStyle = Style.heading3
         return entry
     }()
     
     
-    let emailEntry: TextField = {
-        let entry = TextField()
-        entry.translatesAutoresizingMaskIntoConstraints = false
+    let emailEntry: ProjectRTextField = {
+        let entry = ProjectRTextField()
         entry.placeholder = "Email"
-        entry.markedTextStyle = Style.heading3
         return entry
     }()
     
     
-    let universityEntry: TextField = {
-        let entry = TextField()
-        entry.translatesAutoresizingMaskIntoConstraints = false
+    let universityEntry: ProjectRTextField = {
+        let entry = ProjectRTextField()
         entry.placeholder = "University"
-        entry.markedTextStyle = Style.heading3
         return entry
     }()
     
     
-    let degreeEntry: TextField = {
-        let entry = TextField()
-        entry.translatesAutoresizingMaskIntoConstraints = false
+    let degreeEntry: ProjectRTextField = {
+        let entry = ProjectRTextField()
         entry.placeholder = "Course/Degree"
-        entry.markedTextStyle = Style.heading3
         return entry
     }()
     
     
-    let yearEntry: TextField = {
-        let entry = TextField()
-        entry.translatesAutoresizingMaskIntoConstraints = false
+    let yearEntry: ProjectRTextField = {
+        let entry = ProjectRTextField()
         entry.placeholder = "Year"
-        entry.markedTextStyle = Style.heading3
         return entry
     }()
     
@@ -108,7 +98,7 @@ class ProfileController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        view.backgroundColor = UIColor.retroGrey
+        view.backgroundColor = Style.color.grey_dark
         
         view.addSubview(titleLabel)
         view.addSubview(nameLabel)
@@ -125,11 +115,11 @@ class ProfileController: UIViewController {
         super.viewDidLayoutSubviews()
         
         //Title Section:
-        titleLabel.frame = CGRect(x: (Screen.width - titleLabel.intrinsicContentSize.width)/2, y: 120, width: titleLabel.intrinsicContentSize.width, height: titleLabel.intrinsicContentSize.height)
+        titleLabel.frame = CGRect(x: (Screen.width - titleLabel.intrinsicContentSize.width)/2, y: 20, width: titleLabel.intrinsicContentSize.width, height: titleLabel.intrinsicContentSize.height)
         
         nameLabel.frame = CGRect(x: (Screen.width - nameLabel.intrinsicContentSize.width)/2, y: titleLabel.frame.bottom + 10, width: nameLabel.intrinsicContentSize.width, height: nameLabel.intrinsicContentSize.height)
         
-        subTitleLabel.frame = CGRect(x: (Screen.width - subTitleLabel.intrinsicContentSize.width)/2, y: nameLabel.frame.bottom + 10, width: subTitleLabel.intrinsicContentSize.width, height: subTitleLabel.intrinsicContentSize.height)
+        subTitleLabel.frame = CGRect(x: (Screen.width - subTitleLabel.intrinsicContentSize.width)/2, y: nameLabel.frame.bottom + 5, width: subTitleLabel.intrinsicContentSize.width, height: subTitleLabel.intrinsicContentSize.height)
         
         //Entries Section:
         nameEntry.frame = CGRect(x: 40, y: subTitleLabel.frame.bottom + 40, width: Screen.width - 80, height: 40)
