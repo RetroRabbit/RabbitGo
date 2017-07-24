@@ -141,12 +141,18 @@ extension SignInController {
                 }
                 return
         }
+        // TODO: Might need to use this later on to allow user sign out
+//        do {
+//            try Auth.auth().signOut()
+//        } catch {
+//            NSLog("❌ Error signing out - \(error.localizedDescription)")
+//        }
         
         Auth.auth().createUser(withEmail: email, password: email) { [weak self] (user, error) in
             if let _ = error {
                 Auth.auth().signIn(withEmail: email, password: email, completion: { (user, error) in
-                    if let _ = error {
-                        NSLog("Firebase SigIn error")
+                    if let error = error {
+                        NSLog("❌ Firebase SigIn error - \(error.localizedDescription)")
                     } else {
                         self?.checkRedirect()
                     }
@@ -204,6 +210,7 @@ extension SignInController {
     private func navigateToDetails() {
         if isRabbit(user: auth.currentUser) {
             //TODO: add user leadboard redirect
+            self.navigationController?.pushViewController(WelcomeController(), animated: true)
         } else {
             refCurrentUser().observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
                 if let year = snapshot.childSnapshot(forPath: "year").value as? String,
@@ -212,7 +219,9 @@ extension SignInController {
                     year.isEmpty, degree.isEmpty, university.isEmpty {
                     self.navigationController?.pushViewController(profileCreateController(), animated: true)
                 } else {
-                    (UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: UINavigationController(rootViewController: TabNavigationController()))
+                    // TODO: Fix Sign-in
+                    self.navigationController?.pushViewController(WelcomeController(), animated: true)
+                    //(UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: UINavigationController(rootViewController: TabNavigationController()))
                 }
             })
         }
