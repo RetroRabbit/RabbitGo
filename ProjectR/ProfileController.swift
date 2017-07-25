@@ -15,7 +15,22 @@ class ProfileController: UIViewController, UIScrollViewDelegate {
     
     static let instance = ProfileController()
     
-    fileprivate var imgProfilePlaceholder: UIImageView
+    private let imgProfilePlaceholder: UIImageView = {
+        let placeholder = UIImageView(image: UIImage(named: "image_placeholder"))
+        placeholder.contentMode = .scaleAspectFit
+        placeholder.clipsToBounds = true
+        return placeholder
+        
+    }()
+    
+    private let imgChangeProfile: UIImageView = {
+        let changeImg = UIImageView(image: UIImage(named: "change_image"))
+        changeImg.contentMode = .scaleAspectFit
+        changeImg.clipsToBounds = true
+        return changeImg
+        
+    }()
+    
     /*
     let titleLabel: UILabel = {
         let lbl = UILabel()
@@ -31,42 +46,42 @@ class ProfileController: UIViewController, UIScrollViewDelegate {
         return lbl
     }()*/
     
-    let subTitleLabel: UILabel = {
-        let lbl = UILabel()
-//        lbl.translatesAutoresizingMaskIntoConstraints = false
-        lbl.attributedText = NSAttributedString(string: "- RABBITEER -", attributes: Style.extra_large_blue_grey)
-        return lbl
-    }()
-    
-    let nameEntry: ProjectRTextField = {
+//    private let subTitleLabel: UILabel = {
+//        let lbl = UILabel()
+////        lbl.translatesAutoresizingMaskIntoConstraints = false
+//        lbl.attributedText = NSAttributedString(string: "- RABBITEER -", attributes: Style.extra_large_blue_grey)
+//        return lbl
+//    }()
+//    
+    private let nameEntry: ProjectRTextField = {
         let entry = ProjectRTextField()
         entry.placeholder = "Name & Surname"
         return entry
     }()
     
     
-    let emailEntry: ProjectRTextField = {
+    private let emailEntry: ProjectRTextField = {
         let entry = ProjectRTextField()
         entry.placeholder = "Email"
         return entry
     }()
     
     
-    let universityEntry: ProjectRTextField = {
+    private let universityEntry: ProjectRTextField = {
         let entry = ProjectRTextField()
         entry.placeholder = "University"
         return entry
     }()
     
     
-    let degreeEntry: ProjectRTextField = {
+    private let degreeEntry: ProjectRTextField = {
         let entry = ProjectRTextField()
         entry.placeholder = "Course/Degree"
         return entry
     }()
     
     
-    let yearEntry: ProjectRTextField = {
+    private let yearEntry: ProjectRTextField = {
         let entry = ProjectRTextField()
         entry.placeholder = "Year"
         return entry
@@ -74,17 +89,15 @@ class ProfileController: UIViewController, UIScrollViewDelegate {
     
     lazy var editButton:ProjectRButton = {
         let btn = ProjectRButton()
-        btn.setTitle("EDIT", for: .normal)
+        btn.setTitle("SAVE", for: .normal)
         btn.addTarget(self, action: #selector(SignInController.onNext), for: UIControlEvents.touchUpInside)
         return btn
     }()
     
     init() {
-        imgProfilePlaceholder = UIImageView(image: UIImage(named: "image_placeholder"))
-        imgProfilePlaceholder.contentMode = .scaleAspectFit
-        imgProfilePlaceholder.clipsToBounds = true
-        
         super.init(nibName: nil, bundle: nil)
+        
+        
 //        super.init()
 //        super.init(hidd)
 //        super.init(hiding: NavigationHide.toBottom)
@@ -103,12 +116,12 @@ class ProfileController: UIViewController, UIScrollViewDelegate {
         view.backgroundColor = Style.color.grey_dark
         
         view.addSubview(scrollView)
-        scrollView.delegate = self
         
 //        scrollView.addSubview(titleLabel)
 //        scrollView.addSubview(nameLabel)
-        scrollView.addSubview(subTitleLabel)
+//        scrollView.addSubview(subTitleLabel)
         scrollView.addSubview(imgProfilePlaceholder)
+        scrollView.addSubview(imgChangeProfile)
         scrollView.addSubview(nameEntry)
         scrollView.addSubview(emailEntry)
         scrollView.addSubview(universityEntry)
@@ -129,18 +142,20 @@ class ProfileController: UIViewController, UIScrollViewDelegate {
         
 //        subTitleLabel.frame = CGRect(x: (Screen.width - subTitleLabel.intrinsicContentSize.width)/2, y: nameLabel.frame.bottom + 5, width: subTitleLabel.intrinsicContentSize.width, height: subTitleLabel.intrinsicContentSize.height)
         
-        imgProfilePlaceholder.frame = CGRect(x: Screen.width/2 - imgProfilePlaceholder.intrinsicContentSize.width/2, y: 20, width: imgProfilePlaceholder.frame.width, height: imgProfilePlaceholder.frame.height)
+        let x = (Screen.width - imgProfilePlaceholder.intrinsicContentSize.width)/2
+        imgProfilePlaceholder.frame = CGRect(x: x, y: 20, width: imgProfilePlaceholder.frame.width, height: imgProfilePlaceholder.frame.height)
+//        imgChangeProfile.frame = CGRect(x: 20, y: 20, width: imgChangeProfile.frame.width, height: imgChangeProfile.frame.height)
         
         //Entries Section:
-        nameEntry.frame = CGRect(x: 40, y: imgProfilePlaceholder.frame.bottom + 40, width: Screen.width - 80, height: 40)
+        nameEntry.frame = CGRect(x: Style.input_center, y: imgProfilePlaceholder.frame.bottom + 40, width: Style.input_width, height: 40)
         
-        emailEntry.frame = CGRect(x: 40, y: nameEntry.frame.bottom + 40, width: Screen.width - 80, height: 40)
+        emailEntry.frame = CGRect(x: Style.input_center, y: nameEntry.frame.bottom + 40, width: Style.input_width, height: 40)
         
-        universityEntry.frame = CGRect(x: 40, y: emailEntry.frame.bottom + 40, width: Screen.width - 80, height: 40)
+        universityEntry.frame = CGRect(x: Style.input_center, y: emailEntry.frame.bottom + 40, width: Style.input_width, height: 40)
         
-        degreeEntry.frame = CGRect(x: 40, y: universityEntry.frame.bottom + 40, width: Screen.width - 80, height: 40)
+        degreeEntry.frame = CGRect(x: Style.input_center, y: universityEntry.frame.bottom + 40, width: Style.input_width, height: 40)
         
-        yearEntry.frame = CGRect(x: 40, y: degreeEntry.frame.bottom + 40, width: Screen.width - 80, height: 40)
+        yearEntry.frame = CGRect(x: Style.input_center, y: degreeEntry.frame.bottom + 40, width: Style.input_width, height: 40)
         
         //edit button:
         editButton.frame = CGRect(x: 40, y: yearEntry.frame.bottom + 40, width: Screen.width - 80, height: Style.button_height)
@@ -148,3 +163,7 @@ class ProfileController: UIViewController, UIScrollViewDelegate {
         scrollView.contentSize = CGSize(width: Screen.width, height: editButton.frame.bottom)
     }
 }
+//
+//extension ProfileController {
+//    
+//}
