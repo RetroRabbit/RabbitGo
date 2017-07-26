@@ -10,7 +10,7 @@ import UIKit
 import Material
 
 class ToolNavigationController: Material.NavigationController, ToolNavigationDelegate {
-    static let barColor = Color.blueGrey.darken4
+    static let barColor = Color.black
     var shouldShowBackButton: Bool = true
     
     open override func prepare() {
@@ -25,9 +25,9 @@ class ToolNavigationController: Material.NavigationController, ToolNavigationDel
         }
         
         navigationItem.titleLabel.textAlignment = .left
-        navigationItem.titleLabel.textColor = Material.Color.blueGrey.lighten3
+        navigationItem.titleLabel.textColor = Style.color.white
         navigationItem.detailLabel.textAlignment = .left
-        navigationItem.detailLabel.textColor = Material.Color.blueGrey.lighten2
+        navigationItem.detailLabel.textColor = Style.color.white
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

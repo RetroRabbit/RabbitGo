@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         InternalSetup()
         
         if Auth.auth().currentUser != nil {
-            window?.rootViewController = UINavigationController(rootViewController: TabNavigationController())
+            window?.rootViewController = TabNavigationController()
         } else {
             window?.rootViewController = UINavigationController(rootViewController: SignInController())
         }

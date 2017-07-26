@@ -31,6 +31,7 @@
 		C7E9AD0C1F28557700E1A148 /* WelcomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9AD021F28557700E1A148 /* WelcomeController.swift */; };
 		C7E9AD0E1F2855A100E1A148 /* QuestionsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9AD0D1F2855A100E1A148 /* QuestionsCell.swift */; };
 		C7E9AD101F28575300E1A148 /* QuestionsLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9AD0F1F28575300E1A148 /* QuestionsLayout.swift */; };
+		C7E9AD121F286C6600E1A148 /* CollectionNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9AD111F286C6600E1A148 /* CollectionNavigationController.swift */; };
 		E909429A1F167CDB003342EF /* appColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942971F167CDB003342EF /* appColors.swift */; };
 		E909429B1F167CDB003342EF /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942981F167CDB003342EF /* NavigationController.swift */; };
 		E909429C1F167CDB003342EF /* signedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942991F167CDB003342EF /* signedController.swift */; };
@@ -66,6 +67,7 @@
 		C7E9AD021F28557700E1A148 /* WelcomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeController.swift; sourceTree = "<group>"; };
 		C7E9AD0D1F2855A100E1A148 /* QuestionsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionsCell.swift; sourceTree = "<group>"; };
 		C7E9AD0F1F28575300E1A148 /* QuestionsLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionsLayout.swift; sourceTree = "<group>"; };
+		C7E9AD111F286C6600E1A148 /* CollectionNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionNavigationController.swift; sourceTree = "<group>"; };
 		D3DE7480DB050A51D6CC9087 /* Pods-ProjectR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProjectR.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ProjectR/Pods-ProjectR.debug.xcconfig"; sourceTree = "<group>"; };
 		E90942971F167CDB003342EF /* appColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appColors.swift; sourceTree = "<group>"; };
 		E90942981F167CDB003342EF /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 			children = (
 				C7E9ACF81F28557700E1A148 /* BaseNextController.swift */,
 				C7E9ACF91F28557700E1A148 /* BaseSignInController.swift */,
+				C7E9AD111F286C6600E1A148 /* CollectionNavigationController.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -337,6 +340,7 @@
 			files = (
 				E90942A01F1687BA003342EF /* CGRect + ProjectR .swift in Sources */,
 				C7E9AD101F28575300E1A148 /* QuestionsLayout.swift in Sources */,
+				C7E9AD121F286C6600E1A148 /* CollectionNavigationController.swift in Sources */,
 				E909429B1F167CDB003342EF /* NavigationController.swift in Sources */,
 				C7E9AD061F28557700E1A148 /* PrizesController.swift in Sources */,
 				C704F4241F1D333000B6A816 /* TabNavigationController.swift in Sources */,

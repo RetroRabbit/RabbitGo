@@ -9,42 +9,40 @@
 import UIKit
 import Material
 
-class QuestionsController: UICollectionViewController {
+class QuestionsController: UICollectionNavigationController {
     static let instance = QuestionsController()
     
     fileprivate let questions: [String] = [
-        "image_square_grey",//1
-        "image_square_grey",//2
-        "image_square_grey",//3
-        "image_square_grey",//4
-        "image_square_grey",//5
-        "image_square_grey",//6
-        "image_square_grey",//7
-        "image_square_grey",//8
-        "image_square_grey",//9
-        "image_square_grey",//10
-        "image_square_grey",//11
-        "image_square_grey",//12
-        "image_square_grey",//13
-        "image_square_grey",//14
-        "image_square_grey",//15
-        "image_square_grey",//16
-        "image_square_grey",//17
-        "image_square_grey",//18
-        "image_square_grey",//19
-        "image_square_grey",//20
-        "image_square_grey"//21
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey",
+        "image_square_grey"
     ]
     
     init() {
         let layout = QuestionsLayout()
-        super.init(collectionViewLayout: layout)
+        super.init(viewLayout: layout)
         layout.delegate = self
         
-        navigationController?.title = "Leaderboard Position #43"
         tabBarItem.title = "Questions"
         tabBarItem.image = Material.Icon.search
-
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -56,7 +54,12 @@ class QuestionsController: UICollectionViewController {
         collectionView?.backgroundColor = Style.color.grey_dark
         
         collectionView?.register(QuestionsCell.self, forCellWithReuseIdentifier: QuestionsCell.reuseIdentifier)
-        collectionView?.contentInset = UIEdgeInsets(top: 4, left: 4, bottom: 153, right: 4)
+        collectionView?.contentInset = UIEdgeInsets(top: 4, left: 4, bottom: 107, right: 4)
+    }
+    
+    override func prepareToolbar() {
+        setTitle("Leaderboard Position #43", subtitle: nil)
+        //view.backgroundColor = Style.color.grey_dark
     }
 }
 
@@ -80,5 +83,4 @@ extension QuestionsController {
         cell.prepareForDisplay(image: questions[indexPath.row])
         return cell
     }
-
 }
