@@ -10,19 +10,20 @@ import Foundation
 import UIKit
 import Material
 
-class ScanQRController: UIViewController {
+class ScanQRController: UIViewNavigationController {
     static let instance = ScanQRController()
     
     init() {
-        super.init(nibName: nil, bundle: nil)
-        //super.init()
-        //super.init(hiding: NavigationHide.toBottom)
-        navigationController?.title = "Leaderboard Position #43"
-        tabBarItem.title = "ScanQR"
+        super.init()
+        tabBarItem.title = "Scan QR"
         tabBarItem.image = Material.Icon.photoCamera
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareToolbar() {
+        setTitle("SCAN QR CODE", subtitle: nil)
     }
 }

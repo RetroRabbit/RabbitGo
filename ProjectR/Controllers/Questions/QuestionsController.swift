@@ -41,7 +41,7 @@ class QuestionsController: UICollectionNavigationController {
         super.init(viewLayout: layout)
         layout.delegate = self
         
-        tabBarItem.title = "Questions"
+        tabBarItem.title = "Rabbit Q,s"
         tabBarItem.image = Material.Icon.search
     }
     

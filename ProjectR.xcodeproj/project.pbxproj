@@ -32,6 +32,8 @@
 		C7E9AD0E1F2855A100E1A148 /* QuestionsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9AD0D1F2855A100E1A148 /* QuestionsCell.swift */; };
 		C7E9AD101F28575300E1A148 /* QuestionsLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9AD0F1F28575300E1A148 /* QuestionsLayout.swift */; };
 		C7E9AD121F286C6600E1A148 /* CollectionNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9AD111F286C6600E1A148 /* CollectionNavigationController.swift */; };
+		C7E9AD141F28797300E1A148 /* ViewNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9AD131F28797300E1A148 /* ViewNavigationController.swift */; };
+		C7E9AD161F287A0600E1A148 /* UIViewController + ProjectR.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9AD151F287A0600E1A148 /* UIViewController + ProjectR.swift */; };
 		E909429A1F167CDB003342EF /* appColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942971F167CDB003342EF /* appColors.swift */; };
 		E909429B1F167CDB003342EF /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942981F167CDB003342EF /* NavigationController.swift */; };
 		E909429C1F167CDB003342EF /* signedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90942991F167CDB003342EF /* signedController.swift */; };
@@ -68,6 +70,8 @@
 		C7E9AD0D1F2855A100E1A148 /* QuestionsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionsCell.swift; sourceTree = "<group>"; };
 		C7E9AD0F1F28575300E1A148 /* QuestionsLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionsLayout.swift; sourceTree = "<group>"; };
 		C7E9AD111F286C6600E1A148 /* CollectionNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionNavigationController.swift; sourceTree = "<group>"; };
+		C7E9AD131F28797300E1A148 /* ViewNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewNavigationController.swift; sourceTree = "<group>"; };
+		C7E9AD151F287A0600E1A148 /* UIViewController + ProjectR.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController + ProjectR.swift"; sourceTree = "<group>"; };
 		D3DE7480DB050A51D6CC9087 /* Pods-ProjectR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProjectR.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ProjectR/Pods-ProjectR.debug.xcconfig"; sourceTree = "<group>"; };
 		E90942971F167CDB003342EF /* appColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appColors.swift; sourceTree = "<group>"; };
 		E90942981F167CDB003342EF /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
@@ -136,6 +140,7 @@
 				C7136DDA1F2222C7001D0695 /* ProjectRFont.swift */,
 				C7136DDE1F224D2A001D0695 /* Global.swift */,
 				C7136DE21F2270FD001D0695 /* AutoCompleteTextField.swift */,
+				C7E9AD151F287A0600E1A148 /* UIViewController + ProjectR.swift */,
 			);
 			path = Infrastructure;
 			sourceTree = "<group>";
@@ -198,6 +203,7 @@
 				C7E9ACF81F28557700E1A148 /* BaseNextController.swift */,
 				C7E9ACF91F28557700E1A148 /* BaseSignInController.swift */,
 				C7E9AD111F286C6600E1A148 /* CollectionNavigationController.swift */,
+				C7E9AD131F28797300E1A148 /* ViewNavigationController.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -350,10 +356,12 @@
 				C7136DE31F2270FD001D0695 /* AutoCompleteTextField.swift in Sources */,
 				C7136DDB1F2222C7001D0695 /* ProjectRFont.swift in Sources */,
 				C7E9AD0B1F28557700E1A148 /* SignInController.swift in Sources */,
+				C7E9AD161F287A0600E1A148 /* UIViewController + ProjectR.swift in Sources */,
 				C7E9AD081F28557700E1A148 /* profileCreateController.swift in Sources */,
 				C7E9AD041F28557700E1A148 /* BaseSignInController.swift in Sources */,
 				E909429C1F167CDB003342EF /* signedController.swift in Sources */,
 				56818B7C1F12598C006CD915 /* AppDelegate.swift in Sources */,
+				C7E9AD141F28797300E1A148 /* ViewNavigationController.swift in Sources */,
 				C7E9AD0A1F28557700E1A148 /* ScanQRController.swift in Sources */,
 				E97CC95D1F1D32F800AE4A67 /* PopupHelper.swift in Sources */,
 				C7E9AD0C1F28557700E1A148 /* WelcomeController.swift in Sources */,
