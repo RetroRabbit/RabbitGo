@@ -9,6 +9,7 @@
 import AVFoundation
 import UIKit
 import Material
+import Icomoon
 
 // Source: https://www.hackingwithswift.com/example-code/media/how-to-scan-a-qr-code
 
@@ -20,8 +21,11 @@ class ScanQRController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
     
     init() {
         super.init(nibName: nil, bundle: nil)
+        
+        tabBarItem.setTitleTextAttributes(Style.avenirl_xsmall_white_center, for: .normal)
         tabBarItem.title = "ScanQR"
-        tabBarItem.image = UIImage(named: "camera")
+        tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Camera, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
+        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Camera, textColor: Color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
     }
     
     required init?(coder aDecoder: NSCoder) {

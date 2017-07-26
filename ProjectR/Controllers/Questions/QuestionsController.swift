@@ -8,6 +8,7 @@
 
 import UIKit
 import Material
+import Icomoon
 
 class QuestionsController: UICollectionNavigationController {
     static let instance = QuestionsController()
@@ -40,9 +41,11 @@ class QuestionsController: UICollectionNavigationController {
         let layout = QuestionsLayout()
         super.init(viewLayout: layout)
         layout.delegate = self
-        
+        //setTitleTextAttributes
+        tabBarItem.setTitleTextAttributes(Style.avenirl_xsmall_white_center, for: .normal)
         tabBarItem.title = "Rabbit Q,s"
-        tabBarItem.image = Material.Icon.search
+        tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Questions, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
+        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Questions, textColor: Color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
     }
     
     required init?(coder aDecoder: NSCoder) {

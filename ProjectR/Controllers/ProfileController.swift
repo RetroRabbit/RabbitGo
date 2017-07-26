@@ -9,8 +9,9 @@
 import Foundation
 import UIKit
 import Material
+import Icomoon
 
-class ProfileController: UIViewController, UIScrollViewDelegate {
+class ProfileController: UIViewNavigationController, UIScrollViewDelegate {
     fileprivate let scrollView = UIScrollView(forAutoLayout: ())
     
     static let instance = ProfileController()
@@ -95,15 +96,13 @@ class ProfileController: UIViewController, UIScrollViewDelegate {
     }()
     
     init() {
-        super.init(nibName: nil, bundle: nil)
-        
-        
-//        super.init()
-//        super.init(hidd)
-//        super.init(hiding: NavigationHide.toBottom)
+        super.init()
         navigationController?.title = "Leaderboard Position #43"
+        tabBarItem.setTitleTextAttributes(Style.avenirl_xsmall_white_center, for: .normal)
         tabBarItem.title = "My Profile"
-        tabBarItem.image = Material.Icon.pen
+        tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Profile, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
+        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Profile, textColor: Color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
+        
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -32,26 +32,12 @@ class TabNavigationController: Material.BottomNavigationController {
     fileprivate func prepareTabBar() {
         tabBar.backgroundColor = Material.Color.black
         
-        tabBar.selectionIndicatorImage =
-            imageWithColor(
-                Style.color.grey_dark,
-                size: CGSize(
-                    width: tabBar.frame.width / 4.0,
-                    height: tabBar.frame.height))
+        tabBar.tintColor = Style.color.green
+        tabBar.unselectedItemTintColor = Style.color.white
         
         let tabBarItemApperance = UITabBarItem.appearance()
-        tabBarItemApperance.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.white], for: .normal)
-        tabBarItemApperance.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.white], for: .selected)
-    }
-    
-    func imageWithColor(_ color: UIColor, size: CGSize) -> UIImage {
-        let rect: CGRect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-        UIGraphicsBeginImageContextWithOptions(size, false, 0)
-        color.setFill()
-        UIRectFill(rect)
-        let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        return image
+        tabBarItemApperance.setTitleTextAttributes([NSForegroundColorAttributeName:Style.color.white], for: .normal)
+        tabBarItemApperance.setTitleTextAttributes([NSForegroundColorAttributeName:Style.color.green], for: .selected)
     }
 }
 

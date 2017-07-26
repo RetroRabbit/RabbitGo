@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Material
+import Icomoon
 
 struct Leader {
     var position: Int = 0
@@ -57,9 +58,11 @@ class HomeController : UITableViewController {
         super.init(nibName: nil, bundle: nil)
 
         //super.init(hiding: NavigationHide.toBottom)
-        navigationController?.title = "Leaderboard Position #43"
+        tabBarItem.setTitleTextAttributes(Style.avenirl_xsmall_white_center, for: .normal)
         tabBarItem.title = "Home"
-        tabBarItem.image = UIImage(named: "home")
+        tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Home, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
+        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Home, textColor: Color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
+        navigationController?.title = "Leaderboard Position #43"
         tableView.allowsMultipleSelectionDuringEditing = false
     }
     
