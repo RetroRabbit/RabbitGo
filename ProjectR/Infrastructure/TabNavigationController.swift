@@ -12,11 +12,9 @@ import Material
 class TabNavigationController: Material.BottomNavigationController {
     override init() {
         super.init(viewControllers: [
-            // TODO: Fix CollectionView layout, should not be nil
-//            ToolNavigationController(rootViewController: QuestionsController.instance),
+            ToolNavigationController(rootViewController: QuestionsController.instance),
             ToolNavigationController(rootViewController: ScanQRController.instance),
             ToolNavigationController(rootViewController: HomeController.instance),
-            ToolNavigationController(rootViewController: PrizesController.instance),
             ToolNavigationController(rootViewController: ProfileController.instance)
             ])
     }
@@ -36,7 +34,7 @@ class TabNavigationController: Material.BottomNavigationController {
         
         tabBar.selectionIndicatorImage =
             imageWithColor(
-                Material.Color.blueGrey.base,
+                Style.color.grey_dark,
                 size: CGSize(
                     width: tabBar.frame.width / 4.0,
                     height: tabBar.frame.height))

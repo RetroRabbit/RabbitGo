@@ -27,11 +27,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         
         InternalSetup()
         
-        //if Auth.auth().currentUser != nil {
-          //  window?.rootViewController = UINavigationController(rootViewController: TabNavigationController())
-        //} else {
+        if Auth.auth().currentUser != nil {
+            window?.rootViewController = TabNavigationController()
+        } else {
             window?.rootViewController = UINavigationController(rootViewController: SignInController())
-        //}
+        }
         
         window?.makeKeyAndVisible()
         
