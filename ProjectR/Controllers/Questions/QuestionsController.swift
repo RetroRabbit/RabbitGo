@@ -13,16 +13,16 @@ class QuestionsController: UICollectionViewController {
     static let instance = QuestionsController()
     
     fileprivate let questions: [Question] = [
-        Question(image: "update-kalido-image1"),
-        Question(image: "update-kalido-image2"),
-        Question(image: "update-kalido-image3"),
-        Question(image: "update-kalido-image4"),
-        Question(image: "update-kalido-image5"),
-        Question(image: "update-kalido-image1"),
-        Question(image: "update-kalido-image2"),
-        Question(image: "update-kalido-image3"),
-        Question(image: "update-kalido-image4"),
-        Question(image: "update-kalido-image5")
+        Question(image: "image_square_grey"),
+        Question(image: "image_square_grey"),
+        Question(image: "image_square_grey"),
+        Question(image: "image_square_grey"),
+        Question(image: "image_square_grey"),
+        Question(image: "image_square_grey"),
+        Question(image: "image_square_grey"),
+        Question(image: "image_square_grey"),
+        Question(image: "image_square_grey"),
+        Question(image: "image_square_grey")
     ]
     
     init() {
