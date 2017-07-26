@@ -29,8 +29,10 @@ class QuestionsCell: CollectionViewCell {
         super.init(coder: aDecoder)
     }
     
-    func prepareForDisplay() {
+    func prepareForDisplay(object: Question) {
+        imgMedia.image =  UIImage(named: object.image)
     }
+
     
     /*override func prepareForDisplay(object: ProfileSwitchObject, otherProfile: Bool = true) {
         super.prepareForDisplay(object: object, otherProfile: otherProfile)

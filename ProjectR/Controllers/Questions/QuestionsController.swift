@@ -24,17 +24,16 @@ class QuestionsController: UICollectionViewController {
         Question(image: "update-kalido-image4"),
         Question(image: "update-kalido-image5")
     ]
-
     
     init() {
-        //super.init(hiding: NavigationHide.toBottom)
-        navigationController?.title = "Leaderboard Position #43"
-        tabBarItem.title = "Questions"
-        tabBarItem.image = Material.Icon.search
-        
         let layout = QuestionsLayout()
         super.init(collectionViewLayout: layout)
         layout.delegate = self
+        
+        navigationController?.title = "Leaderboard Position #43"
+        tabBarItem.title = "Questions"
+        tabBarItem.image = Material.Icon.search
+
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -50,8 +49,25 @@ class QuestionsController: UICollectionViewController {
     }
 }
 
-extension QuestionsDelegate {
+extension QuestionsController: QuestionsDelegate {
     func collectionView(collectionView: UICollectionView, heightAtIndexPath indexPath: IndexPath, withWidth: CGFloat) -> CGFloat {
         return QuestionsCell.calculateHeight()
     }
+}
+
+extension QuestionsController {
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return questions.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: QuestionsCell.reuseIdentifier, for: indexPath) as! QuestionsCell
+        cell.prepareForDisplay(object: questions[indexPath.row])
+        return cell
+    }
+
 }
