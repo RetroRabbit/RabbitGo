@@ -52,17 +52,18 @@ final class QuestionsLayout: UICollectionViewLayout {
         scache.removeAll(keepingCapacity: true)
         
         // 2. Pre-Calculates the X Offset for every column and adds an array to increment the currently max Y Offset for each column
-        var xOffset: [CGFloat] = [0, columnWidth]
-        var yOffset: [CGFloat] = [0, 0]
+        var xOffset: [Int:CGFloat] = [0:0, 1:columnWidth, 2:columnWidth*2]
+        var yOffset: [Int:CGFloat] = [0:0, 1:0, 2:0]
         
         // 3. Iterates through the list of items in the first section
         for item in 0 ..< numberOfItems {
             let indexPath = IndexPath(item: item, section: 0)
-            let column = yOffset[0] > yOffset[1] ? 1 : 0
+            var temp = yOffset.sorted(by: { (object1, object2) -> Bool in return object1.value < object2.value })
+            let column = temp.first?.key ?? 0
             
             // 4. Asks the delegate for the height of the picture and the annotation and calculates the cell frame.
             let height = delegate.collectionView(collectionView: collectionView, heightAtIndexPath: indexPath, withWidth: width)
-            let frame = CGRect(x: xOffset[column], y: yOffset[column], width: columnWidth, height: height)
+            let frame = CGRect(x: xOffset[column] ?? 0, y: yOffset[column] ?? 0, width: columnWidth, height: height)
             
             let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
             attributes.frame = frame
@@ -70,8 +71,8 @@ final class QuestionsLayout: UICollectionViewLayout {
             scache[item] = attributes
             
             // 6. Updates the collection view content height
-            yOffset[column] = yOffset[column] + height
-            contentHeight = max(yOffset[0], yOffset[1])
+            yOffset[column] = (yOffset[column] ?? 0) + height
+            contentHeight = temp.first?.value ?? 0
         }
     }
     
