@@ -11,9 +11,10 @@ import UIKit
 import PureLayout
 import Material
 
-class WelcomeController: UIViewController, UIScrollViewDelegate {
+class WelcomeController: UIViewController {
     /* UI */
-    fileprivate let scrollView = UIScrollView(forAutoLayout: ())
+    fileprivate let scrollView = UIScrollView()
+    fileprivate let contentView = UIView()
     
     fileprivate let lblMainHead: UILabel = {
         let label = UILabel()
@@ -115,7 +116,7 @@ class WelcomeController: UIViewController, UIScrollViewDelegate {
         view.backgroundColor = Style.color.grey_dark
 
         view.addSubview(scrollView)
-        scrollView.delegate = self
+        scrollView.addSubview(contentView)
         
         scrollView.addSubview(lblMainHead)
         scrollView.addSubview(imgViewDivider)
@@ -161,7 +162,7 @@ class WelcomeController: UIViewController, UIScrollViewDelegate {
         
         nextButton.frame = CGRect(x: (Screen.width - Style.button_width)/2, y: lblGoodLuck.frame.bottom + 30, width: Style.button_width, height: Style.button_height)
         
-        scrollView.contentSize = CGSize(width: Screen.width, height: nextButton.frame.bottom)
+        scrollView.contentSize = CGSize(width: Screen.width, height: nextButton.frame.bottom + 30)
     }
     
     func onNext() {
