@@ -105,6 +105,7 @@ class Question {
     var multiple: [NSString]? = nil
     var free: NSString? = nil
     var answer: NSNumber? = nil
+    var image: String = ""
     
     func formatted() -> [String:Any] {
         var value: [String:Any] = [:]
@@ -115,6 +116,11 @@ class Question {
     
         return value
     }
+    
+    init(image: String) {
+        
+    }
+    
 }
 
 class PlayerQuestion {

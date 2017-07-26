@@ -15,7 +15,6 @@ class TabNavigationController: Material.BottomNavigationController {
             ToolNavigationController(rootViewController: QuestionsController.instance),
             ToolNavigationController(rootViewController: ScanQRController.instance),
             ToolNavigationController(rootViewController: HomeController.instance),
-            ToolNavigationController(rootViewController: PrizesController.instance),
             ToolNavigationController(rootViewController: ProfileController.instance)
             ])
     }
@@ -31,11 +30,11 @@ class TabNavigationController: Material.BottomNavigationController {
     }
     
     fileprivate func prepareTabBar() {
-        tabBar.backgroundColor = Color.blueGrey.darken4
+        tabBar.backgroundColor = Color.black
         
         tabBar.selectionIndicatorImage =
             imageWithColor(
-                Material.Color.blueGrey.base,
+                Style.color.grey_dark,
                 size: CGSize(
                     width: tabBar.frame.width / 4.0,
                     height: tabBar.frame.height))
