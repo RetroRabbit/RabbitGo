@@ -11,17 +11,92 @@ import UIKit
 import PureLayout
 import Material
 
-class QuestionController: UIViewController {
+class QuestionController: UITableViewController {
+    /* Data */
+    fileprivate var lastTapped = -1
+    fileprivate let question: Question
+    fileprivate let index: Int
+    
+    init(question: Question, index: Int) {
+        self.question = question
+        self.index = index
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension QuestionController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.separatorStyle = .none
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 100
+        tableView.backgroundColor = Style.color.grey_dark
+        
+        tableView.register(QuestionHeaderCell.self, forCellReuseIdentifier: QuestionHeaderCell.reuseIdentifier)
+        tableView.register(OptionCell.self, forCellReuseIdentifier: OptionCell.reuseIdentifier)
+        tableView.register(SubmitCell.self, forCellReuseIdentifier: SubmitCell.reuseIdentifier)
+        
+        /* This hides the extra separators for empty rows. See http://stackoverflow.com/a/5377569/1469018 */
+        tableView.tableFooterView = UIView()
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        switch section {
+        case 0:
+            let cell = QuestionHeaderCell()
+            cell.prepareForDisplay(question: question, index: index)
+            return cell
+        default:
+            return nil
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch section {
+        case 0:
+            return question.multiple?.count ?? 0
+        case 1:
+            return 1
+        default:
+            return 0
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.section {
+        case 0:
+            if let cell = tableView.dequeueReusableCell(withIdentifier: OptionCell.reuseIdentifier, for: indexPath as IndexPath) as? OptionCell {
+                cell.prepareForDisplay(question: question, index: index)
+                return cell
+            } else {
+                return UITableViewCell()
+            }
+        case 1:
+            if let cell = tableView.dequeueReusableCell(withIdentifier: SubmitCell.reuseIdentifier, for: indexPath as IndexPath) as? SubmitCell {
+                return cell
+            } else {
+                return UITableViewCell()
+            }
+        default:
+            return UITableViewCell()
+        }
+    }
+}
+
+
+/* Table header cell */
+class QuestionHeaderCell: UITableViewCell {
+    class var reuseIdentifier: String { return "questionCell" }
+    
     /* UI */
-    fileprivate let scrollView = UIScrollView()
-    fileprivate let contentView = UIView()
-    
-    fileprivate let vwQuestion: UIView = {
-        let view = UIView()
-        view.backgroundColor = Material.Color.white
-        return view
-    }()
-    
     fileprivate let lblQuestionNumber: UILabel = {
         let label = UILabel()
         label.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_small_grey_dark_center)
@@ -39,12 +114,63 @@ class QuestionController: UIViewController {
         return label
     }()
     
-    fileprivate let imgOption1: UIImageView
-    fileprivate let imgOption2: UIImageView
-    fileprivate let imgOption3: UIImageView
-    fileprivate let imgOption4: UIImageView
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = Material.Color.white
+        selectionStyle = .none
+        
+        addSubview(lblQuestionNumber)
+        addSubview(lblQuestion)
+    }
     
-    fileprivate let lblOption1: UILabel = {
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    final func prepareForDisplay(question: Question, index: Int) {
+        lblQuestionNumber.attributedText = NSAttributedString(string: "Question #\(index)", attributes: Style.avenirh_small_grey_dark_center)
+        lblQuestion.attributedText = NSAttributedString(string: question.text as String? ?? "", attributes: Style.avenirh_extra_large_grey_dark_center)
+        
+        layoutIfNeeded()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        lblQuestionNumber.frame = CGRect(x: 0, y: 15, width: Screen.width, height: lblQuestionNumber.intrinsicContentSize.height)
+        lblQuestion.frame = CGRect(x: 0, y: lblQuestionNumber.frame.bottom + 15, width: Screen.width, height: lblQuestion.intrinsicContentSize.height)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        lblQuestionNumber.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_small_grey_dark_center)
+        lblQuestion.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_extra_large_grey_dark_center)
+        
+        /* Trigger mask redraw */
+        setNeedsDisplay()
+    }
+    
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return CGSize(width: size.width, height: height())
+    }
+    
+    func height() -> CGFloat {
+        return lblQuestion.frame.bottom + 15
+    }
+}
+
+
+
+
+/* Option cell */
+class OptionCell: UITableViewCell {
+    class var reuseIdentifier: String { return "optionCell" }
+    
+    /* UI */
+    fileprivate let imgOption: UIImageView
+    fileprivate let imgCheckMark: UIImageView
+    
+    fileprivate let lblOption: UILabel = {
         let label = UILabel()
         label.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_small_white)
         label.numberOfLines = 0
@@ -52,30 +178,66 @@ class QuestionController: UIViewController {
         return label
     }()
     
-    fileprivate let lblOption2: UILabel = {
-        let label = UILabel()
-        label.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_small_white)
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
-        return label
-    }()
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        imgOption = UIImageView(image: UIImage(named: "answer_square_grey"))
+        imgOption.contentMode = .scaleAspectFit
+        imgOption.clipsToBounds = true
+        
+        imgCheckMark = UIImageView(image: UIImage(named: "checkmark"))
+        imgCheckMark.contentMode = .scaleAspectFit
+        imgCheckMark.clipsToBounds = true
+        
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        backgroundColor = Style.color.grey_dark
+        selectionStyle = .none
+        
+        addSubview(imgOption)
+        addSubview(imgCheckMark)
+        addSubview(lblOption)
+    }
     
-    fileprivate let lblOption3: UILabel = {
-        let label = UILabel()
-        label.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_small_white)
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
-        return label
-    }()
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
-    fileprivate let lblOption4: UILabel = {
-        let label = UILabel()
-        label.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_small_white)
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
-        return label
-    }()
+    final func prepareForDisplay(question: Question, index: Int) {
+        lblOption.attributedText = NSAttributedString(string: question.multiple?[index] as String? ?? "", attributes: Style.avenirh_small_white)
+        layoutIfNeeded()
+    }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        imgOption.frame = CGRect(x: 0, y: 0, width: imgOption.intrinsicContentSize.width, height: imgOption.intrinsicContentSize.height)
+        imgCheckMark.frame = CGRect(x: 0, y: 0, width: imgCheckMark.intrinsicContentSize.width, height: imgCheckMark.intrinsicContentSize.height)
+        lblOption.frame = CGRect(x: imgCheckMark.frame.right + 10, y: imgOption.frame.top + imgOption.frame.height/2 - lblOption.frame.height/2, width: Screen.width, height: lblOption.intrinsicContentSize.height)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        lblOption.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_small_white)
+        
+        /* Trigger mask redraw */
+        setNeedsDisplay()
+    }
+    
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return CGSize(width: size.width, height: height())
+    }
+    
+    func height() -> CGFloat {
+        return imgOption.frame.height
+    }
+}
+
+
+/* Submit cell */
+class SubmitCell: UITableViewCell {
+    class var reuseIdentifier: String { return "submitCell" }
+    
+    /* UI */
     private let tfRabbitCode: ProjectRTextField = {
         let textField = ProjectRTextField()
         textField.placeholder = "Unique Rabbit Code"
@@ -89,116 +251,42 @@ class QuestionController: UIViewController {
         return btn
     }()
     
-
-    init(question: Question, index: Int) {
-        imgOption1 = UIImageView(image: UIImage(named: "answer_square_grey"))
-        imgOption1.contentMode = .scaleAspectFit
-        imgOption1.clipsToBounds = true
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = Material.Color.white
+        selectionStyle = .none
         
-        imgOption2 = UIImageView(image: UIImage(named: "answer_square_grey"))
-        imgOption2.contentMode = .scaleAspectFit
-        imgOption2.clipsToBounds = true
-        
-        imgOption3 = UIImageView(image: UIImage(named: "answer_square_grey"))
-        imgOption3.contentMode = .scaleAspectFit
-        imgOption3.clipsToBounds = true
-        
-        imgOption4 = UIImageView(image: UIImage(named: "answer_square_grey"))
-        imgOption4.contentMode = .scaleAspectFit
-        imgOption4.clipsToBounds = true
-        
-        /* Set up questions */
-        lblQuestionNumber.attributedText = NSAttributedString(string: "Question #\(index)", attributes: Style.avenirh_small_grey_dark_center)
-        lblQuestion.attributedText = NSAttributedString(string: question.text as String? ?? "", attributes: Style.avenirh_extra_large_grey_dark_center)
-        
-        if let questions = question.multiple {
-            for (index, option) in questions.enumerated() {
-                switch index {
-                case 0:
-                    lblOption1.attributedText = NSAttributedString(string: option as String, attributes: Style.avenirh_small_white)
-                case 1:
-                    lblOption2.attributedText = NSAttributedString(string: option as String, attributes: Style.avenirh_small_white)
-                case 2:
-                    lblOption3.attributedText = NSAttributedString(string: option as String, attributes: Style.avenirh_small_white)
-                case 3:
-                    lblOption4.attributedText = NSAttributedString(string: option as String, attributes: Style.avenirh_small_white)
-                default:
-                    continue
-                }
-            }
-        }
-        
-        super.init(nibName: nil, bundle: nil)
+        addSubview(tfRabbitCode)
+        addSubview(btnSubmit)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = Style.color.grey_dark
-        
-        view.addSubview(scrollView)
-        scrollView.addSubview(contentView)
-        
-        scrollView.addSubview(vwQuestion)
-        scrollView.addSubview(lblQuestionNumber)
-        scrollView.addSubview(lblQuestion)
-        
-        scrollView.addSubview(imgOption1)
-        scrollView.addSubview(imgOption2)
-        scrollView.addSubview(imgOption3)
-        scrollView.addSubview(imgOption4)
-        
-        scrollView.addSubview(lblOption1)
-        scrollView.addSubview(lblOption2)
-        scrollView.addSubview(lblOption3)
-        scrollView.addSubview(lblOption4)
-        
-        scrollView.addSubview(tfRabbitCode)
-        scrollView.addSubview(btnSubmit)
-        
-        btnSubmit.addTarget(self, action: #selector(onSubmit), for: .touchUpInside)
-    }
+    final func prepareForDisplay(question: Question, index: Int) {}
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+    override func layoutSubviews() {
+        super.layoutSubviews()
         
-//        let margin = Style.padding.xxl
-        
-        scrollView.autoPinEdgesToSuperviewEdges()
-        
-        lblQuestionNumber.frame = CGRect(x: 0, y: 15, width: Screen.width, height: lblQuestionNumber.intrinsicContentSize.height)
-        lblQuestion.frame = CGRect(x: 0, y: lblQuestionNumber.frame.bottom + 15, width: Screen.width, height: lblQuestion.intrinsicContentSize.height)
-        vwQuestion.frame = CGRect(x: 0, y: 0, width: Screen.width, height: lblQuestion.frame.bottom + 15)
-        
-        imgOption1.frame = CGRect(x: 0, y: vwQuestion.frame.bottom + 10, width: imgOption1.intrinsicContentSize.width, height: imgOption1.intrinsicContentSize.height)
-        lblOption1.frame = CGRect(x: 0, y: imgOption1.frame.top + imgOption1.frame.height/2, width: Screen.width, height: lblOption1.intrinsicContentSize.height)
-        imgOption2.frame = CGRect(x: 0, y: imgOption1.frame.bottom + 5, width: imgOption2.intrinsicContentSize.width, height: imgOption2.intrinsicContentSize.height)
-        lblOption2.frame = CGRect(x: 0, y: imgOption2.frame.top + imgOption2.frame.height/2, width: Screen.width, height: lblOption2.intrinsicContentSize.height)
-        imgOption3.frame = CGRect(x: 0, y: imgOption2.frame.bottom + 5, width: imgOption3.intrinsicContentSize.width, height: imgOption3.intrinsicContentSize.height)
-        lblOption3.frame = CGRect(x: 0, y: imgOption3.frame.top + imgOption3.frame.height/2, width: Screen.width, height: lblOption3.intrinsicContentSize.height)
-    
-        if lblOption4.text != "" {
-            imgOption4.frame = CGRect(x: 0, y: imgOption3.frame.bottom + 5, width: imgOption4.intrinsicContentSize.width, height: imgOption4.intrinsicContentSize.height)
-            lblOption4.frame = CGRect(x: 0, y: imgOption4.frame.top + imgOption4.frame.height/2, width: Screen.width, height: lblOption4.intrinsicContentSize.height)
-        } else {
-            imgOption4.frame = CGRect(x: 0, y: imgOption3.frame.bottom + 5, width: imgOption4.intrinsicContentSize.width, height: 0)
-            lblOption4.frame = CGRect(x: 0, y: 0, width: 0, height: 0)
-        }
-        
-        tfRabbitCode.frame = CGRect(x: Screen.width/2 - Screen.width * 0.7 / 2, y: imgOption4.frame.bottom + 40, width: Screen.width * 0.7, height: tfRabbitCode.intrinsicContentSize.height)
+        tfRabbitCode.frame = CGRect(x: Screen.width/2 - Screen.width * 0.7 / 2, y: 40, width: Screen.width * 0.7, height: tfRabbitCode.intrinsicContentSize.height)
         btnSubmit.frame = CGRect(x: 0, y: tfRabbitCode.frame.bottom + 40, width: Screen.width, height: btnSubmit.intrinsicContentSize.height)
-        
-        scrollView.contentSize = CGSize(width: Screen.width, height: btnSubmit.frame.bottom + 20)
     }
     
-    func onSubmit() {
-        // TODO: Submit pressed
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        tfRabbitCode.placeholderText = ""
+        
+        /* Trigger mask redraw */
+        setNeedsDisplay()
+    }
+    
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return CGSize(width: size.width, height: height())
+    }
+    
+    func height() -> CGFloat {
+        return btnSubmit.frame.bottom + 20
     }
 }
-
-
 
