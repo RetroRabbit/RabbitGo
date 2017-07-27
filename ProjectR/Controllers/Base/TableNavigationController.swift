@@ -1,5 +1,5 @@
 //
-//  ViewNavigationController.swift
+//  UITableNavigationController.swift
 //  ProjectR
 //
 //  Created by Wesley Buck on 2017/07/26.
@@ -9,17 +9,21 @@
 import UIKit
 import Material
 
-class UIViewNavigationController: UIViewController, ToolNavigationDelegate, UIScrollViewDelegate {
+class UITableNavigationController: UITableViewController, ToolNavigationDelegate {
     enum NavigationHide: Int {
         case never = 0
         case toBottom = 1
         case toTop = 2
     }
     
-    var hide: NavigationHide = NavigationHide.toBottom
+    fileprivate var hide: NavigationHide = NavigationHide.toBottom
     
     init(hiding navigationHide: NavigationHide = NavigationHide.toBottom) {
         super.init(nibName: nil, bundle: nil)
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        view.backgroundColor = Style.color.grey_dark
         hide = navigationHide
     }
     
@@ -39,11 +43,7 @@ class UIViewNavigationController: UIViewController, ToolNavigationDelegate, UISc
     open func prepareToolbar() {
     }
     
-    internal func pushViewController(_ viewController: UIViewController, animated: Bool) {
-        self.navigationController?.pushViewController(viewController, animated: animated)
-    }
-    
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+    override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if hide == NavigationHide.toBottom {
             if velocity.y > 0 {
                 navigationController?.setNavigationBarHidden(true, animated: true)
@@ -67,5 +67,9 @@ class UIViewNavigationController: UIViewController, ToolNavigationDelegate, UISc
                 statusBarController?.statusBar.isHidden = false
             }
         }
+    }
+    
+    internal func pushViewController(_ viewController: UIViewController, animated: Bool) {
+        self.navigationController?.pushViewController(viewController, animated: animated)
     }
 }

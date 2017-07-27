@@ -14,7 +14,7 @@ class TabNavigationController: Material.BottomNavigationController {
         super.init(viewControllers: [
             ToolNavigationController(rootViewController: QuestionsController.instance),
             ToolNavigationController(rootViewController: ScanQRController.instance),
-            ToolNavigationController(rootViewController: HomeController.instance),
+            ToolNavigationController(rootViewController: RabbiteerHomeController.instance),
             ToolNavigationController(rootViewController: ProfileController.instance)
             ])
     }
