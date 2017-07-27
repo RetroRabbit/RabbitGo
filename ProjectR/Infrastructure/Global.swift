@@ -30,6 +30,8 @@ var refRabbits = ref.child(RABBITS)
 var refRabbitTeamBoard = ref.child(RABBIT_TEAM_BOARD)
 var refRabbitBoard = ref.child(RABBIT_BOARD)
 var refAutoComplete = ref.child(AutoCompleteS)
+var firebaseQuestions: [Question?] = []
+
 func currentUserId() -> String { return auth.currentUser!.uid }
 func refCurrentUser() -> DatabaseReference { return refRabbiteers.child(currentUserId()) }
 func refCurrentUserQuestions() -> DatabaseReference { return refCurrentUser().child(QUESTIONS) }
@@ -105,7 +107,8 @@ class Question {
     var multiple: [NSString]? = nil
     var free: NSString? = nil
     var answer: NSNumber? = nil
-    var image: String = ""
+    var qrCode: NSString? = nil
+    var state: NSInteger = 0    // 0 = Locked, 1 = unlocked, 2 = answered
     
     func formatted() -> [String:Any] {
         var value: [String:Any] = [:]
@@ -116,11 +119,6 @@ class Question {
     
         return value
     }
-    
-    init(image: String) {
-        
-    }
-    
 }
 
 class PlayerQuestion {
