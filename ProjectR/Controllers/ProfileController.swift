@@ -11,10 +11,20 @@ import UIKit
 import Material
 import Icomoon
 
-class ProfileController: UIViewNavigationController, UIScrollViewDelegate {
+class ProfileController: UIViewNavigationController {
     fileprivate let scrollView = UIScrollView(forAutoLayout: ())
     
     static let instance = ProfileController()
+    
+    private let lblHeading: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        label.attributedText = NSAttributedString(string: "Profile", attributes: Style.avenirh_extra_large_white)
+        return label
+    }()
+    
+    private let imgViewDivider = UIImageView(image: UIImage(named: "textfield_line"))
     
     private let imgProfilePlaceholder: UIImageView = {
         let placeholder = UIImageView(image: UIImage(named: "image_placeholder"))
@@ -32,28 +42,6 @@ class ProfileController: UIViewNavigationController, UIScrollViewDelegate {
         
     }()
     
-    /*
-    let titleLabel: UILabel = {
-        let lbl = UILabel()
-//        lbl.translatesAutoresizingMaskIntoConstraints = false
-        lbl.attributedText = NSAttributedString(string: "Project R", attributes: Style.extra_large_blue_grey)
-        return lbl
-    }()
-    
-    let nameLabel: UILabel = {
-        let lbl = UILabel()
-//        lbl.translatesAutoresizingMaskIntoConstraints = false
-        lbl.attributedText = NSAttributedString(string: "Name Surname", attributes: Style.extra_large_blue_grey)
-        return lbl
-    }()*/
-    
-//    private let subTitleLabel: UILabel = {
-//        let lbl = UILabel()
-////        lbl.translatesAutoresizingMaskIntoConstraints = false
-//        lbl.attributedText = NSAttributedString(string: "- RABBITEER -", attributes: Style.extra_large_blue_grey)
-//        return lbl
-//    }()
-//    
     private let nameEntry: ProjectRTextField = {
         let entry = ProjectRTextField()
         entry.placeholder = "Name & Surname"
@@ -113,12 +101,11 @@ class ProfileController: UIViewNavigationController, UIScrollViewDelegate {
         super.viewDidLoad()
     
         view.backgroundColor = Style.color.grey_dark
-        
+        scrollView.delegate = self
         view.addSubview(scrollView)
         
-//        scrollView.addSubview(titleLabel)
-//        scrollView.addSubview(nameLabel)
-//        scrollView.addSubview(subTitleLabel)
+        scrollView.addSubview(lblHeading)
+        scrollView.addSubview(imgViewDivider)
         scrollView.addSubview(imgProfilePlaceholder)
         scrollView.addSubview(imgChangeProfile)
         scrollView.addSubview(nameEntry)
@@ -129,21 +116,25 @@ class ProfileController: UIViewNavigationController, UIScrollViewDelegate {
         scrollView.addSubview(editButton)
     }
     
+    override func prepareToolbar() {
+        setTitle("Leaderboard Position #43", subtitle: nil)
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         scrollView.autoPinEdgesToSuperviewEdges()
         
-        //Title Section:
-//        titleLabel.frame = CGRect(x: (Screen.width - titleLabel.intrinsicContentSize.width)/2, y: 20, width: titleLabel.intrinsicContentSize.width, height: titleLabel.intrinsicContentSize.height)
+        lblHeading.preferredMaxLayoutWidth = Style.input_width
+        lblHeading.frame = CGRect(x: Style.input_center, y: 20, width: Style.input_width, height: lblHeading.intrinsicContentSize.height)
         
-//        nameLabel.frame = CGRect(x: (Screen.width - nameLabel.intrinsicContentSize.width)/2, y: titleLabel.frame.bottom + 10, width: nameLabel.intrinsicContentSize.width, height: nameLabel.intrinsicContentSize.height)
-        
-//        subTitleLabel.frame = CGRect(x: (Screen.width - subTitleLabel.intrinsicContentSize.width)/2, y: nameLabel.frame.bottom + 5, width: subTitleLabel.intrinsicContentSize.width, height: subTitleLabel.intrinsicContentSize.height)
+        imgViewDivider.frame = CGRect(x: Style.input_center, y: lblHeading.frame.bottom - 40, width: Style.input_width, height: imgViewDivider.intrinsicContentSize.height)
         
         let x = (Screen.width - imgProfilePlaceholder.intrinsicContentSize.width)/2
-        imgProfilePlaceholder.frame = CGRect(x: x, y: 20, width: imgProfilePlaceholder.frame.width, height: imgProfilePlaceholder.frame.height)
-//        imgChangeProfile.frame = CGRect(x: 20, y: 20, width: imgChangeProfile.frame.width, height: imgChangeProfile.frame.height)
+        imgProfilePlaceholder.frame = CGRect(x: x, y: imgViewDivider.frame.bottom + 20, width: imgProfilePlaceholder.frame.width, height: imgProfilePlaceholder.frame.height)
+        
+        imgChangeProfile.frame = CGRect(x: imgProfilePlaceholder.frame.right - 36, y: imgProfilePlaceholder.frame.bottom - 36, width: 36, height: 36)
+        
         
         //Entries Section:
         nameEntry.frame = CGRect(x: Style.input_center, y: imgProfilePlaceholder.frame.bottom + 40, width: Style.input_width, height: 40)
@@ -159,10 +150,6 @@ class ProfileController: UIViewNavigationController, UIScrollViewDelegate {
         //edit button:
         editButton.frame = CGRect(x: 40, y: yearEntry.frame.bottom + 40, width: Screen.width - 80, height: Style.button_height)
         
-        scrollView.contentSize = CGSize(width: Screen.width, height: editButton.frame.bottom)
+        scrollView.contentSize = CGSize(width: Screen.width, height: editButton.frame.bottom + 20)
     }
 }
-//
-//extension ProfileController {
-//    
-//}

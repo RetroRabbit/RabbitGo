@@ -9,7 +9,7 @@
 import UIKit
 import Material
 
-class UIViewNavigationController: UIViewController, ToolNavigationDelegate {
+class UIViewNavigationController: UIViewController, ToolNavigationDelegate, UIScrollViewDelegate {
     enum NavigationHide: Int {
         case never = 0
         case toBottom = 1
@@ -41,5 +41,31 @@ class UIViewNavigationController: UIViewController, ToolNavigationDelegate {
     
     internal func pushViewController(_ viewController: UIViewController, animated: Bool) {
         self.navigationController?.pushViewController(viewController, animated: animated)
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        if hide == NavigationHide.toBottom {
+            if velocity.y > 0 {
+                navigationController?.setNavigationBarHidden(true, animated: true)
+                statusBarController?.statusBar.isHidden = true
+            } else if velocity.y < 0 {
+                navigationController?.setNavigationBarHidden(false, animated: true)
+                statusBarController?.statusBar.isHidden = false
+            } else if targetContentOffset.pointee.y <= 0 {
+                navigationController?.setNavigationBarHidden(false, animated: true)
+                statusBarController?.statusBar.isHidden = false
+            }
+        } else if hide == NavigationHide.toTop {
+            if velocity.y < 0 {
+                navigationController?.setNavigationBarHidden(true, animated: true)
+                statusBarController?.statusBar.isHidden = true
+            } else if velocity.y > 0 {
+                navigationController?.setNavigationBarHidden(false, animated: true)
+                statusBarController?.statusBar.isHidden = false
+            } else if targetContentOffset.pointee.y >= scrollView.contentSize.height {
+                navigationController?.setNavigationBarHidden(false, animated: true)
+                statusBarController?.statusBar.isHidden = false
+            }
+        }
     }
 }

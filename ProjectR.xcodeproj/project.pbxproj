@@ -266,8 +266,8 @@
 		C7E9ACFE1F28557700E1A148 /* Questions */ = {
 			isa = PBXGroup;
 			children = (
-				C7E9ACFF1F28557700E1A148 /* QuestionsController.swift */,
 				C7E9AD0D1F2855A100E1A148 /* QuestionsCell.swift */,
+				C7E9ACFF1F28557700E1A148 /* QuestionsController.swift */,
 				C7E9AD0F1F28575300E1A148 /* QuestionsLayout.swift */,
 			);
 			path = Questions;
