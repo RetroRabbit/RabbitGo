@@ -18,8 +18,11 @@
 		C71A69461F29195800500815 /* Icomoon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C7DB09551F291764008CC5C3 /* Icomoon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C71A69481F291C1F00500815 /* TableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71A69471F291C1F00500815 /* TableNavigationController.swift */; };
 		C72AB7DA1F2A7C5D001F8C2B /* RabbitHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72AB7D91F2A7C5D001F8C2B /* RabbitHeaderCell.swift */; };
-		C72AB7DC1F2A8A1E001F8C2B /* RabbitLeaderBoardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72AB7DB1F2A8A1E001F8C2B /* RabbitLeaderBoardCell.swift */; };
+		C72AB7DC1F2A8A1E001F8C2B /* LeaderBoardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72AB7DB1F2A8A1E001F8C2B /* LeaderBoardCell.swift */; };
 		C72AB7DE1F2A8BB1001F8C2B /* String+ProjectR.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72AB7DD1F2A8BB1001F8C2B /* String+ProjectR.swift */; };
+		C72AB7E11F2A9427001F8C2B /* RabbiteerHomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72AB7E01F2A9427001F8C2B /* RabbiteerHomeController.swift */; };
+		C72AB7E31F2A94B4001F8C2B /* RabbitHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72AB7E21F2A94B4001F8C2B /* RabbitHeaderView.swift */; };
+		C72AB7E51F2A94E4001F8C2B /* RabbiteerHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72AB7E41F2A94E4001F8C2B /* RabbiteerHeaderCell.swift */; };
 		C7DB094A1F290A67008CC5C3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7DB09491F290A67008CC5C3 /* GoogleService-Info.plist */; };
 		C7DB09521F291753008CC5C3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7DB094E1F291753008CC5C3 /* Assets.xcassets */; };
 		C7DB09531F291753008CC5C3 /* Avenir.ttc in Resources */ = {isa = PBXBuildFile; fileRef = C7DB09501F291753008CC5C3 /* Avenir.ttc */; };
@@ -75,8 +78,11 @@
 		C7136DE21F2270FD001D0695 /* AutoCompleteTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoCompleteTextField.swift; sourceTree = "<group>"; };
 		C71A69471F291C1F00500815 /* TableNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableNavigationController.swift; sourceTree = "<group>"; };
 		C72AB7D91F2A7C5D001F8C2B /* RabbitHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RabbitHeaderCell.swift; sourceTree = "<group>"; };
-		C72AB7DB1F2A8A1E001F8C2B /* RabbitLeaderBoardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RabbitLeaderBoardCell.swift; sourceTree = "<group>"; };
+		C72AB7DB1F2A8A1E001F8C2B /* LeaderBoardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeaderBoardCell.swift; sourceTree = "<group>"; };
 		C72AB7DD1F2A8BB1001F8C2B /* String+ProjectR.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+ProjectR.swift"; sourceTree = "<group>"; };
+		C72AB7E01F2A9427001F8C2B /* RabbiteerHomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RabbiteerHomeController.swift; sourceTree = "<group>"; };
+		C72AB7E21F2A94B4001F8C2B /* RabbitHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RabbitHeaderView.swift; sourceTree = "<group>"; };
+		C72AB7E41F2A94E4001F8C2B /* RabbiteerHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RabbiteerHeaderCell.swift; sourceTree = "<group>"; };
 		C7DB09491F290A67008CC5C3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "ProjectR/GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		C7DB094E1F291753008CC5C3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C7DB09501F291753008CC5C3 /* Avenir.ttc */ = {isa = PBXFileReference; lastKnownFileType = file; path = Avenir.ttc; sourceTree = "<group>"; };
@@ -204,9 +210,19 @@
 			children = (
 				C7E9ACFA1F28557700E1A148 /* RabbitHomeController.swift */,
 				C72AB7D91F2A7C5D001F8C2B /* RabbitHeaderCell.swift */,
-				C72AB7DB1F2A8A1E001F8C2B /* RabbitLeaderBoardCell.swift */,
+				C72AB7DB1F2A8A1E001F8C2B /* LeaderBoardCell.swift */,
+				C72AB7E21F2A94B4001F8C2B /* RabbitHeaderView.swift */,
 			);
-			name = RabbitHome;
+			path = RabbitHome;
+			sourceTree = "<group>";
+		};
+		C72AB7DF1F2A9315001F8C2B /* RabbiteerHome */ = {
+			isa = PBXGroup;
+			children = (
+				C72AB7E01F2A9427001F8C2B /* RabbiteerHomeController.swift */,
+				C72AB7E41F2A94E4001F8C2B /* RabbiteerHeaderCell.swift */,
+			);
+			name = RabbiteerHome;
 			sourceTree = "<group>";
 		};
 		C7DB094F1F291753008CC5C3 /* Fonts */ = {
@@ -221,6 +237,7 @@
 		C7E9ACF61F28557700E1A148 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				C72AB7DF1F2A9315001F8C2B /* RabbiteerHome */,
 				C72AB7D81F2A7C4D001F8C2B /* RabbitHome */,
 				C7E9ACF71F28557700E1A148 /* Base */,
 				C7E9ACFE1F28557700E1A148 /* Questions */,
@@ -398,18 +415,21 @@
 				C7E9AD0B1F28557700E1A148 /* SignInController.swift in Sources */,
 				C7E9AD161F287A0600E1A148 /* UIViewController + ProjectR.swift in Sources */,
 				C7E9AD081F28557700E1A148 /* profileCreateController.swift in Sources */,
+				C72AB7E51F2A94E4001F8C2B /* RabbiteerHeaderCell.swift in Sources */,
 				C71A69481F291C1F00500815 /* TableNavigationController.swift in Sources */,
 				C72AB7DE1F2A8BB1001F8C2B /* String+ProjectR.swift in Sources */,
 				C7E9AD041F28557700E1A148 /* BaseSignInController.swift in Sources */,
 				E909429C1F167CDB003342EF /* signedController.swift in Sources */,
 				56818B7C1F12598C006CD915 /* AppDelegate.swift in Sources */,
 				C7E9AD141F28797300E1A148 /* ViewNavigationController.swift in Sources */,
+				C72AB7E11F2A9427001F8C2B /* RabbiteerHomeController.swift in Sources */,
 				C7E9AD0A1F28557700E1A148 /* ScanQRController.swift in Sources */,
+				C72AB7E31F2A94B4001F8C2B /* RabbitHeaderView.swift in Sources */,
 				E97CC95D1F1D32F800AE4A67 /* PopupHelper.swift in Sources */,
 				C7E9AD0C1F28557700E1A148 /* WelcomeController.swift in Sources */,
 				C704F42F1F1D36DE00B6A816 /* ToolNavigationController.swift in Sources */,
 				C7E9AD031F28557700E1A148 /* BaseNextController.swift in Sources */,
-				C72AB7DC1F2A8A1E001F8C2B /* RabbitLeaderBoardCell.swift in Sources */,
+				C72AB7DC1F2A8A1E001F8C2B /* LeaderBoardCell.swift in Sources */,
 				C7E9AD0E1F2855A100E1A148 /* QuestionsCell.swift in Sources */,
 				C7E9AD051F28557700E1A148 /* RabbitHomeController.swift in Sources */,
 				C7E9AD091F28557700E1A148 /* QuestionsController.swift in Sources */,

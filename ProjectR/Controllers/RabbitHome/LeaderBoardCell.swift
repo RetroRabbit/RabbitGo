@@ -9,7 +9,7 @@
 import UIKit
 import Material
 
-class RabbitLeaderBoardCell: UITableViewCell {
+class LeaderBoardCell: UITableViewCell {
     /* State */
     class var reuseIdentifier: String { return "LeaderBoardCell" }
     

@@ -50,13 +50,6 @@ class RabbitHeaderCell: UITableViewCell {
         return label
     }()
     
-    private let lblQuestionsUnanswered: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
-        return label
-    }()
-    
     private let imgViewDivider = UIImageView(image: UIImage(named: "textfield_line"))
     
     private let lblIndividualRankingHeader: UILabel = {
