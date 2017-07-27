@@ -42,10 +42,10 @@ class QuestionsController: UICollectionNavigationController {
         super.init(viewLayout: layout)
         layout.delegate = self
         //setTitleTextAttributes
-        tabBarItem.setTitleTextAttributes(Style.avenirl_xsmall_white_center, for: .normal)
+        tabBarItem.setTitleTextAttributes(Style.avenirh_xsmall_white_center, for: .normal)
         tabBarItem.title = "Rabbit Q,s"
         tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Questions, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
-        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Questions, textColor: Color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
+        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Questions, textColor: Style.color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
     }
     
     required init?(coder aDecoder: NSCoder) {

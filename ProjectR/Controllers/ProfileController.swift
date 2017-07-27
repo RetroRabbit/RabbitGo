@@ -98,10 +98,10 @@ class ProfileController: UIViewNavigationController, UIScrollViewDelegate {
     init() {
         super.init()
         navigationController?.title = "Leaderboard Position #43"
-        tabBarItem.setTitleTextAttributes(Style.avenirl_xsmall_white_center, for: .normal)
+        tabBarItem.setTitleTextAttributes(Style.avenirh_xsmall_white_center, for: .normal)
         tabBarItem.title = "My Profile"
         tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Profile, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
-        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Profile, textColor: Color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
+        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Profile, textColor: Style.color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
         
     }
     
