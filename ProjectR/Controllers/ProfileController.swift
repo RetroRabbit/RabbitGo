@@ -85,7 +85,6 @@ class ProfileController: UIViewNavigationController {
     
     init() {
         super.init()
-        navigationController?.title = "Leaderboard Position #43"
         tabBarItem.setTitleTextAttributes(Style.avenirh_xsmall_white_center, for: .normal)
         tabBarItem.title = "My Profile"
         tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Profile, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)

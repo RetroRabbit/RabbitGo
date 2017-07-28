@@ -296,4 +296,3 @@ class SubmitCell: UITableViewCell {
         Style.button_height + 40
     }
 }
-
