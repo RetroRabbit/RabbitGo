@@ -123,13 +123,13 @@ class RabbitHeaderCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func prepareForDisplay(object: Position) {
-        lblHeading.attributedText = NSAttributedString(string: "Hi \(object.fullname)!", attributes: Style.avenirh_extra_large_grey_dark_center)
-        lblQuestionsAnswered.attributedText = NSAttributedString(string: "00", attributes: Style.rhino_mega_green_center)//\(object.questionsUnanswered)"
-        lblIndividualRanking.attributedText = NSAttributedString(string: "#43", attributes: Style.rhino_big_green_center)
-        lblTeamRanking.attributedText = NSAttributedString(string: "#10", attributes: Style.rhino_big_green_center)
+    func prepareForDisplay(object: Rabbit?) {
+        lblHeading.attributedText = NSAttributedString(string: "Hi \(object?.displayName?.components(separatedBy: " ").first ?? "")!", attributes: Style.avenirh_extra_large_grey_dark_center)
+        lblQuestionsAnswered.attributedText = NSAttributedString(string: "\(object?.questionsAnswered ?? 0)", attributes: Style.rhino_mega_green_center)//\(object.questionsUnanswered)"
+        lblIndividualRanking.attributedText = NSAttributedString(string: "#\(object?.individualRanking ?? 0)", attributes: Style.rhino_big_green_center)
+        lblTeamRanking.attributedText = NSAttributedString(string: "#\(object?.teamRanking ?? 0)", attributes: Style.rhino_big_green_center)
         let att = NSMutableAttributedString(attributedString: NSAttributedString(string: "Unique Rabbit-Code \n", attributes: Style.avenirl_small_green))
-        att.append(NSAttributedString(string: "Frikkie123", attributes: Style.avenirh_large_green))
+        att.append(NSAttributedString(string: "\(object?.code ?? "")", attributes: Style.avenirh_large_green))
         lblUniqueCode.attributedText = att
     }
     

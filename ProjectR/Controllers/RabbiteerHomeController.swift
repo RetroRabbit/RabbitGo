@@ -9,23 +9,14 @@
 import UIKit
 import Material
 import Icomoon
+import Firebase
 
 class RabbiteerHomeController : UITableNavigationController {
     static let instance = RabbiteerHomeController()
     
-    fileprivate let userObject: Position = Position()
+    fileprivate var userObject: Player?
     
-    fileprivate let rabbiteers: [Leader] = [
-        Leader(position: 1, fullname: "Todd", questionsAnswered: 15),
-        Leader(position: 2, fullname: "Todd", questionsAnswered: 13),
-        Leader(position: 3, fullname: "Todd", questionsAnswered: 12),
-        Leader(position: 4, fullname: "Todd", questionsAnswered: 12),
-        Leader(position: 5, fullname: "Todd", questionsAnswered: 10),
-        Leader(position: 6, fullname: "Todd", questionsAnswered: 8),
-        Leader(position: 7, fullname: "Todd", questionsAnswered: 7),
-        Leader(position: 8, fullname: "Todd", questionsAnswered: 6),
-        Leader(position: 9, fullname: "Todd", questionsAnswered: 2)
-    ]
+    fileprivate var rabbiteers: [Leader] = []
     
     init() {
         super.init(hiding: NavigationHide.toBottom)
@@ -43,6 +34,54 @@ class RabbiteerHomeController : UITableNavigationController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        refRabbiteers.observeSingleEvent(of: .value, with: { [weak self] snapshot in
+            guard let this = self else { return }
+            if let dataSnap = snapshot.children.allObjects as? [DataSnapshot] {
+                this.rabbiteers = dataSnap.flatMap({ snap -> Leader? in
+                    if let name = snap.childSnapshot(forPath: "displayName").value as? String,
+                        let score = snap.childSnapshot(forPath: "score").value as? Int {
+                        
+                        if currentUserId() == snap.key {
+                            this.userObject = Player.decode(snapshot: snap)
+                            return Leader(code: snap.key, name: name, questionsAnswered: Int64(score), currentUser: true)
+                        } else {
+                            return Leader(code: snap.key, name: name, questionsAnswered: Int64(score))
+                        }
+                    }
+                    return nil
+                })
+                
+                this.rabbiteers.sort { $0.questionsAnswered > $1.questionsAnswered }
+                
+                var temp: [Leader] = []
+                
+                for (index, object) in this.rabbiteers.enumerated() {
+                    let prevIndex = (index-1)
+                    
+                    if prevIndex < 0 {
+                        temp.append(Leader(position: 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                    } else {
+                        let prevObject = temp[prevIndex]
+                        if prevObject.questionsAnswered == object.questionsAnswered {
+                            temp.append(Leader(position: prevObject.position, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                        } else {
+                            temp.append(Leader(position: prevObject.position + 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                        }
+                    }
+                }
+                
+                self?.rabbiteers = temp
+                
+                this.userObject?.individualRanking = Int64(self?.rabbiteers.first(where: { leader -> Bool in return leader.code == currentUserId() })?.position ?? 0)
+                    
+                self?.tableView.reloadData()
+            }
+        })
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.separatorStyle = .none
@@ -51,6 +90,7 @@ class RabbiteerHomeController : UITableNavigationController {
         tableView.register(RabbiteerHeaderCell.self, forCellReuseIdentifier: RabbiteerHeaderCell.reuseIdentifier)
         tableView.register(LeaderBoardCell.self, forCellReuseIdentifier: LeaderBoardCell.reuseIdentifier)
         tableView.alwaysBounceVertical = false
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
         
         /* This hides the extra separators for empty rows. See http://stackoverflow.com/a/5377569/1469018 */
         tableView.tableFooterView = UIView()

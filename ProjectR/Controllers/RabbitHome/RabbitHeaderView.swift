@@ -122,7 +122,7 @@ class RabbitHeaderView: UIView {
     static func height() -> CGFloat {
         return 40 + 20 + //list button height 40
             NSAttributedString(string: "Rabbits Ranking", attributes: Style.avenirh_large_white).height(forWidth: Screen.width - 20) + 20 +
-            NSAttributedString(string: "#", attributes: Style.avenirl_extra_small_white_center).height(forWidth: Screen.width - 20) + 20 + 5
+            NSAttributedString(string: "#", attributes: Style.avenirl_extra_small_white_center).height(forWidth: Screen.width - 20)
     }
 }
 
@@ -142,6 +142,20 @@ extension RabbitHeaderView {
             lblTeam.attributedText = NSAttributedString(string: "TEAM", attributes: Style.avenirh_medium_white_center)
             delegate?.onSelectionChange(selection: .individual)
             lblRankTitle.attributedText = NSAttributedString(string: "RABBIT", attributes: Style.avenirl_extra_small_white)
+        }
+    }
+    
+    func setCurrentSelection(selection: Selection) {
+        if selection == Selection.individual {
+            lblIndividual.backgroundColor = Style.color.green
+            lblIndividual.attributedText = NSAttributedString(string: "INDIVIDUAL", attributes: Style.avenirh_medium_grey_dark_center)
+            lblTeam.backgroundColor = Style.color.grey_dark
+            lblTeam.attributedText = NSAttributedString(string: "TEAM", attributes: Style.avenirh_medium_white_center)
+        } else {
+            lblIndividual.backgroundColor = Style.color.grey_dark
+            lblIndividual.attributedText = NSAttributedString(string: "INDIVIDUAL", attributes: Style.avenirh_medium_white_center)
+            lblTeam.backgroundColor = Style.color.green
+            lblTeam.attributedText = NSAttributedString(string: "TEAM", attributes: Style.avenirh_medium_grey_dark_center)
         }
     }
 }

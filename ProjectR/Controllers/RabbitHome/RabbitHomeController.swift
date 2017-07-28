@@ -10,31 +10,37 @@ import Foundation
 import UIKit
 import Material
 import Icomoon
+import Firebase
+import FirebaseAuth
+import RxSwift
 
 struct Leader {
     var position: Int = 0
-    var fullname: String = ""
-    var questionsAnswered: Int = 0
+    var code: String = ""
+    var name: String = ""
+    var questionsAnswered: Int64 = 0
+    var currentUser: Bool = false
     
-    init(position: Int, fullname: String, questionsAnswered: Int) {
-        self.position = position
-        self.fullname = fullname
+    init(code: String, name: String, questionsAnswered: Int64) {
+        self.code = code
+        self.name = name
         self.questionsAnswered = questionsAnswered
     }
-}
-
-struct Position {
-    var fullname: String = "Niell"
-    var questionsUnanswered: Int = 10
-    var questions: Int = 20
-    var position: Int64 = 43
     
-    /*init(fullname: String, questionsUnanswered: Int, questions: Int, position: Int64) {
-        self.fullname = fullname
-        self.questionsUnanswered = questionsUnanswered
-        self.questions = questions
+    init(position: Int, code: String, name: String, questionsAnswered: Int64, currentUser: Bool) {
         self.position = position
-    }*/
+        self.code = code
+        self.name = name
+        self.questionsAnswered = questionsAnswered
+        self.currentUser = currentUser
+    }
+    
+    init(code: String, name: String, questionsAnswered: Int64, currentUser: Bool) {
+        self.code = code
+        self.name = name
+        self.questionsAnswered = questionsAnswered
+        self.currentUser = currentUser
+    }
 }
 
 class RabbitHomeController : UITableNavigationController {
@@ -42,31 +48,13 @@ class RabbitHomeController : UITableNavigationController {
     
     var currentSelection: Selection = Selection.individual
     
-    fileprivate let userObject: Position = Position()
+    fileprivate var userObject: Rabbit?
     
-    fileprivate let leaders: [Leader] = [
-        Leader(position: 1, fullname: "Todd", questionsAnswered: 15),
-        Leader(position: 2, fullname: "Todd", questionsAnswered: 13),
-        Leader(position: 3, fullname: "Todd", questionsAnswered: 12),
-        Leader(position: 4, fullname: "Todd", questionsAnswered: 12),
-        Leader(position: 5, fullname: "Todd", questionsAnswered: 10),
-        Leader(position: 6, fullname: "Todd", questionsAnswered: 8),
-        Leader(position: 7, fullname: "Todd", questionsAnswered: 7),
-        Leader(position: 8, fullname: "Todd", questionsAnswered: 6),
-        Leader(position: 9, fullname: "Todd", questionsAnswered: 2)
-    ]
+    fileprivate var leaders: [Leader] = []
     
-    fileprivate let teams: [Leader] = [
-        Leader(position: 1, fullname: "Team 1", questionsAnswered: 15),
-        Leader(position: 2, fullname: "Team 2", questionsAnswered: 13),
-        Leader(position: 3, fullname: "Team 2", questionsAnswered: 12),
-        Leader(position: 4, fullname: "Team 3", questionsAnswered: 12),
-        Leader(position: 5, fullname: "Team 4", questionsAnswered: 10),
-        Leader(position: 6, fullname: "Team 5", questionsAnswered: 8),
-        Leader(position: 7, fullname: "Team 6", questionsAnswered: 7),
-        Leader(position: 8, fullname: "Team 7", questionsAnswered: 6),
-        Leader(position: 9, fullname: "Team 8", questionsAnswered: 2)
-    ]
+    fileprivate var teams: [Leader] = []
+    
+    fileprivate var reload: PublishSubject = PublishSubject<()>()
     
     init() {
         super.init(hiding: NavigationHide.toBottom)
@@ -78,6 +66,11 @@ class RabbitHomeController : UITableNavigationController {
         tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Home, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
         tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Home, textColor: Style.color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
         tableView.allowsMultipleSelectionDuringEditing = false
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
+        
+        _ = reload.debounce(0.1, scheduler: MainScheduler.instance).subscribe(onNext: { [weak self] _ in
+            self?.tableView.reloadData()
+        })
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -100,6 +93,99 @@ class RabbitHomeController : UITableNavigationController {
     override func prepareToolbar() {
         setTitle("Leaderboard Position #43", subtitle: nil)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        refCurrentRabbit().observeSingleEvent(of: DataEventType.value, with: { [weak self] (snapshot) in
+            guard let this = self else { return }
+            this.userObject = Rabbit.decode(snapshot: snapshot)
+            refRabbitBoard.observeSingleEvent(of: .value, with: { [weak self] snapshot in
+                if let dataSnap = snapshot.children.allObjects as? [DataSnapshot],
+                    let code = this.userObject?.code {
+                    this.leaders = dataSnap.flatMap({ dataSnap -> Leader in
+                        let answersSnap = dataSnap.children.allObjects as! [DataSnapshot]
+                        let questionsAnswered = answersSnap.flatMap({ snap -> Int64 in
+                            let bool = snap.value as? Bool ?? false
+                            return bool ? 1 : 0
+                        }).reduce(0, +)
+                        var leader = Leader(code: dataSnap.key, name: "", questionsAnswered: questionsAnswered)
+                        if dataSnap.key == code {
+                            leader.currentUser = true
+                            self?.userObject?.questionsAnswered = leader.questionsAnswered
+                        }
+                        return leader
+                    })
+                    
+                    this.leaders.sort { $0.questionsAnswered > $1.questionsAnswered }
+                    
+                    var temp: [Leader] = []
+                    
+                    for (index, object) in this.leaders.enumerated() {
+                        let prevIndex = (index-1)
+                        
+                        if prevIndex < 0 {
+                            temp.append(Leader(position: 1, code: object.code, name: "", questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                        } else {
+                            let prevObject = temp[prevIndex]
+                            if prevObject.questionsAnswered == object.questionsAnswered {
+                                temp.append(Leader(position: prevObject.position, code: object.code, name: "", questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                            } else {
+                                temp.append(Leader(position: prevObject.position + 1, code: object.code, name: "", questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                            }
+                        }
+                    }
+                    
+                    this.leaders = temp
+                    
+                    this.userObject?.individualRanking = Int64(self?.leaders.first(where: { leader -> Bool in return leader.code == code })?.position ?? 0)
+                    this.reload.onNext(())
+                }
+            })
+            
+            refRabbitTeamBoard.observeSingleEvent(of: .value, with: { [weak self] snapshot in
+                if let dataSnap = snapshot.children.allObjects as? [DataSnapshot],
+                    let code = this.userObject?.team {
+                    this.teams = dataSnap.flatMap({ dataSnap -> Leader in
+                        let answersSnap = dataSnap.children.allObjects as! [DataSnapshot]
+                        let questionsAnswered = answersSnap.flatMap({ snap -> Int64 in
+                            let bool = snap.value as? Bool ?? false
+                            return bool ? 1 : 0
+                        }).reduce(0, +)
+                        var leader = Leader(code: dataSnap.key, name: dataSnap.key, questionsAnswered: questionsAnswered)
+                        if dataSnap.key == code {
+                            leader.currentUser = true
+                        }
+                        return leader
+                    })
+                    
+                    this.teams.sort { $0.questionsAnswered > $1.questionsAnswered }
+                    
+                    var temp: [Leader] = []
+                    
+                    for (index, object) in this.teams.enumerated() {
+                        let prevIndex = (index-1)
+                        
+                        if prevIndex < 0 {
+                            temp.append(Leader(position: 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                        } else {
+                            let prevObject = temp[prevIndex]
+                            if prevObject.questionsAnswered == object.questionsAnswered {
+                                temp.append(Leader(position: prevObject.position, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                            } else {
+                                temp.append(Leader(position: prevObject.position + 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                            }
+                        }
+                    }
+                    
+                    this.teams = temp
+                    
+                    this.userObject?.teamRanking = Int64(self?.teams.first(where: { leader -> Bool in return leader.code == code })?.position ?? 0)
+                    this.reload.onNext(())
+                }
+            })
+        })
+    }
 }
 
 extension RabbitHomeController {
@@ -118,6 +204,7 @@ extension RabbitHomeController {
         case 1:
             let view = RabbitHeaderView()
             view.delegate = self
+            view.setCurrentSelection(selection: currentSelection)
             return view
         default:
             return nil
@@ -162,31 +249,6 @@ extension RabbitHomeController {
 extension RabbitHomeController: RabbitHeaderCellDelegate {
     func onSelectionChange(selection: Selection) {
         self.currentSelection = selection
-        var deletes: [IndexPath] = []
-        var inserts: [IndexPath] = []
-        for i in 0...(leaders.count - 1) {
-            if currentSelection == .individual {
-                inserts.append(IndexPath(row: i, section: 1))
-            } else {
-                deletes.append(IndexPath(row: i, section: 1))
-            }
-        }
-        for i in 0...(teams.count - 1) {
-            if currentSelection == .individual {
-                deletes.append(IndexPath(row: i, section: 1))
-            } else {
-                inserts.append(IndexPath(row: i, section: 1))
-            }
-        }
-        
-        let lastScrollOffset = tableView.contentOffset
-        
-        tableView.beginUpdates()
-        tableView.insertRows(at: inserts, with: .none)
-        tableView.deleteRows(at: deletes, with: .none)
-        tableView.endUpdates()
-
-        tableView.layer.removeAllAnimations()
-        tableView.setContentOffset(lastScrollOffset, animated: false)
+        tableView.reloadSections([1], with: .automatic)
     }
 }

@@ -114,13 +114,13 @@ class RabbiteerHeaderCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func prepareForDisplay(object: Position) {
-        lblHeading.attributedText = NSAttributedString(string: "Welcome \(object.fullname)!", attributes: Style.avenirh_extra_large_white)
-        let att = NSMutableAttributedString(attributedString: NSAttributedString(string: "09", attributes: Style.rhino_big_green_center))
-        att.append(NSAttributedString(string: "/20", attributes: Style.rhino_large_green))
+    func prepareForDisplay(object: Player?) {
+        lblHeading.attributedText = NSAttributedString(string: "Hi \(object?.displayName?.components(separatedBy: " ").first ?? "")!", attributes: Style.avenirh_extra_large_white)
+        let att = NSMutableAttributedString(attributedString: NSAttributedString(string: "\(object?.score ?? 0)", attributes: Style.rhino_big_green_center))
+        att.append(NSAttributedString(string: "/21", attributes: Style.rhino_large_green))
         
         lblQuestionsAnswered.attributedText = att
-        lblRabbiteerRanking.attributedText = NSAttributedString(string: "#10", attributes: Style.rhino_big_green_center)
+        lblRabbiteerRanking.attributedText = NSAttributedString(string: "#\(object?.individualRanking ?? 0)", attributes: Style.rhino_big_green_center)
     }
     
     override func layoutSubviews() {
