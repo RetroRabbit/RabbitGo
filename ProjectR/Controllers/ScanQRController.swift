@@ -159,7 +159,7 @@ class ScanQRController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
                 })
                 
                 self.navigationController?.popViewController(animated: true)
-                self.tabBarController?.selectedIndex = 0
+                self.tabBarController?.selectedIndex = 1
             }))
         }
     

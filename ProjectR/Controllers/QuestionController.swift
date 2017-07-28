@@ -120,50 +120,61 @@ extension QuestionController: SubmitDelegate {
     
     /* Protocol submit */
     func onSubmit() {
-        /* Check for selected answer */
-        guard let lastTapped = lastTapped else { return }
-        
         let tfCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as! SubmitCell
         let rabbitCode = tfCell.tfRabbitCode.text
         
-        if isValidRabbitCode(code: rabbitCode) {
-            if lastTapped.row == (question.answer as? Int ?? 0) {
-                // Correct answer
-                refCurrentUserQuestions().observeSingleEvent(of: .value, with: { [weak self] (dataSnapShot) in
-                    guard let this = self else { return }
-                    let answeredQuestion = dataSnapShot.childSnapshot(forPath: this.question.qrCode ?? "")
-                    answeredQuestion.childSnapshot(forPath: "state").ref.setValue(2)
-                    
-                    let ac = UIAlertController(title: "You unlocked Rabbit #\(this.index)", message: nil, preferredStyle: .alert)
-                    ac.addAction(UIAlertAction(title: "View", style: .default, handler: { _ in
-                        this.navigationController?.popViewController(animated: true)
-                        this.questionDelegate.answeredQuestion(index: this.index, selectedIndex: this.selectedIndex)
-                    }))
-                    this.present(ac, animated: true)
-                })
-            } else {
-                // Incorrect answer
-                let ac = UIAlertController(title: "Wrong answer!", message: nil, preferredStyle: .alert)
-                ac.addAction(UIAlertAction(title: "Ask another Rabbit", style: .default))
-                present(ac, animated: true)
+        verifyRabbitCode(code: rabbitCode, completion: verifyAnswer)
+    }
+    
+    func verifyRabbitCode(code: String?, completion: @escaping () -> ()) {
+        refRabbits.observeSingleEvent(of: .value, with: { (snapshot) in
+            let enumerator = snapshot.children
+            while let rabbit = enumerator.nextObject() as? DataSnapshot {
+                if rabbit.childSnapshot(forPath: "code").value as? String == code {
+                    completion()
+                    return
+                }
             }
-        } else {
             // Invalid rabbit code
             let ac = UIAlertController(title: "Invalid Rabbit Code", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "Try again", style: .default))
+            self.present(ac, animated: true)
+            completion()
+        })
+    }
+    
+    func verifyAnswer() {
+        /* Check for selected answer */
+        guard let lastTapped = lastTapped else {
+            // No answer selected
+            let ac = UIAlertController(title: "Please pick an answer", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Dismiss", style: .default))
+            present(ac, animated: true)
+            return
+        }
+        
+        if lastTapped.row == Int(question.answer ?? 0) {
+            // Correct answer
+            refCurrentUserQuestions().observeSingleEvent(of: .value, with: { [weak self] (dataSnapShot) in
+                guard let this = self else { return }
+                let answeredQuestion = dataSnapShot.childSnapshot(forPath: this.question.qrCode ?? "")
+                answeredQuestion.childSnapshot(forPath: "state").ref.setValue(2)
+
+                let ac = UIAlertController(title: "You unlocked Rabbit #\(this.index)", message: nil, preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "View", style: .default, handler: { _ in
+                    this.navigationController?.popViewController(animated: true)
+                    this.questionDelegate.answeredQuestion(index: this.index, selectedIndex: this.selectedIndex)
+                }))
+                this.present(ac, animated: true)
+            })
+        } else {
+            // Incorrect answer
+            let ac = UIAlertController(title: "Wrong answer!", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Ask another Rabbit", style: .default))
             present(ac, animated: true)
         }
     }
-    
-    func isValidRabbitCode(code: String?) -> Bool {
-        for rabbit in firebaseRabbits {
-            if rabbit?.code == code {
-                return true
-            }
-        }
-        
-        return false
-    }
+
 }
 
 protocol SubmitDelegate: class {

@@ -14,30 +14,11 @@ import Firebase
 class QuestionsController: UIViewNavigationController {
     static let instance = QuestionsController()
     fileprivate let scrollView = UIScrollView(forAutoLayout: ())
+    fileprivate let strLocked = "image_square_grey"
+    fileprivate let strUnlocked = "image_square_white"
+    fileprivate let strAnswered = "image_square_green"
     
-    fileprivate var questions: [String] = [
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey"
-    ]
+    fileprivate var questions: [String] = Array(repeating: "image_square_grey", count: 21)
     
     private let lblHeading: UILabel = {
         let label = UILabel()
@@ -112,14 +93,29 @@ class QuestionsController: UIViewNavigationController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        for (index, question) in firebaseQuestions.enumerated() {
-            if question?.state == 1 {
-                questions[index] = "image_square_white"
-            } else if question?.state == 2 {
-                questions[index] = "image_square_green"
+        refresh()
+    }
+
+    func refresh() {
+        refCurrentUserQuestions().observeSingleEvent(of: .value, with: { (snapshot) in
+            let enumerator = snapshot.children
+            var i = 0
+            while let userQuestions = enumerator.nextObject() as? DataSnapshot {
+                let state = userQuestions.childSnapshot(forPath: "state").value as? Int ?? 1
+                switch state {
+                case 0:
+                    self.questions[i] = "image_square_grey"
+                case 1:
+                    self.questions[i] = "image_square_white"
+                case 2:
+                    self.questions[i] = "image_square_green"
+                default:
+                    self.questions[i] = "image_square_grey"
+                }
+                i += 1
             }
-        }
-        QuestionsCollection.reloadData()
+            self.QuestionsCollection.reloadData()
+        })
     }
     
     override func prepareToolbar() {
@@ -178,20 +174,21 @@ extension QuestionsController: UICollectionViewDataSource, UICollectionViewDeleg
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // Shhhhh Wesley, our secret
+        let reAdjustedIndex = indexPath.item % 3 == 0 ? indexPath.item + 2 : indexPath.item - 1
+        
         guard let question = firebaseQuestions[indexPath.item] else { return }
         
-        if question.state == 0 {
+        if questions[indexPath.item] == strAnswered {
+            // Already answered
+            // TODO: Better show something
+        } else if questions[indexPath.item] == strUnlocked {
+            let vc = QuestionController(question: question, index: reAdjustedIndex, selectedIndex: indexPath, delegate: self)
+            self.pushViewController(vc, animated: true)
+        } else {
             // Locked question tap
             let ac = UIAlertController(title: "Locked question", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "Please scan the relevant QR code", style: .default))
-            present(ac, animated: true)
-        } else if question.state == 1 {
-            let vc = QuestionController(question: question, index: indexPath.item + 1, selectedIndex: indexPath, delegate: self)
-            self.pushViewController(vc, animated: true)
-        } else if question.state == 2 {
-            // Unlocked question
-            let ac = UIAlertController(title: "Question is unlocked", message: nil, preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "No time to waste", style: .default))
             present(ac, animated: true)
         }
     }
