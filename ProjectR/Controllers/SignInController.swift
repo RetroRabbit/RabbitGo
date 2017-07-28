@@ -200,7 +200,7 @@ extension SignInController {
         refQuestions.observeSingleEvent(of: .value, with: { (questionSnapshot) in
             for child in questionSnapshot.children {
                 if let snap = child as? DataSnapshot {
-                    refCurrentUserQuestions().child(snap.key).setValue(PlayerQuestion(state: QuestionState.locked.rawValue).formatted())
+                    refCurrentUserQuestions().child(snap.key).setValue(PlayerQuestion(state: QuestionState.locked.rawValue).formatted(), withCompletionBlock: { (err, ref) in })
                 }
             }
         })
