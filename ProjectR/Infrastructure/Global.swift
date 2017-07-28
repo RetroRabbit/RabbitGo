@@ -30,6 +30,8 @@ var refRabbits = ref.child(RABBITS)
 var refRabbitTeamBoard = ref.child(RABBIT_TEAM_BOARD)
 var refRabbitBoard = ref.child(RABBIT_BOARD)
 var refAutoComplete = ref.child(AutoCompleteS)
+
+var firebaseRabbits: [Rabbit?] = []
 var firebaseQuestions: [Question?] = []
 
 func currentUserId() -> String { return auth.currentUser!.uid }

@@ -88,6 +88,19 @@ class QuestionsController: UIViewNavigationController {
                 firebaseQuestions.append(storedQuestion)
             }
         })
+        
+        // Stored firebase rabbits in a global array
+        refRabbits.observeSingleEvent(of: .value, with: { (snapshop) in
+            let enumerator = snapshop.children
+            while let rabbit = enumerator.nextObject() as? DataSnapshot {
+                let storedRabbit = Rabbit()
+                storedRabbit.code = rabbit.childSnapshot(forPath: "code").value as? String
+                storedRabbit.displayName = rabbit.childSnapshot(forPath: "displayName").value as? String
+                storedRabbit.email = rabbit.childSnapshot(forPath: "email").value as? String
+                storedRabbit.team = rabbit.childSnapshot(forPath: "team").value as? String
+                firebaseRabbits.append(storedRabbit)
+            }
+        })
     }
     
     required init?(coder aDecoder: NSCoder) {
