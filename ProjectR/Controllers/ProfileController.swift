@@ -10,11 +10,24 @@ import Foundation
 import UIKit
 import Material
 import Icomoon
+import Firebase
 
-class ProfileController: UIViewNavigationController {
+class ProfileController: UIViewNavigationController, UIImagePickerControllerDelegate {
     fileprivate let scrollView = UIScrollView(forAutoLayout: ())
     
     static let instance = ProfileController()
+    fileprivate let galleryPicker = UIImagePickerController()
+    fileprivate var flag = false
+    
+    private let imgViewDivider = UIImageView(image: UIImage(named: "textfield_line"))
+    
+    fileprivate static var university: [AutoComplete] = []
+    fileprivate static var degree: [AutoComplete] = []
+    fileprivate static var year: [AutoComplete] = []
+    
+    fileprivate var universityProvider: UniversityAutoCompleteProvider = UniversityAutoCompleteProvider()
+    fileprivate var degreeProvider: DegreeAutoCompleteProvider = DegreeAutoCompleteProvider()
+    fileprivate var yearProvider: YearAutoCompleteProvider = YearAutoCompleteProvider()
     
     private let lblHeading: UILabel = {
         let label = UILabel()
@@ -24,12 +37,11 @@ class ProfileController: UIViewNavigationController {
         return label
     }()
     
-    private let imgViewDivider = UIImageView(image: UIImage(named: "textfield_line"))
-    
-    private let imgProfilePlaceholder: UIImageView = {
+    fileprivate let imgProfilePlaceholder: UIImageView = {
         let placeholder = UIImageView(image: UIImage(named: "image_placeholder"))
-        placeholder.contentMode = .scaleAspectFit
+        placeholder.contentMode = .scaleAspectFill
         placeholder.clipsToBounds = true
+        placeholder.layer.cornerRadius = 50;
         return placeholder
         
     }()
@@ -42,36 +54,37 @@ class ProfileController: UIViewNavigationController {
         
     }()
     
-    private let nameEntry: ProjectRTextField = {
+    fileprivate let nameEntry: ProjectRTextField = {
         let entry = ProjectRTextField()
         entry.placeholder = "Name & Surname"
         return entry
     }()
     
     
-    private let emailEntry: ProjectRTextField = {
+    fileprivate let emailEntry: ProjectRTextField = {
         let entry = ProjectRTextField()
         entry.placeholder = "Email"
         return entry
     }()
     
     
-    private let universityEntry: ProjectRTextField = {
-        let entry = ProjectRTextField()
+    fileprivate var universityEntry: AutoCompleteTextField = {
+        let entry = AutoCompleteTextField()
+//        entry.autoCompleteProvider = UniversityAutoCompleteProvider()
         entry.placeholder = "University"
         return entry
     }()
     
     
-    private let degreeEntry: ProjectRTextField = {
-        let entry = ProjectRTextField()
+    fileprivate let degreeEntry: AutoCompleteTextField = {
+        let entry = AutoCompleteTextField()
         entry.placeholder = "Course/Degree"
         return entry
     }()
     
     
-    private let yearEntry: ProjectRTextField = {
-        let entry = ProjectRTextField()
+    fileprivate let yearEntry: AutoCompleteTextField = {
+        let entry = AutoCompleteTextField()
         entry.placeholder = "Year"
         return entry
     }()
@@ -79,7 +92,7 @@ class ProfileController: UIViewNavigationController {
     lazy var editButton:ProjectRButton = {
         let btn = ProjectRButton()
         btn.setTitle("SAVE", for: .normal)
-        btn.addTarget(self, action: #selector(SignInController.onNext), for: UIControlEvents.touchUpInside)
+        btn.addTarget(self, action: #selector(onSave), for: UIControlEvents.touchUpInside)
         return btn
     }()
     
@@ -97,6 +110,36 @@ class ProfileController: UIViewNavigationController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        refAutoComplete.observeSingleEvent(of: .value, with: { (snapShot) in
+            
+            for child in snapShot.childSnapshot(forPath: "universities").children {
+                if let snap = child as? DataSnapshot,
+                    let name = snap.childSnapshot(forPath: "name").value as? String,
+                    let nick = snap.childSnapshot(forPath: "nick").value as? String {
+                    ProfileController.university.append(AutoComplete(name: name, nick: nick))
+                }
+            }
+            
+            for child in snapShot.childSnapshot(forPath: "degrees").children {
+                if let snap = child as? DataSnapshot,
+                    let name = snap.childSnapshot(forPath: "name").value as? String,
+                    let nick = snap.childSnapshot(forPath: "nick").value as? String {
+                    ProfileController.degree.append(AutoComplete(name: name, nick: nick))
+                }
+            }
+            
+            for child in snapShot.childSnapshot(forPath: "years").children {
+                if let snap = child as? DataSnapshot,
+                    let name = snap.childSnapshot(forPath: "name").value as? String,
+                    let nick = snap.childSnapshot(forPath: "nick").value as? String {
+                    ProfileController.year.append(AutoComplete(name: name, nick: nick))
+                }
+            }
+        })
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
@@ -111,9 +154,36 @@ class ProfileController: UIViewNavigationController {
         scrollView.addSubview(nameEntry)
         scrollView.addSubview(emailEntry)
         scrollView.addSubview(universityEntry)
+        universityEntry.autoCompleteProvider = universityProvider
+        universityEntry.setupAutoComplete()
+        
         scrollView.addSubview(degreeEntry)
+        degreeEntry.autoCompleteProvider = degreeProvider
+        degreeEntry.setupAutoComplete()
+        
         scrollView.addSubview(yearEntry)
+        yearEntry.autoCompleteProvider = yearProvider
+        yearEntry.setupAutoComplete()
+        
         scrollView.addSubview(editButton)
+        
+        imgChangeProfile.isUserInteractionEnabled = true
+        imgChangeProfile.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(uploadProfile)))
+        
+        nameEntry.addTarget(self, action: #selector(updateTextfields), for: .editingChanged)
+        emailEntry.addTarget(self, action: #selector(updateTextfields), for: .editingChanged)
+        universityEntry.addTarget(self, action: #selector(updateTextfields), for: .editingChanged)
+        degreeEntry.addTarget(self, action: #selector(updateTextfields), for: .editingChanged)
+        yearEntry.addTarget(self, action: #selector(updateTextfields), for: .editingChanged)
+        
+        refCurrentUser().observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
+            self.nameEntry.text = snapshot.childSnapshot(forPath: "displayName").value as? String
+            self.emailEntry.text = snapshot.childSnapshot(forPath: "email").value as? String
+            self.universityEntry.text = snapshot.childSnapshot(forPath: "university").value as? String
+            self.degreeEntry.text = snapshot.childSnapshot(forPath: "degree").value as? String
+            self.yearEntry.text = snapshot.childSnapshot(forPath: "year").value as? String
+        })
+
     }
     
     override func prepareToolbar() {
@@ -130,8 +200,8 @@ class ProfileController: UIViewNavigationController {
         
         imgViewDivider.frame = CGRect(x: Style.input_center, y: lblHeading.frame.bottom - 40, width: Style.input_width, height: imgViewDivider.intrinsicContentSize.height)
         
-        let x = (Screen.width - imgProfilePlaceholder.intrinsicContentSize.width)/2
-        imgProfilePlaceholder.frame = CGRect(x: x, y: imgViewDivider.frame.bottom + 20, width: imgProfilePlaceholder.frame.width, height: imgProfilePlaceholder.frame.height)
+        let x = (Screen.width - 100)/2
+        imgProfilePlaceholder.frame = CGRect(x: x, y: imgViewDivider.frame.bottom + 20, width: 100, height: 100)
         
         imgChangeProfile.frame = CGRect(x: imgProfilePlaceholder.frame.right - 36, y: imgProfilePlaceholder.frame.bottom - 36, width: 36, height: 36)
         
@@ -151,5 +221,160 @@ class ProfileController: UIViewNavigationController {
         editButton.frame = CGRect(x: 40, y: yearEntry.frame.bottom + 40, width: Screen.width - 80, height: Style.button_height)
         
         scrollView.contentSize = CGSize(width: Screen.width, height: editButton.frame.bottom + 20)
+    }
+}
+
+extension ProfileController{
+
+    func onSave(){
+        flag = true
+        guard let fullname = nameEntry.text,
+            let email = emailEntry.text,
+            let university = universityEntry.text,
+            let degree = degreeEntry.text,
+            let year = yearEntry.text,
+            !fullname.isEmpty,
+            !email.isEmpty,
+            !university.isEmpty,
+            !degree.isEmpty,
+            !year.isEmpty
+            else {
+                updateTextfields()
+                return
+        }
+        refCurrentUser().observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
+            snapshot.ref.setValue(Player(email: email, displayName: fullname, university: university, degree: degree, year: year).formatted(), withCompletionBlock: { (error, ref) in
+                    self?.navigationController?.pushViewController(ProfileController(), animated: false)
+                })
+        })
+        
+        if let image = imgProfilePlaceholder.image,
+            let imageData: Data = UIImagePNGRepresentation(image) {
+            let imgRef = profilePicsRef.child("\(currentUserId())")
+            let uploadTask = imgRef.putData(imageData, metadata: nil) { (metadata, error) in
+                guard let metadata = metadata else {
+                    // Uh-oh, an error occurred!
+                    return
+                }
+                // Metadata contains file metadata such as size, content-type, and download URL.
+                let downloadURL = metadata.downloadURL
+            }
+//            let uploadTask = profilePicsRef.child("\(currentUserId())").putData(imageData) { (metadata, error) in
+//                print()
+//                
+//            }
+////            uploadTask.observe(.resume){ (snapshot) in
+////                self.imgProfilePlaceholder.image = snapshot.
+//            }
+        }
+        
+    }
+    
+    func updateTextfields() {
+        guard flag
+        
+        else{
+            return
+        }
+        
+        if let fullname = nameEntry.text, fullname.isEmpty {
+            nameEntry.detail = "Required"
+            nameEntry.isErrorRevealed = true
+        }
+        else {
+            nameEntry.isErrorRevealed = false
+        }
+        
+        if let email = emailEntry.text, email.isEmpty {
+            emailEntry.detail = "Required"
+            emailEntry.isErrorRevealed = true
+        }
+        else {
+            emailEntry.isErrorRevealed = false
+        }
+        
+        if let university = universityEntry.text, university.isEmpty {
+            universityEntry.detail = "Required"
+            universityEntry.isErrorRevealed = true
+        }
+        else {
+            universityEntry.isErrorRevealed = false
+        }
+        
+        if let degree = degreeEntry.text, degree.isEmpty {
+            degreeEntry.detail = "Required"
+            degreeEntry.isErrorRevealed = true
+        }
+        else {
+            degreeEntry.isErrorRevealed = false
+        }
+        
+        if let year = yearEntry.text, year.isEmpty {
+            yearEntry.detail = "Required"
+            yearEntry.isErrorRevealed = true
+        }
+        else {
+            yearEntry.isErrorRevealed = false
+        }
+        
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        defer {
+            picker.dismiss(animated: true)
+        }
+        
+        print(info)
+        guard let image = info[UIImagePickerControllerOriginalImage] as? UIImage else {
+            return
+        }
+        
+        imgProfilePlaceholder.image = image
+        
+        
+        
+        
+    }
+    
+    func uploadProfile() {
+        guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else {
+            print("can't open photo library")
+            return
+        }
+        
+        galleryPicker.sourceType = .photoLibrary
+        galleryPicker.delegate = self
+        present(galleryPicker, animated: true)
+        
+        }
+    
+    final class UniversityAutoCompleteProvider: AutoCompleteProvider {
+        func provideSuggestionsForAutoCompleteTextField(_ textField: AutoCompleteTextField, forString string: String, toCallback callback: @escaping ([AutoCompleteTextField.Suggestion]) -> Void) {
+            callback(ProfileController.university.filter { object -> Bool in
+                return object.toString().lowercased().contains(string.lowercased())
+                }.map({ object -> AutoCompleteTextField.Suggestion in
+                    return AutoCompleteTextField.Suggestion(text: object.name ?? "", subtext: object.nick ?? "")
+                }))
+        }
+    }
+    
+    final class DegreeAutoCompleteProvider: AutoCompleteProvider {
+        func provideSuggestionsForAutoCompleteTextField(_ textField: AutoCompleteTextField, forString string: String, toCallback callback: @escaping ([AutoCompleteTextField.Suggestion]) -> Void) {
+            callback(ProfileController.degree.filter { object -> Bool in
+                return object.toString().lowercased().contains(string.lowercased())
+                }.map({ object -> AutoCompleteTextField.Suggestion in
+                    return AutoCompleteTextField.Suggestion(text: object.name ?? "", subtext: object.nick ?? "")
+                }))
+        }
+    }
+    
+    final class YearAutoCompleteProvider: AutoCompleteProvider {
+        func provideSuggestionsForAutoCompleteTextField(_ textField: AutoCompleteTextField, forString string: String, toCallback callback: @escaping ([AutoCompleteTextField.Suggestion]) -> Void) {
+            callback(ProfileController.year.filter { object -> Bool in
+                return object.toString().lowercased().contains(string.lowercased())
+                }.map({ object -> AutoCompleteTextField.Suggestion in
+                    return AutoCompleteTextField.Suggestion(text: object.name ?? "", subtext: object.nick ?? "")
+                }))
+        }
     }
 }
