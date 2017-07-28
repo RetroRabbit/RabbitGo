@@ -141,12 +141,6 @@ extension SignInController {
                 }
                 return
         }
-        // TODO: Might need to use this later on to allow user sign out
-//        do {
-//            try Auth.auth().signOut()
-//        } catch {
-//            NSLog("❌ Error signing out - \(error.localizedDescription)")
-//        }
         
         Auth.auth().createUser(withEmail: email, password: email) { [weak self] (user, error) in
             if let _ = error {
@@ -200,7 +194,11 @@ extension SignInController {
         refQuestions.observeSingleEvent(of: .value, with: { (questionSnapshot) in
             for child in questionSnapshot.children {
                 if let snap = child as? DataSnapshot {
-                    refCurrentUserQuestions().child(snap.key).setValue(PlayerQuestion(state: QuestionState.locked.rawValue).formatted(), withCompletionBlock: { (err, ref) in })
+                    refCurrentUserQuestions().child(snap.key).setValue(PlayerQuestion(state: QuestionState.locked.rawValue).formatted(), withCompletionBlock: { (err, ref) in
+                        if let error = err {
+                            NSLog("❌ Question creation error - \(error.localizedDescription)\nRef: \(ref)")
+                        }
+                    })
                 }
             }
         })

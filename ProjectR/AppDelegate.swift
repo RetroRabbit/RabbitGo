@@ -27,6 +27,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         
         InternalSetup()
         
+        // Enable this to allow signing out by testing accounts
+//        do {
+//            try Auth.auth().signOut()
+//        } catch {
+//            NSLog("❌ Error signing out - \(error.localizedDescription)")
+//        }
+
+        
         if Auth.auth().currentUser != nil {
             window?.rootViewController = TabNavigationController()
         } else {
