@@ -43,3 +43,4 @@ Pods/
 Carthage/Build
 
 GoogleService-Info.plist
+.DS_Store
