@@ -14,6 +14,8 @@ import Firebase
 class QuestionsController: UIViewNavigationController {
     static let instance = QuestionsController()
     
+    fileprivate let scrollView = UIScrollView(forAutoLayout: ())
+    
     fileprivate var questions: [String] = [
         "image_square_grey",
         "image_square_grey",
@@ -68,7 +70,7 @@ class QuestionsController: UIViewNavigationController {
         tabBarItem.setTitleTextAttributes(Style.avenirh_xsmall_white_center, for: .normal)
         tabBarItem.title = "Rabbit Q,s"
         tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Questions, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
-        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Questions, textColor: Color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
+        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Questions, textColor: Style.color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
         
         // Store firebase questions in a global array
         refQuestions.observeSingleEvent(of: .value, with: { (snapshot) in
@@ -106,20 +108,20 @@ class QuestionsController: UIViewNavigationController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         for (index, question) in firebaseQuestions.enumerated() {
             if question?.state == 1 {
                 questions[index] = "image_square_white"
             } else if question?.state == 2 {
-                questions[index] == "image_square_green"
+                questions[index] = "image_square_green"
             }
         }
         
-        collectionView?.reloadData()
+        QuestionsCollection.reloadData()
     }
     
     override func prepareToolbar() {
         setTitle("Leaderboard Position #43", subtitle: nil)
-        //view.backgroundColor = Style.color.grey_dark
     }
     
     override func viewDidLayoutSubviews() {
@@ -166,7 +168,7 @@ extension QuestionsController: UICollectionViewDataSource, UICollectionViewDeleg
         return cell
     }
     
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let question = firebaseQuestions[indexPath.item] {
             let vc = QuestionController(question: question, index: indexPath.item + 1)
             self.pushViewController(vc, animated: true)

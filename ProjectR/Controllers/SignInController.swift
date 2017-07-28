@@ -209,8 +209,7 @@ extension SignInController {
     
     private func navigateToDetails() {
         if isRabbit(user: auth.currentUser) {
-            //TODO: add user leadboard redirect
-            self.navigationController?.pushViewController(WelcomeController(), animated: true)
+            //tab with rabbit leader
         } else {
             refCurrentUser().observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
                 if let year = snapshot.childSnapshot(forPath: "year").value as? String,
@@ -219,9 +218,7 @@ extension SignInController {
                     year.isEmpty, degree.isEmpty, university.isEmpty {
                     self.navigationController?.pushViewController(profileCreateController(), animated: true)
                 } else {
-                    // TODO: Fix Sign-in
                     self.navigationController?.pushViewController(WelcomeController(), animated: true)
-                    //(UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: UINavigationController(rootViewController: TabNavigationController()))
                 }
             })
         }

@@ -172,7 +172,7 @@ class WelcomeController: UIViewController {
     }
     
     func onNext() {
-        (UIApplication.shared.delegate as! AppDelegate).SetNavigationRoot(rootController: TabNavigationController())
+        (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController = TabNavigationController()
     }
 }
 
