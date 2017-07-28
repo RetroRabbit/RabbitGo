@@ -73,19 +73,10 @@ class QuestionsController: UIViewNavigationController {
         
         // Store firebase questions in a global array
         refQuestions.observeSingleEvent(of: .value, with: { (snapshot) in
-            let enumerator = snapshot.children
-            while let question = enumerator.nextObject() as? DataSnapshot {
-                let storedQuestion = Question()
-                storedQuestion.qrCode = question.key as? NSString
-                storedQuestion.answer = question.childSnapshot(forPath: "answer").value as? NSNumber
-                storedQuestion.text = question.childSnapshot(forPath: "text").value as? NSString
-                
-                var multiple: [NSString] = []
-                multiple.append(question.childSnapshot(forPath: "multiple").childSnapshot(forPath: "0").value as? NSString ?? "")
-                multiple.append(question.childSnapshot(forPath: "multiple").childSnapshot(forPath: "1").value as? NSString ?? "")
-                multiple.append(question.childSnapshot(forPath: "multiple").childSnapshot(forPath: "2").value as? NSString ?? "")
-                storedQuestion.multiple = multiple
-                firebaseQuestions.append(storedQuestion)
+            if let dataSnap = snapshot.children.allObjects as? [DataSnapshot] {
+                firebaseQuestions = dataSnap.flatMap({ snap -> Question? in
+                    return Question.decode(snapshot: snap)
+                })
             }
         })
         
@@ -164,6 +155,13 @@ extension QuestionsController: QuestionsDelegate {
     }
 }
 
+extension QuestionsController: QuestionDelegate {
+    func answeredQuestion(index item: Int, selectedIndex indexPath: IndexPath) {
+        questions[indexPath.row] = "image_square_green"
+        QuestionsCollection.reloadItems(at: [indexPath])
+    }
+}
+
 extension QuestionsController: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -181,7 +179,7 @@ extension QuestionsController: UICollectionViewDataSource, UICollectionViewDeleg
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let question = firebaseQuestions[indexPath.item] {
-            let vc = QuestionController(question: question, index: indexPath.item + 1)
+            let vc = QuestionController(question: question, index: indexPath.item + 1, selectedIndex: indexPath, delegate: self)
             self.pushViewController(vc, animated: true)
         }
     }

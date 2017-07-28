@@ -137,12 +137,12 @@ class Rabbit {
 }
 
 class Question {
-    var text: NSString? = nil
-    var multiple: [NSString]? = nil
-    var free: NSString? = nil
-    var answer: NSNumber? = nil
-    var qrCode: NSString? = nil
-    var state: NSInteger = 0    // 0 = Locked, 1 = unlocked, 2 = answered
+    var text: String? = nil
+    var multiple: [String]? = nil
+    var free: String? = nil
+    var answer: Int64? = nil
+    var qrCode: String? = nil
+    var state: Int64 = 0    // 0 = Locked, 1 = unlocked, 2 = answered
     
     func formatted() -> [String:Any] {
         var value: [String:Any] = [:]
@@ -152,6 +152,23 @@ class Question {
         if let _multiple = multiple { value["multiple"] = _multiple }
     
         return value
+    }
+    
+    static func decode(snapshot: DataSnapshot) -> Question {
+        let question = Question()
+        question.qrCode = snapshot.key
+        question.text = snapshot.childSnapshot(forPath: "text").value as? String ?? ""
+        question.free = snapshot.childSnapshot(forPath: "free").value as? String ?? ""
+        question.answer = snapshot.childSnapshot(forPath: "answer").value as? Int64 ?? 0
+        question.state = snapshot.childSnapshot(forPath: "state").value as? Int64 ?? 0
+        
+        question.multiple = [
+            snapshot.childSnapshot(forPath: "multiple").childSnapshot(forPath: "0").value as? String ?? "",
+            snapshot.childSnapshot(forPath: "multiple").childSnapshot(forPath: "1").value as? String ?? "",
+            snapshot.childSnapshot(forPath: "multiple").childSnapshot(forPath: "2").value as? String ?? ""
+        ]
+        
+        return question
     }
 }
 

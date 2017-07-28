@@ -10,16 +10,25 @@ import Foundation
 import UIKit
 import PureLayout
 import Material
+import Firebase
+
+protocol QuestionDelegate {
+    func answeredQuestion(index: Int, selectedIndex: IndexPath)
+}
 
 class QuestionController: UITableViewController {
     /* Data */
-    fileprivate var lastTapped: IndexPath?
+    fileprivate var lastTapped: IndexPath?   // Which self.tableView cell was last tapped
     fileprivate let question: Question
     fileprivate let index: Int
+    fileprivate let selectedIndex: IndexPath // Which parent collection cell brough you here
+    fileprivate let questionDelegate: QuestionDelegate
     
-    init(question: Question, index: Int) {
+    init(question: Question, index: Int, selectedIndex: IndexPath, delegate: QuestionDelegate) {
         self.question = question
         self.index = index
+        self.selectedIndex = selectedIndex
+        self.questionDelegate = delegate
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -96,27 +105,64 @@ extension QuestionController: SubmitDelegate {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Remove previous check mark
-        if let lastTapped = lastTapped {
-            let cell = tableView.cellForRow(at: lastTapped) as! OptionCell
-            cell.imgCheckMark.isHidden = true
+        if indexPath.section == 0 {
+            if let lastTapped = lastTapped {
+                let cell = tableView.cellForRow(at: lastTapped) as! OptionCell
+                cell.imgCheckMark.isHidden = true
+            }
+            
+            // Set new check mark
+            lastTapped = indexPath
+            let cell = tableView.cellForRow(at: indexPath) as! OptionCell
+            cell.imgCheckMark.isHidden = false
         }
-        
-        // Set new check mark
-        lastTapped = indexPath
-        let cell = tableView.cellForRow(at: indexPath) as! OptionCell
-        cell.imgCheckMark.isHidden = false
     }
     
     /* Protocol submit */
     func onSubmit() {
+        /* Check for selected answer */
+        guard let lastTapped = lastTapped else { return }
+        
         let tfCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as! SubmitCell
         let rabbitCode = tfCell.tfRabbitCode.text
         
-        if let rabbitCode = rabbitCode {
-            //refCurrentUser
+        if isValidRabbitCode(code: rabbitCode) {
+            if lastTapped.row == (question.answer as? Int ?? 0) {
+                // Correct answer
+                refCurrentUserQuestions().observeSingleEvent(of: .value, with: { [weak self] (dataSnapShot) in
+                    guard let this = self else { return }
+                    let answeredQuestion = dataSnapShot.childSnapshot(forPath: this.question.qrCode ?? "")
+                    answeredQuestion.childSnapshot(forPath: "state").ref.setValue(2)
+                    
+                    let ac = UIAlertController(title: "You unlocked Rabbit #\(this.index)", message: nil, preferredStyle: .alert)
+                    ac.addAction(UIAlertAction(title: "View", style: .default, handler: { _ in
+                        this.navigationController?.popViewController(animated: true)
+                        this.questionDelegate.answeredQuestion(index: this.index, selectedIndex: this.selectedIndex)
+                    }))
+                    this.present(ac, animated: true)
+                })
+            } else {
+                // Incorrect answer
+                let ac = UIAlertController(title: "Wrong answer!", message: nil, preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "Ask another Rabbit", style: .default))
+                present(ac, animated: true)
+            }
         } else {
-            // TODO: Did not find a rabbit code
+            // Invalid rabbit code
+            let ac = UIAlertController(title: "Invalid Rabbit Code", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Try again", style: .default))
+            present(ac, animated: true)
         }
+    }
+    
+    func isValidRabbitCode(code: String?) -> Bool {
+        for rabbit in firebaseRabbits {
+            if rabbit?.code == code {
+                return true
+            }
+        }
+        
+        return false
     }
 }
 
