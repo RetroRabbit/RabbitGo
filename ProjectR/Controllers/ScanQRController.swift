@@ -23,10 +23,10 @@ class ScanQRController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
     init() {
         super.init(nibName: nil, bundle: nil)
         
-        tabBarItem.setTitleTextAttributes(Style.avenirl_xsmall_white_center, for: .normal)
+        tabBarItem.setTitleTextAttributes(Style.avenirh_xsmall_white_center, for: .normal)
         tabBarItem.title = "ScanQR"
         tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Camera, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
-        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Camera, textColor: Color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
+        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Camera, textColor: Style.color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
     }
     
     required init?(coder aDecoder: NSCoder) {
