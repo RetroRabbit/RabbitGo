@@ -15,8 +15,6 @@ class QuestionsController: UIViewNavigationController {
     static let instance = QuestionsController()
     fileprivate let scrollView = UIScrollView(forAutoLayout: ())
     
-    fileprivate let scrollView = UIScrollView(forAutoLayout: ())
-    
     fileprivate var questions: [String] = [
         "image_square_grey",
         "image_square_grey",
