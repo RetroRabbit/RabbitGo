@@ -13,7 +13,7 @@ import Material
 
 class QuestionController: UITableViewController {
     /* Data */
-    fileprivate var lastTapped = -1
+    fileprivate var lastTapped: IndexPath?
     fileprivate let question: Question
     fileprivate let index: Int
     
@@ -28,7 +28,7 @@ class QuestionController: UITableViewController {
     }
 }
 
-extension QuestionController {
+extension QuestionController: SubmitDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.separatorStyle = .none
@@ -86,11 +86,42 @@ extension QuestionController {
             cell.prepareForDisplay(question: question, index: indexPath.row)
             return cell
         case 1:
-            return tableView.dequeueReusableCell(withIdentifier: SubmitCell.reuseIdentifier, for: indexPath as IndexPath) as! SubmitCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: SubmitCell.reuseIdentifier, for: indexPath as IndexPath) as! SubmitCell
+            cell.delegate = self
+            return cell
         default:
             return UITableViewCell()
         }
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Remove previous check mark
+        if let lastTapped = lastTapped {
+            let cell = tableView.cellForRow(at: lastTapped) as! OptionCell
+            cell.imgCheckMark.isHidden = true
+        }
+        
+        // Set new check mark
+        lastTapped = indexPath
+        let cell = tableView.cellForRow(at: indexPath) as! OptionCell
+        cell.imgCheckMark.isHidden = false
+    }
+    
+    /* Protocol submit */
+    func onSubmit() {
+        let tfCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as! SubmitCell
+        let rabbitCode = tfCell.tfRabbitCode.text
+        
+        if let rabbitCode = rabbitCode {
+            //refCurrentUser
+        } else {
+            // TODO: Did not find a rabbit code
+        }
+    }
+}
+
+protocol SubmitDelegate: class {
+    func onSubmit()
 }
 
 
@@ -110,7 +141,7 @@ class QuestionHeaderCell: UIView {
     fileprivate let lblQuestion: UILabel = {
         let label = UILabel()
         label.preferredMaxLayoutWidth = Screen.width
-        label.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_extra_large_grey_dark_center)
+        label.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_large_grey_dark_center)
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         return label
@@ -129,7 +160,7 @@ class QuestionHeaderCell: UIView {
     
     final func prepareForDisplay(question: Question, index: Int) {
         lblQuestionNumber.attributedText = NSAttributedString(string: "Question #\(index)", attributes: Style.avenirh_small_grey_dark_center)
-        lblQuestion.attributedText = NSAttributedString(string: question.text as String? ?? "", attributes: Style.avenirh_extra_large_grey_dark_center)
+        lblQuestion.attributedText = NSAttributedString(string: question.text as String? ?? "", attributes: Style.avenirh_large_grey_dark_center)
         
         layoutIfNeeded()
     }
@@ -142,7 +173,7 @@ class QuestionHeaderCell: UIView {
     }
     
     static func height(question: Question, index: Int) -> CGFloat {
-        return NSAttributedString(string: question.text as String? ?? "", attributes: Style.avenirh_extra_large_grey_dark_center).height(forWidth: Screen.width) + 15 +
+        return NSAttributedString(string: question.text as String? ?? "", attributes: Style.avenirh_large_grey_dark_center).height(forWidth: Screen.width) + 15 +
                 NSAttributedString(string: "Question #\(index)", attributes: Style.avenirh_small_grey_dark_center).height(forWidth: Screen.width) + 30
     }
 }
@@ -164,6 +195,7 @@ class OptionCell: UITableViewCell {
         let img = UIImageView(image: UIImage(named: "checkmark"))
         img.contentMode = .scaleAspectFit
         img.clipsToBounds = true
+        img.isHidden = true
         return img
     }()
     
@@ -241,8 +273,11 @@ class OptionCell: UITableViewCell {
 class SubmitCell: UITableViewCell {
     class var reuseIdentifier: String { return "submitCell" }
     
+    /* Data */
+    weak var delegate: SubmitDelegate?
+    
     /* UI */
-    private let tfRabbitCode: ProjectRTextField = {
+    let tfRabbitCode: ProjectRTextField = {
         let textField = ProjectRTextField()
         textField.placeholder = "Unique Rabbit Code"
         return textField
@@ -251,7 +286,7 @@ class SubmitCell: UITableViewCell {
     lazy var btnSubmit :ProjectRButton = {
         let btn = ProjectRButton()
         btn.setTitle("SUBMIT", for: .normal)
-        btn.addTarget(self, action: #selector(SignInController.onNext), for: UIControlEvents.touchUpInside)
+        btn.addTarget(self, action: #selector(onSubmit), for: UIControlEvents.touchUpInside)
         return btn
     }()
     
@@ -295,4 +330,9 @@ class SubmitCell: UITableViewCell {
         return 40 + 20 +
         Style.button_height + 40
     }
+    
+    func onSubmit() {
+        delegate?.onSubmit()
+    }
+    
 }

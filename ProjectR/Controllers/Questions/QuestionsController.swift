@@ -15,8 +15,6 @@ class QuestionsController: UIViewNavigationController {
     static let instance = QuestionsController()
     fileprivate let scrollView = UIScrollView(forAutoLayout: ())
     
-    fileprivate let scrollView = UIScrollView(forAutoLayout: ())
-    
     fileprivate var questions: [String] = [
         "image_square_grey",
         "image_square_grey",
@@ -83,9 +81,9 @@ class QuestionsController: UIViewNavigationController {
                 storedQuestion.text = question.childSnapshot(forPath: "text").value as? NSString
                 
                 var multiple: [NSString] = []
-                multiple.append(question.childSnapshot(forPath: "mutiple").childSnapshot(forPath: "0").value as? NSString ?? "")
-                multiple.append(question.childSnapshot(forPath: "mutiple").childSnapshot(forPath: "1").value as? NSString ?? "")
-                multiple.append(question.childSnapshot(forPath: "mutiple").childSnapshot(forPath: "2").value as? NSString ?? "")
+                multiple.append(question.childSnapshot(forPath: "multiple").childSnapshot(forPath: "0").value as? NSString ?? "")
+                multiple.append(question.childSnapshot(forPath: "multiple").childSnapshot(forPath: "1").value as? NSString ?? "")
+                multiple.append(question.childSnapshot(forPath: "multiple").childSnapshot(forPath: "2").value as? NSString ?? "")
                 storedQuestion.multiple = multiple
                 firebaseQuestions.append(storedQuestion)
             }

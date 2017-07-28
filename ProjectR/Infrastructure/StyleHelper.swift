@@ -90,6 +90,7 @@ struct Style {
     static let avenir_medium_white = [NSForegroundColorAttributeName: Style.color.white, NSFontAttributeName: ProjectRFont.AvenirLightOblique(with: Style.font.font_medium), NSParagraphStyleAttributeName: left]
     static let avenirh_small_grey_dark_center = [NSForegroundColorAttributeName: Style.color.grey_dark, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_small), NSParagraphStyleAttributeName: center]
     static let avenirh_extra_large_grey_dark_center = [NSForegroundColorAttributeName: Style.color.grey_dark, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_extra_large), NSParagraphStyleAttributeName: center]
+    static let avenirh_large_grey_dark_center = [NSForegroundColorAttributeName: Style.color.grey_dark, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_large), NSParagraphStyleAttributeName: center]
     static let avenirh_extra_large_white = [NSForegroundColorAttributeName: Style.color.white, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_extra_large), NSParagraphStyleAttributeName: left]
     static let avenirl_small_white = [NSForegroundColorAttributeName: Style.color.white, NSFontAttributeName: ProjectRFont.AvenirLightOblique(with: Style.font.font_small), NSParagraphStyleAttributeName: left]
     static let avenirl_extra_small_white = [NSForegroundColorAttributeName: Style.color.white, NSFontAttributeName: ProjectRFont.AvenirLightOblique(with: Style.font.font_extra_small), NSParagraphStyleAttributeName: left]
