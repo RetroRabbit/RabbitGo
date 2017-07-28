@@ -178,9 +178,21 @@ extension QuestionsController: UICollectionViewDataSource, UICollectionViewDeleg
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let question = firebaseQuestions[indexPath.item] {
+        guard let question = firebaseQuestions[indexPath.item] else { return }
+        
+        if question.state == 0 {
+            // Locked question tap
+            let ac = UIAlertController(title: "Locked question", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Please scan the relevant QR code", style: .default))
+            present(ac, animated: true)
+        } else if question.state == 1 {
             let vc = QuestionController(question: question, index: indexPath.item + 1, selectedIndex: indexPath, delegate: self)
             self.pushViewController(vc, animated: true)
+        } else if question.state == 2 {
+            // Unlocked question
+            let ac = UIAlertController(title: "Question is unlocked", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "No time to waste", style: .default))
+            present(ac, animated: true)
         }
     }
 }
