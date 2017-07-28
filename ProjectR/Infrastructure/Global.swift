@@ -122,14 +122,13 @@ class Rabbit {
         return value
     }
     
-    static func decode(snapshot: DataSnapshot) -> Rabbit {
+    static func decode(dataSnap: DataSnapshot) -> Rabbit {
         let rabbit = Rabbit()
-        if let dataSnap = snapshot.children.allObjects.first as? DataSnapshot {
-            rabbit.email = dataSnap.childSnapshot(forPath: "email").value as? String ?? ""
-            rabbit.displayName = dataSnap.childSnapshot(forPath: "displayName").value as? String ?? ""
-            rabbit.code = dataSnap.childSnapshot(forPath: "code").value as? String ?? ""
-            rabbit.team = dataSnap.childSnapshot(forPath: "team").value as? String ?? ""
-        }
+        rabbit.email = dataSnap.childSnapshot(forPath: "email").value as? String ?? ""
+        rabbit.displayName = dataSnap.childSnapshot(forPath: "displayName").value as? String ?? ""
+        rabbit.code = dataSnap.childSnapshot(forPath: "code").value as? String ?? ""
+        rabbit.team = dataSnap.childSnapshot(forPath: "team").value as? String ?? ""
+        
         return rabbit
     }
 }
@@ -148,7 +147,7 @@ class Question {
         if let _free = free { value["free"] = _free }
         if let _answer = answer { value["answer"] = _answer }
         if let _multiple = multiple { value["multiple"] = _multiple }
-    
+        
         return value
     }
 }

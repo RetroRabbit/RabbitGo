@@ -50,6 +50,8 @@ class RabbitHomeController : UITableNavigationController {
     
     fileprivate var userObject: Rabbit?
     
+    fileprivate var rabbits: [Rabbit] = []
+    
     fileprivate var leaders: [Leader] = []
     
     fileprivate var teams: [Leader] = []
@@ -97,93 +99,113 @@ class RabbitHomeController : UITableNavigationController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        refCurrentRabbit().observeSingleEvent(of: DataEventType.value, with: { [weak self] (snapshot) in
+        if self.rabbits.count == 0 {
+            refRabbits.observeSingleEvent(of: DataEventType.value, with: { [weak self] (rabbitSnapshot) in
+                guard let this = self else { return }
+                if let dataSnap = rabbitSnapshot.children.allObjects as? [DataSnapshot] {
+                    this.rabbits = dataSnap.flatMap({ snap -> Rabbit in
+                        return Rabbit.decode(dataSnap: snap)
+                    })
+                    
+                    this.userObject = this.rabbits.first(where: { leader -> Bool in return leader.email == currentUserEmail() })
+                    
+                    this.fetchRelevantData()
+                }
+            })
+        } else {
+            fetchRelevantData()
+        }
+    }
+    
+    func fetchRelevantData() {
+        refRabbitBoard.observeSingleEvent(of: .value, with: { [weak self] boardSnapshot in
             guard let this = self else { return }
-            this.userObject = Rabbit.decode(snapshot: snapshot)
-            refRabbitBoard.observeSingleEvent(of: .value, with: { [weak self] snapshot in
-                if let dataSnap = snapshot.children.allObjects as? [DataSnapshot],
-                    let code = this.userObject?.code {
-                    this.leaders = dataSnap.flatMap({ dataSnap -> Leader in
-                        let answersSnap = dataSnap.children.allObjects as! [DataSnapshot]
-                        let questionsAnswered = answersSnap.flatMap({ snap -> Int64 in
-                            let bool = snap.value as? Bool ?? false
-                            return bool ? 1 : 0
-                        }).reduce(0, +)
-                        var leader = Leader(code: dataSnap.key, name: "", questionsAnswered: questionsAnswered)
-                        if dataSnap.key == code {
-                            leader.currentUser = true
-                            self?.userObject?.questionsAnswered = leader.questionsAnswered
-                        }
-                        return leader
-                    })
-                    
-                    this.leaders.sort { $0.questionsAnswered > $1.questionsAnswered }
-                    
-                    var temp: [Leader] = []
-                    
-                    for (index, object) in this.leaders.enumerated() {
-                        let prevIndex = (index-1)
-                        
-                        if prevIndex < 0 {
-                            temp.append(Leader(position: 1, code: object.code, name: "", questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
-                        } else {
-                            let prevObject = temp[prevIndex]
-                            if prevObject.questionsAnswered == object.questionsAnswered {
-                                temp.append(Leader(position: prevObject.position, code: object.code, name: "", questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
-                            } else {
-                                temp.append(Leader(position: prevObject.position + 1, code: object.code, name: "", questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
-                            }
-                        }
-                    }
-                    
-                    this.leaders = temp
-                    
-                    this.userObject?.individualRanking = Int64(self?.leaders.first(where: { leader -> Bool in return leader.code == code })?.position ?? 0)
-                    this.reload.onNext(())
-                }
-            })
             
-            refRabbitTeamBoard.observeSingleEvent(of: .value, with: { [weak self] snapshot in
-                if let dataSnap = snapshot.children.allObjects as? [DataSnapshot],
-                    let code = this.userObject?.team {
-                    this.teams = dataSnap.flatMap({ dataSnap -> Leader in
-                        let answersSnap = dataSnap.children.allObjects as! [DataSnapshot]
-                        let questionsAnswered = answersSnap.flatMap({ snap -> Int64 in
-                            let bool = snap.value as? Bool ?? false
-                            return bool ? 1 : 0
-                        }).reduce(0, +)
-                        var leader = Leader(code: dataSnap.key, name: dataSnap.key, questionsAnswered: questionsAnswered)
-                        if dataSnap.key == code {
-                            leader.currentUser = true
-                        }
-                        return leader
-                    })
+            if let dataSnap = boardSnapshot.children.allObjects as? [DataSnapshot],
+                let code = this.userObject?.code {
+                this.leaders = dataSnap.flatMap({ dataSnap -> Leader in
+                    let answersSnap = dataSnap.children.allObjects as! [DataSnapshot]
+                    let questionsAnswered = answersSnap.flatMap({ snap -> Int64 in
+                        let bool = snap.value as? Bool ?? false
+                        return bool ? 1 : 0
+                    }).reduce(0, +)
                     
-                    this.teams.sort { $0.questionsAnswered > $1.questionsAnswered }
+                    var leader = Leader(code: dataSnap.key, name: this.rabbits.first(where: { leader -> Bool in return leader.code == dataSnap.key })?.displayName ?? "", questionsAnswered: questionsAnswered)
+                    if dataSnap.key == code {
+                        leader.currentUser = true
+                        self?.userObject?.questionsAnswered = leader.questionsAnswered
+                    }
+                    return leader
+                })
+                
+                this.leaders.sort { $0.questionsAnswered > $1.questionsAnswered }
+                
+                var temp: [Leader] = []
+                
+                for (index, object) in this.leaders.enumerated() {
+                    let prevIndex = (index-1)
                     
-                    var temp: [Leader] = []
-                    
-                    for (index, object) in this.teams.enumerated() {
-                        let prevIndex = (index-1)
-                        
-                        if prevIndex < 0 {
-                            temp.append(Leader(position: 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                    if prevIndex < 0 {
+                        temp.append(Leader(position: 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                    } else {
+                        let prevObject = temp[prevIndex]
+                        if prevObject.questionsAnswered == object.questionsAnswered {
+                            temp.append(Leader(position: prevObject.position, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
                         } else {
-                            let prevObject = temp[prevIndex]
-                            if prevObject.questionsAnswered == object.questionsAnswered {
-                                temp.append(Leader(position: prevObject.position, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
-                            } else {
-                                temp.append(Leader(position: prevObject.position + 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
-                            }
+                            temp.append(Leader(position: prevObject.position + 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
                         }
                     }
-                    
-                    this.teams = temp
-                    
-                    this.userObject?.teamRanking = Int64(self?.teams.first(where: { leader -> Bool in return leader.code == code })?.position ?? 0)
-                    this.reload.onNext(())
                 }
-            })
+                
+                this.leaders = temp
+                
+                this.userObject?.individualRanking = Int64(self?.leaders.first(where: { leader -> Bool in return leader.code == code })?.position ?? 0)
+                this.reload.onNext(())
+            }
+        })
+        
+        refRabbitTeamBoard.observeSingleEvent(of: .value, with: { [weak self] teamSnapshot in
+            guard let this = self else { return }
+            
+            if let dataSnap = teamSnapshot.children.allObjects as? [DataSnapshot],
+                let code = this.userObject?.team {
+                this.teams = dataSnap.flatMap({ dataSnap -> Leader in
+                    let answersSnap = dataSnap.children.allObjects as! [DataSnapshot]
+                    let questionsAnswered = answersSnap.flatMap({ snap -> Int64 in
+                        let bool = snap.value as? Bool ?? false
+                        return bool ? 1 : 0
+                    }).reduce(0, +)
+                    var leader = Leader(code: dataSnap.key, name: dataSnap.key, questionsAnswered: questionsAnswered)
+                    if dataSnap.key == code {
+                        leader.currentUser = true
+                    }
+                    return leader
+                })
+                
+                this.teams.sort { $0.questionsAnswered > $1.questionsAnswered }
+                
+                var temp: [Leader] = []
+                
+                for (index, object) in this.teams.enumerated() {
+                    let prevIndex = (index-1)
+                    
+                    if prevIndex < 0 {
+                        temp.append(Leader(position: 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                    } else {
+                        let prevObject = temp[prevIndex]
+                        if prevObject.questionsAnswered == object.questionsAnswered {
+                            temp.append(Leader(position: prevObject.position, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                        } else {
+                            temp.append(Leader(position: prevObject.position + 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                        }
+                    }
+                }
+                
+                this.teams = temp
+                
+                this.userObject?.teamRanking = Int64(self?.teams.first(where: { leader -> Bool in return leader.code == code })?.position ?? 0)
+                this.reload.onNext(())
+            }
         })
     }
 }
