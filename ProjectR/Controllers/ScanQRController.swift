@@ -6,6 +6,7 @@
 //  Copyright © 2017 Retro Rabbit Professional Services. All rights reserved.
 //
 
+import Firebase
 import AVFoundation
 import UIKit
 import Material
@@ -118,16 +119,54 @@ class ScanQRController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
     
     /* Once QR code is detected */
     func found(code: String) {
-        let alert = UIAlertController(title: "You scanned QR #7", message: nil, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.cancel, handler: { _ in
-            if (self.captureSession?.isRunning == false) {
-                self.captureSession.startRunning();
-            }
-        }))
-        alert.addAction(UIAlertAction(title: "View", style: .default, handler: { _ in
-            // TODO: Open scanned QR question
-        }))
+//        refQuestion(questionId: code).observeSingleEvent(of: .value, with: { (snapshot) in
+//            
+//        })
+        
+        let alert: UIAlertController
+        let (index, question) = questionScanned(qrCode: code)
+        
+        if index == -1 {
+            alert = UIAlertController(title: "Invalid QR code scanned", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.cancel, handler: { _ in
+                if (self.captureSession?.isRunning == false) {
+                    self.captureSession.startRunning();
+                }
+            }))
+        } else if question?.state ?? 0 > 0 {
+            alert = UIAlertController(title: "You've already scanned\nthis QR code!", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.cancel, handler: { _ in
+                if (self.captureSession?.isRunning == false) {
+                    self.captureSession.startRunning();
+                }
+            }))
+        } else {
+            alert = UIAlertController(title: "You scanned QR #\(index)", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.cancel, handler: { _ in
+                if (self.captureSession?.isRunning == false) {
+                    self.captureSession.startRunning();
+                }
+            }))
+            alert.addAction(UIAlertAction(title: "View", style: .default, handler: { _ in
+                // TODO: Open scanned QR question
+                question?.state = 1
+                firebaseQuestions[index] = question
+                self.navigationController?.popViewController(animated: true)
+                self.tabBarController?.selectedIndex = 0
+            }))
+        }
+    
         
         present(alert, animated: true, completion: nil)
+    }
+    
+    func questionScanned(qrCode: String) -> (Int, Question?) {
+        for (index, question) in firebaseQuestions.enumerated() {
+            if question?.qrCode as? String == qrCode {
+                return (index, question)
+            }
+        }
+        
+        return (-1, nil)
     }
 }

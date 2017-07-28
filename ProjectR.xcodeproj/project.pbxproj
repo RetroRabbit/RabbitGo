@@ -10,6 +10,8 @@
 		56818B7C1F12598C006CD915 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56818B7B1F12598C006CD915 /* AppDelegate.swift */; };
 		56818B861F12598C006CD915 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56818B841F12598C006CD915 /* LaunchScreen.storyboard */; };
 		72C0BC25DDF3DCB453E21494 /* Pods_ProjectR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3693F3043B239B34AE0E0676 /* Pods_ProjectR.framework */; };
+		9A0AC7B11F2A7B36000E9D60 /* ModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0AC7B01F2A7B36000E9D60 /* ModalViewController.swift */; };
+		9AD7E3E21F2A7CF100984587 /* QuestionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD7E3E11F2A7CF100984587 /* QuestionController.swift */; };
 		C704F4241F1D333000B6A816 /* TabNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C704F4231F1D333000B6A816 /* TabNavigationController.swift */; };
 		C704F42F1F1D36DE00B6A816 /* ToolNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C704F42E1F1D36DE00B6A816 /* ToolNavigationController.swift */; };
 		C7136DDB1F2222C7001D0695 /* ProjectRFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7136DDA1F2222C7001D0695 /* ProjectRFont.swift */; };
@@ -71,6 +73,8 @@
 		56818B7B1F12598C006CD915 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		56818B851F12598C006CD915 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		56818B871F12598C006CD915 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9A0AC7B01F2A7B36000E9D60 /* ModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalViewController.swift; sourceTree = "<group>"; };
+		9AD7E3E11F2A7CF100984587 /* QuestionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionController.swift; sourceTree = "<group>"; };
 		C704F4231F1D333000B6A816 /* TabNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabNavigationController.swift; sourceTree = "<group>"; };
 		C704F42E1F1D36DE00B6A816 /* ToolNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolNavigationController.swift; sourceTree = "<group>"; };
 		C7136DDA1F2222C7001D0695 /* ProjectRFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectRFont.swift; sourceTree = "<group>"; };
@@ -242,7 +246,9 @@
 				C7E9ACF71F28557700E1A148 /* Base */,
 				C7E9ACFE1F28557700E1A148 /* Questions */,
 				C7E9ACFB1F28557700E1A148 /* PrizesController.swift */,
+				9A0AC7B01F2A7B36000E9D60 /* ModalViewController.swift */,
 				C7E9ACFC1F28557700E1A148 /* ProfileController.swift */,
+				9AD7E3E11F2A7CF100984587 /* QuestionController.swift */,
 				C7E9ACFD1F28557700E1A148 /* profileCreateController.swift */,
 				C7E9AD001F28557700E1A148 /* ScanQRController.swift */,
 				C7E9AD011F28557700E1A148 /* SignInController.swift */,
@@ -360,7 +366,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		5BBF5D24483659622FB8F798 /* [CP] Copy Pods Resources */ = {
@@ -426,8 +432,10 @@
 				C7E9AD0A1F28557700E1A148 /* ScanQRController.swift in Sources */,
 				C72AB7E31F2A94B4001F8C2B /* RabbitHeaderView.swift in Sources */,
 				E97CC95D1F1D32F800AE4A67 /* PopupHelper.swift in Sources */,
+				9A0AC7B11F2A7B36000E9D60 /* ModalViewController.swift in Sources */,
 				C7E9AD0C1F28557700E1A148 /* WelcomeController.swift in Sources */,
 				C704F42F1F1D36DE00B6A816 /* ToolNavigationController.swift in Sources */,
+				9AD7E3E21F2A7CF100984587 /* QuestionController.swift in Sources */,
 				C7E9AD031F28557700E1A148 /* BaseNextController.swift in Sources */,
 				C72AB7DC1F2A8A1E001F8C2B /* LeaderBoardCell.swift in Sources */,
 				C7E9AD0E1F2855A100E1A148 /* QuestionsCell.swift in Sources */,
