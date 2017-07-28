@@ -33,7 +33,9 @@ var refAutoComplete = ref.child(AutoCompleteS)
 var firebaseQuestions: [Question?] = []
 
 func currentUserId() -> String { return auth.currentUser!.uid }
+func currentUserEmail() -> String { return auth.currentUser!.email ?? ""}
 func refCurrentUser() -> DatabaseReference { return refRabbiteers.child(currentUserId()) }
+func refCurrentRabbit() -> DatabaseQuery { return refRabbits.queryOrdered(byChild: "email").queryEqual(toValue: currentUserEmail()) }
 func refCurrentUserQuestions() -> DatabaseReference { return refCurrentUser().child(QUESTIONS) }
 func refQuestion(questionId: String) -> DatabaseReference { return refQuestions.child(questionId) }
 func refRabbitBoard(rabbitCode: String) -> DatabaseReference { return refRabbitBoard.child(rabbitCode) }
@@ -45,25 +47,30 @@ var profilePicsRef = storeRef.child(PROFILE_PICS)
 var currentUserProfilePic = profilePicsRef.child("${currentUserId()}.jpg")
 
 class Player {
-    var email: NSString? = nil
-    var displayName: NSString? = nil
+    var email: String? = nil
+    var displayName: String? = nil
     //var questions: HashMap<String, PlayerQuestion>? = nil
-    var score: NSNumber = 0
-    var university: NSString = ""
-    var degree: NSString = ""
-    var year: NSString = ""
+    var score: Int64 = 0
+    var university: String = ""
+    var degree: String = ""
+    var year: String = ""
+    var individualRanking: Int64 = 0
+    
+    init() {
+        
+    }
     
     init(email: String?, displayName: String?) {
-        if let _email = email as NSString? { self.email = _email }
-        if let _displayName = displayName as NSString? { self.displayName = _displayName }
+        self.email = email
+        self.displayName = displayName
     }
     
     init(email: String?, displayName: String?, university: String?, degree: String?, year: String?) {
-        if let _email = email as NSString? { self.email = _email }
-        if let _displayName = displayName as NSString? { self.displayName = _displayName }
-        if let _university = university as NSString? { self.university = _university }
-        if let _degree = degree as NSString? { self.degree = _degree }
-        if let _year = year as NSString? { self.year = _year }
+        self.email = email
+        self.displayName = displayName
+        self.university = university ?? ""
+        self.degree = degree ?? ""
+        self.year = year ?? ""
     }
     
     func formatted() -> [String:Any] {
@@ -83,13 +90,27 @@ class Player {
         
         return value
     }
+    
+    static func decode(snapshot: DataSnapshot) -> Player {
+        let player = Player()
+        player.email = snapshot.childSnapshot(forPath: "email").value as? String ?? ""
+        player.displayName = snapshot.childSnapshot(forPath: "displayName").value as? String ?? ""
+        player.score = snapshot.childSnapshot(forPath: "score").value as? Int64 ?? 0
+        player.university = snapshot.childSnapshot(forPath: "university").value as? String ?? ""
+        player.degree = snapshot.childSnapshot(forPath: "degree").value as? String ?? ""
+        player.year = snapshot.childSnapshot(forPath: "year").value as? String ?? ""
+        return player
+    }
 }
 
 class Rabbit {
-    var email: NSString? = nil
-    var displayName: NSString? = nil
-    var code: NSString? = nil
-    var team: NSString? = nil
+    var email: String? = nil
+    var displayName: String? = nil
+    var code: String? = nil
+    var team: String? = nil
+    var questionsAnswered: Int64 = 0
+    var individualRanking: Int64 = 0
+    var teamRanking: Int64 = 0
     
     func formatted() -> [String:Any] {
         var value: [String:Any] = [:]
@@ -99,6 +120,17 @@ class Rabbit {
         if let _team = team { value["team"] = _team }
         
         return value
+    }
+    
+    static func decode(snapshot: DataSnapshot) -> Rabbit {
+        let rabbit = Rabbit()
+        if let dataSnap = snapshot.children.allObjects.first as? DataSnapshot {
+            rabbit.email = dataSnap.childSnapshot(forPath: "email").value as? String ?? ""
+            rabbit.displayName = dataSnap.childSnapshot(forPath: "displayName").value as? String ?? ""
+            rabbit.code = dataSnap.childSnapshot(forPath: "code").value as? String ?? ""
+            rabbit.team = dataSnap.childSnapshot(forPath: "team").value as? String ?? ""
+        }
+        return rabbit
     }
 }
 

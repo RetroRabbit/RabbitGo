@@ -53,8 +53,15 @@ class LeaderBoardCell: UITableViewCell {
     
     func prepareForDisplay(object: Leader) {
         lblPosition.attributedText = NSAttributedString(string: "\(object.position)", attributes: Style.rhino_large_green_center)
-        lblFullname.attributedText = NSAttributedString(string: object.fullname, attributes: Style.avenirh_large_white)
-        lblQuestionsAnswered.attributedText = NSAttributedString(string: "\(object.questionsAnswered)", attributes: Style.avenirh_extra_large_white_right)
+       
+        if object.currentUser {
+            contentView.backgroundColor = Style.color.white
+            lblFullname.attributedText = NSAttributedString(string: object.name.components(separatedBy: " ").first ?? "", attributes: Style.avenirh_large_grey_dark)
+            lblQuestionsAnswered.attributedText = NSAttributedString(string: "\(object.questionsAnswered)", attributes: Style.avenirh_extra_large_grey_dark_right)
+        } else {
+            lblFullname.attributedText = NSAttributedString(string: object.name.components(separatedBy: " ").first ?? "", attributes: Style.avenirh_large_white)
+            lblQuestionsAnswered.attributedText = NSAttributedString(string: "\(object.questionsAnswered)", attributes: Style.avenirh_extra_large_white_right)
+        }
     }
     
     override func layoutSubviews() {
@@ -74,6 +81,7 @@ class LeaderBoardCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        contentView.backgroundColor = Style.color.grey_light
         lblPosition.attributedText = nil
         lblQuestionsAnswered.attributedText = nil
         lblFullname.attributedText = nil
