@@ -36,12 +36,12 @@ extension QuestionController {
         tableView.estimatedRowHeight = 100
         tableView.backgroundColor = Style.color.grey_dark
         
-        tableView.register(QuestionHeaderCell.self, forCellReuseIdentifier: QuestionHeaderCell.reuseIdentifier)
+        //tableView.register(QuestionHeaderCell.self, forCellReuseIdentifier: QuestionHeaderCell.reuseIdentifier)
         tableView.register(OptionCell.self, forCellReuseIdentifier: OptionCell.reuseIdentifier)
         tableView.register(SubmitCell.self, forCellReuseIdentifier: SubmitCell.reuseIdentifier)
         
         /* This hides the extra separators for empty rows. See http://stackoverflow.com/a/5377569/1469018 */
-        tableView.tableFooterView = UIView()
+        //tableView.tableFooterView = UIView()
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -59,6 +59,15 @@ extension QuestionController {
         }
     }
     
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        switch section {
+        case 0:
+            return QuestionHeaderCell.height(question: question, index: index)
+        default:
+            return 0.0
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
@@ -73,18 +82,11 @@ extension QuestionController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: OptionCell.reuseIdentifier, for: indexPath as IndexPath) as? OptionCell {
-                cell.prepareForDisplay(question: question, index: index)
-                return cell
-            } else {
-                return UITableViewCell()
-            }
+            let cell = tableView.dequeueReusableCell(withIdentifier: OptionCell.reuseIdentifier, for: indexPath as IndexPath) as! OptionCell
+            cell.prepareForDisplay(question: question, index: indexPath.row)
+            return cell
         case 1:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: SubmitCell.reuseIdentifier, for: indexPath as IndexPath) as? SubmitCell {
-                return cell
-            } else {
-                return UITableViewCell()
-            }
+            return tableView.dequeueReusableCell(withIdentifier: SubmitCell.reuseIdentifier, for: indexPath as IndexPath) as! SubmitCell
         default:
             return UITableViewCell()
         }
@@ -93,7 +95,7 @@ extension QuestionController {
 
 
 /* Table header cell */
-class QuestionHeaderCell: UITableViewCell {
+class QuestionHeaderCell: UIView {
     class var reuseIdentifier: String { return "questionCell" }
     
     /* UI */
@@ -114,13 +116,11 @@ class QuestionHeaderCell: UITableViewCell {
         return label
     }()
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = Material.Color.white
-        selectionStyle = .none
-        
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         addSubview(lblQuestionNumber)
         addSubview(lblQuestion)
+        backgroundColor = Material.Color.white
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -141,34 +141,31 @@ class QuestionHeaderCell: UITableViewCell {
         lblQuestion.frame = CGRect(x: 0, y: lblQuestionNumber.frame.bottom + 15, width: Screen.width, height: lblQuestion.intrinsicContentSize.height)
     }
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        lblQuestionNumber.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_small_grey_dark_center)
-        lblQuestion.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_extra_large_grey_dark_center)
-        
-        /* Trigger mask redraw */
-        setNeedsDisplay()
-    }
-    
-    override func sizeThatFits(_ size: CGSize) -> CGSize {
-        return CGSize(width: size.width, height: height())
-    }
-    
-    func height() -> CGFloat {
-        return lblQuestion.frame.bottom + 15
+    static func height(question: Question, index: Int) -> CGFloat {
+        return NSAttributedString(string: question.text as String? ?? "", attributes: Style.avenirh_extra_large_grey_dark_center).height(forWidth: Screen.width) + 15 +
+                NSAttributedString(string: "Question #\(index)", attributes: Style.avenirh_small_grey_dark_center).height(forWidth: Screen.width) + 30
     }
 }
-
-
-
 
 /* Option cell */
 class OptionCell: UITableViewCell {
     class var reuseIdentifier: String { return "optionCell" }
     
     /* UI */
-    fileprivate let imgOption: UIImageView
-    fileprivate let imgCheckMark: UIImageView
+    fileprivate let imgOption: UIImageView = UIImageView()/* {
+        //let img = UIImageView(image: UIImage(named: "answer_square_grey"))
+        //img.contentMode = .scaleAspectFit
+        //img.clipsToBounds = true
+        imgOption
+        return img
+    }()*/
+    
+    fileprivate let imgCheckMark: UIImageView = {
+        let img = UIImageView(image: UIImage(named: "checkmark"))
+        img.contentMode = .scaleAspectFit
+        img.clipsToBounds = true
+        return img
+    }()
     
     fileprivate let lblOption: UILabel = {
         let label = UILabel()
@@ -179,22 +176,13 @@ class OptionCell: UITableViewCell {
     }()
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        imgOption = UIImageView(image: UIImage(named: "answer_square_grey"))
-        imgOption.contentMode = .scaleAspectFit
-        imgOption.clipsToBounds = true
-        
-        imgCheckMark = UIImageView(image: UIImage(named: "checkmark"))
-        imgCheckMark.contentMode = .scaleAspectFit
-        imgCheckMark.clipsToBounds = true
-        
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        backgroundColor = Style.color.grey_dark
         selectionStyle = .none
-        
+        backgroundColor = Style.color.grey_dark
+        imgOption.backgroundColor = Style.color.grey_light
         addSubview(imgOption)
-        addSubview(imgCheckMark)
-        addSubview(lblOption)
+        imgOption.addSubview(imgCheckMark)
+        imgOption.addSubview(lblOption)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -203,15 +191,31 @@ class OptionCell: UITableViewCell {
     
     final func prepareForDisplay(question: Question, index: Int) {
         lblOption.attributedText = NSAttributedString(string: question.multiple?[index] as String? ?? "", attributes: Style.avenirh_small_white)
-        layoutIfNeeded()
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        imgOption.frame = CGRect(x: 0, y: 0, width: imgOption.intrinsicContentSize.width, height: imgOption.intrinsicContentSize.height)
-        imgCheckMark.frame = CGRect(x: 0, y: 0, width: imgCheckMark.intrinsicContentSize.width, height: imgCheckMark.intrinsicContentSize.height)
-        lblOption.frame = CGRect(x: imgCheckMark.frame.right + 10, y: imgOption.frame.top + imgOption.frame.height/2 - lblOption.frame.height/2, width: Screen.width, height: lblOption.intrinsicContentSize.height)
+        //contentView.frame = CGRect(x: 0, y: 0, width: Screen.width, height: height())
+        let height = max(lblOption.intrinsicContentSize.height,  imgCheckMark.intrinsicContentSize.height)
+        let width = Screen.width - 20
+        imgOption.frame =  CGRect(x: 10, y: 10, width: width, height: height + 20)
+        
+        //center checkmark to text
+        if lblOption.intrinsicContentSize.height > imgCheckMark.intrinsicContentSize.height {
+            lblOption.preferredMaxLayoutWidth = width - 28 - 20
+            lblOption.frame = CGRect(x: 20 + 28 + 10, y: 10, width: width, height: lblOption.intrinsicContentSize.height)
+            
+            let y = (imgOption.height - imgCheckMark.intrinsicContentSize.height) / 2
+            imgCheckMark.frame = CGRect(x: 10, y: y, width: imgCheckMark.intrinsicContentSize.width, height: imgCheckMark.intrinsicContentSize.height)
+            
+        } else {
+            imgCheckMark.frame = CGRect(x: 10, y: 10, width: imgCheckMark.intrinsicContentSize.width, height: imgCheckMark.intrinsicContentSize.height)
+            
+            let y = (imgOption.height - lblOption.intrinsicContentSize.height) / 2
+            lblOption.preferredMaxLayoutWidth = width - 28 - 20
+            lblOption.frame = CGRect(x: 20 + 28 + 10, y: y, width: width, height: lblOption.intrinsicContentSize.height)
+        }
     }
     
     override func prepareForReuse() {
@@ -228,7 +232,7 @@ class OptionCell: UITableViewCell {
     }
     
     func height() -> CGFloat {
-        return imgOption.frame.height
+        return max(lblOption.intrinsicContentSize.height,  imgCheckMark.intrinsicContentSize.height) + 40
     }
 }
 
@@ -253,7 +257,7 @@ class SubmitCell: UITableViewCell {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = Material.Color.white
+        backgroundColor = Style.color.grey_dark
         selectionStyle = .none
         
         addSubview(tfRabbitCode)
@@ -269,8 +273,10 @@ class SubmitCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        tfRabbitCode.frame = CGRect(x: Screen.width/2 - Screen.width * 0.7 / 2, y: 40, width: Screen.width * 0.7, height: tfRabbitCode.intrinsicContentSize.height)
-        btnSubmit.frame = CGRect(x: 0, y: tfRabbitCode.frame.bottom + 40, width: Screen.width, height: btnSubmit.intrinsicContentSize.height)
+        tfRabbitCode.frame = CGRect(x: Style.input_center, y: 20, width: Style.input_width, height: 40)
+        
+        let submitX = (Screen.width - Style.button_width)/2
+        btnSubmit.frame = CGRect(x: submitX, y: tfRabbitCode.frame.bottom + 20, width: Style.button_width, height: Style.button_height)
     }
     
     override func prepareForReuse() {
@@ -286,7 +292,39 @@ class SubmitCell: UITableViewCell {
     }
     
     func height() -> CGFloat {
-        return btnSubmit.frame.bottom + 20
+        return 40 + 20 +
+        Style.button_height + 40
     }
 }
+
+extension NSAttributedString {
+    func highlight(attributes: [String: Any]) -> NSAttributedString {
+        let regex = try! NSRegularExpression(pattern:"\\*(.*?)\\*", options: [])
+        let mutable = NSMutableAttributedString(attributedString: self)
+        let numberMatches = regex.numberOfMatches(in: mutable.string, options: [], range: NSMakeRange(0, mutable.string.characters.count))
+        for _ in 0 ..< numberMatches {
+            let range0 = regex.rangeOfFirstMatch(in: mutable.string, options: [], range: NSMakeRange(0, mutable.string.characters.count))
+            let range1 = NSRange(location: range0.location + 1, length: range0.length - 2)
+            mutable.replaceCharacters(
+                in: range0,
+                with: NSAttributedString(
+                    string: (mutable.string as NSString).substring(with: range1),
+                    attributes: attributes))
+        }
+        return mutable as NSAttributedString
+    }
+    
+    func height(forWidth width: CGFloat) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: nil)
+        return boundingBox.height
+    }
+    
+    func width(forHeight height: CGFloat) -> CGFloat {
+        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
+        let boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: nil)
+        return boundingBox.width
+    }
+}
+
 
