@@ -12,7 +12,7 @@ import Material
 class TabNavigationController: Material.BottomNavigationController {
     override init() {
         super.init(viewControllers: [
-            ToolNavigationController(rootViewController: RabbiteerHomeController.instance),//isRabbit(user: auth.currentUser) ? RabbitHomeController.instance : RabbiteerHomeController.instance),
+            ToolNavigationController(rootViewController: isRabbit(user: auth.currentUser) ? RabbitHomeController.instance : RabbiteerHomeController.instance),
             ToolNavigationController(rootViewController: QuestionsController.instance),
             ToolNavigationController(rootViewController: ScanQRController.instance),
             ToolNavigationController(rootViewController: ProfileController.instance)
