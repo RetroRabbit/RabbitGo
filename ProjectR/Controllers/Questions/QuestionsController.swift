@@ -13,6 +13,7 @@ import Firebase
 
 class QuestionsController: UIViewNavigationController {
     static let instance = QuestionsController()
+    fileprivate let scrollView = UIScrollView(forAutoLayout: ())
     
     fileprivate let scrollView = UIScrollView(forAutoLayout: ())
     
@@ -116,7 +117,6 @@ class QuestionsController: UIViewNavigationController {
                 questions[index] = "image_square_green"
             }
         }
-        
         QuestionsCollection.reloadData()
     }
     
