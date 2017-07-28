@@ -43,6 +43,7 @@ func isRabbit(user: User?) -> Bool { return user?.email?.contains("@retrorabbit.
 var storeRef = Storage.storage().reference()
 var profilePicsRef = storeRef.child(PROFILE_PICS)
 var currentUserProfilePic = profilePicsRef.child("${currentUserId()}.jpg")
+var profileImage: UIImage?
 
 class Player {
     var email: NSString? = nil

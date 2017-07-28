@@ -138,6 +138,10 @@ class ProfileController: UIViewNavigationController, UIImagePickerControllerDele
                 }
             }
         })
+        
+        if let profileImage = profileImage {
+            imgProfilePlaceholder.image = profileImage
+        }
     }
     
     override func viewDidLoad() {
@@ -249,23 +253,22 @@ extension ProfileController{
         })
         
         if let image = imgProfilePlaceholder.image,
-            let imageData: Data = UIImagePNGRepresentation(image) {
-            let imgRef = profilePicsRef.child("\(currentUserId())")
-            let uploadTask = imgRef.putData(imageData, metadata: nil) { (metadata, error) in
+            let imageData: Data = UIImageJPEGRepresentation(image, 0.6) {
+            let imgRef = profilePicsRef.child("\(currentUserId()).jpg")
+            var meta = StorageMetadata()
+            meta.setValue("image/jpeg", forKey: "contentType")
+            
+            let uploadTask = imgRef.putData(imageData, metadata: meta) { (metadata, error) in
                 guard let metadata = metadata else {
                     // Uh-oh, an error occurred!
                     return
                 }
                 // Metadata contains file metadata such as size, content-type, and download URL.
                 let downloadURL = metadata.downloadURL
+                self.imgProfilePlaceholder.image = image
+                self.imgProfilePlaceholder.reloadInputViews()
+                profileImage = image
             }
-//            let uploadTask = profilePicsRef.child("\(currentUserId())").putData(imageData) { (metadata, error) in
-//                print()
-//                
-//            }
-////            uploadTask.observe(.resume){ (snapshot) in
-////                self.imgProfilePlaceholder.image = snapshot.
-//            }
         }
         
     }
