@@ -41,6 +41,15 @@ struct Leader {
         self.questionsAnswered = questionsAnswered
         self.currentUser = currentUser
     }
+    
+    mutating func update(position: Int) {
+        self.position = position
+    }
+    
+    mutating func update(name: String, questionsAnswered: Int64) {
+        self.name = name
+        self.questionsAnswered = questionsAnswered
+    }
 }
 
 class RabbitHomeController : UITableNavigationController {
@@ -71,6 +80,27 @@ class RabbitHomeController : UITableNavigationController {
         _ = reload.debounce(0.1, scheduler: MainScheduler.instance).subscribe(onNext: { [weak self] _ in
             self?.tableView.reloadData()
         })
+        
+        if self.userObject == nil {
+            self.userObject = firebaseRabbits.first(where: { leader -> Bool in return leader.email == currentUserEmail() })
+        }
+        
+        // Configure the firebase source
+        _ = onChangeListenerRabbitTeamBoard()
+            .debounce(1, scheduler: MainScheduler.instance)
+            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { _ in
+                self.sortTeamBoard()
+            })
+        
+        _ = onChangeListenerRabbitBoard()
+            .debounce(1, scheduler: MainScheduler.instance)
+            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { _ in
+                self.sortRabbitBoard()
+            })
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -91,108 +121,139 @@ class RabbitHomeController : UITableNavigationController {
     }
     
     override func prepareToolbar() {
-        setTitle("Leaderboard Position #43", subtitle: nil)
+        setTitle("Leaderboard Position #\(RabbiteerHomeController.instance.userObject?.individualRanking ?? 0)", subtitle: nil)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if self.userObject == nil {
-            self.userObject = firebaseRabbits.first(where: { leader -> Bool in return leader.email == currentUserEmail() })
+    func onChangeListenerRabbitTeamBoard() -> Observable<()> {
+        return Observable.create { observable in
+            _ = refRabbitTeamBoard.observe(DataEventType.childAdded, with: { snapshot in
+                if let code = self.userObject?.team {
+                    let answersSnap = snapshot.children.allObjects as! [DataSnapshot]
+                    let questionsAnswered = answersSnap.flatMap({ snap -> Int64 in
+                        let bool = snap.value as? Bool ?? false
+                        return bool ? 1 : 0
+                    }).reduce(0, +)
+                    
+                    var leader = Leader(code: snapshot.key, name: snapshot.key, questionsAnswered: questionsAnswered)
+                    if snapshot.key == code {
+                        leader.currentUser = true
+                    }
+                    self.teams.append(leader)
+                    observable.onNext()
+                }
+            })
+            
+            _ = refRabbitTeamBoard.observe(DataEventType.childChanged, with: { snapshot in
+                if let index = self.teams.index(where: { object -> Bool in object.code == snapshot.key }) {
+                    let answersSnap = snapshot.children.allObjects as! [DataSnapshot]
+                    let questionsAnswered = answersSnap.flatMap({ snap -> Int64 in
+                        let bool = snap.value as? Bool ?? false
+                        return bool ? 1 : 0
+                    }).reduce(0, +)
+                    
+                    self.teams[index].update(name: snapshot.key, questionsAnswered: questionsAnswered)
+                    observable.onNext()
+                    
+                }
+            })
+            
+            
+            return Disposables.create()
         }
-        
-        fetchRelevantData()
     }
     
-    func fetchRelevantData() {
-        refRabbitBoard.observeSingleEvent(of: .value, with: { [weak self] boardSnapshot in
-            guard let this = self else { return }
-            
-            if let dataSnap = boardSnapshot.children.allObjects as? [DataSnapshot],
-                let code = this.userObject?.code {
-                this.leaders = dataSnap.flatMap({ dataSnap -> Leader in
-                    let answersSnap = dataSnap.children.allObjects as! [DataSnapshot]
+    func onChangeListenerRabbitBoard() -> Observable<()> {
+        return Observable.create { observable in
+            _ = refRabbitBoard.observe(DataEventType.childAdded, with: { snapshot in
+                if let code = self.userObject?.code {
+                    let answersSnap = snapshot.children.allObjects as! [DataSnapshot]
                     let questionsAnswered = answersSnap.flatMap({ snap -> Int64 in
                         let bool = snap.value as? Bool ?? false
                         return bool ? 1 : 0
                     }).reduce(0, +)
                     
-                    var leader = Leader(code: dataSnap.key, name: firebaseRabbits.first(where: { leader -> Bool in return leader.code == dataSnap.key })?.displayName ?? "", questionsAnswered: questionsAnswered)
-                    if dataSnap.key == code {
+                    var leader = Leader(code: snapshot.key, name: firebaseRabbits.first(where: { leader -> Bool in return leader.code == snapshot.key })?.displayName ?? "", questionsAnswered: questionsAnswered)
+                    if snapshot.key == code {
                         leader.currentUser = true
-                        self?.userObject?.questionsAnswered = leader.questionsAnswered
+                        self.userObject?.questionsAnswered = leader.questionsAnswered
                     }
-                    return leader
-                })
-                
-                this.leaders.sort { $0.questionsAnswered > $1.questionsAnswered }
-                
-                var temp: [Leader] = []
-                
-                for (index, object) in this.leaders.enumerated() {
-                    let prevIndex = (index-1)
-                    
-                    if prevIndex < 0 {
-                        temp.append(Leader(position: 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
-                    } else {
-                        let prevObject = temp[prevIndex]
-                        if prevObject.questionsAnswered == object.questionsAnswered {
-                            temp.append(Leader(position: prevObject.position, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
-                        } else {
-                            temp.append(Leader(position: prevObject.position + 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
-                        }
-                    }
+                    self.leaders.append(leader)
+                    observable.onNext()
                 }
-                
-                this.leaders = temp
-                
-                this.userObject?.individualRanking = Int64(self?.leaders.first(where: { leader -> Bool in return leader.code == code })?.position ?? 0)
-                this.reload.onNext(())
-            }
-        })
-        
-        refRabbitTeamBoard.observeSingleEvent(of: .value, with: { [weak self] teamSnapshot in
-            guard let this = self else { return }
+            })
             
-            if let dataSnap = teamSnapshot.children.allObjects as? [DataSnapshot],
-                let code = this.userObject?.team {
-                this.teams = dataSnap.flatMap({ dataSnap -> Leader in
-                    let answersSnap = dataSnap.children.allObjects as! [DataSnapshot]
+            _ = refRabbitBoard.observe(DataEventType.childChanged, with: { snapshot in
+                if let code = self.userObject?.code,
+                    let index = self.leaders.index(where: { object -> Bool in object.code == snapshot.key }) {
+                    let answersSnap = snapshot.children.allObjects as! [DataSnapshot]
                     let questionsAnswered = answersSnap.flatMap({ snap -> Int64 in
                         let bool = snap.value as? Bool ?? false
                         return bool ? 1 : 0
                     }).reduce(0, +)
-                    var leader = Leader(code: dataSnap.key, name: dataSnap.key, questionsAnswered: questionsAnswered)
-                    if dataSnap.key == code {
-                        leader.currentUser = true
+                    
+                    if snapshot.key == code {
+                        self.userObject?.questionsAnswered = questionsAnswered
                     }
-                    return leader
-                })
+                    self.leaders[index].update(name: firebaseRabbits.first(where: { leader -> Bool in return leader.code == snapshot.key })?.displayName ?? "", questionsAnswered: questionsAnswered)
+                    observable.onNext()
+                    
+                }
+            })
+            
+            return Disposables.create()
+        }
+    }
+    
+    func sortTeamBoard() {
+        DispatchQueue.main.async {
+            self.teams.sort { $0.questionsAnswered > $1.questionsAnswered }
+            
+            for (index, object) in self.teams.enumerated() {
+                let prevIndex = (index-1)
                 
-                this.teams.sort { $0.questionsAnswered > $1.questionsAnswered }
+                if prevIndex < 0 {
+                    self.teams[index].update(position: 1)
+                } else {
+                    let prevObject = self.teams[prevIndex]
+                    if prevObject.questionsAnswered == object.questionsAnswered {
+                        self.teams[index].update(position: prevObject.position)
+                    } else {
+                        self.teams[index].update(position: prevObject.position + 1)
+                    }
+                }
+            }
+            if let code = self.userObject?.team {
+            self.userObject?.teamRanking = Int64(self.teams.first(where: { leader -> Bool in return leader.code == code })?.position ?? 0)
+            }
+            self.reload.onNext(())
+        }
+    }
+    
+    func sortRabbitBoard() {
+        DispatchQueue.main.async {
+            if let code = self.userObject?.code {
                 
-                var temp: [Leader] = []
+                self.leaders.sort { $0.questionsAnswered > $1.questionsAnswered }
                 
-                for (index, object) in this.teams.enumerated() {
+                for (index, object) in self.leaders.enumerated() {
                     let prevIndex = (index-1)
                     
                     if prevIndex < 0 {
-                        temp.append(Leader(position: 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                        self.leaders[index].update(position: 1)
                     } else {
-                        let prevObject = temp[prevIndex]
+                        let prevObject = self.leaders[prevIndex]
                         if prevObject.questionsAnswered == object.questionsAnswered {
-                            temp.append(Leader(position: prevObject.position, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                            self.leaders[index].update(position: prevObject.position)
                         } else {
-                            temp.append(Leader(position: prevObject.position + 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                            self.leaders[index].update(position: prevObject.position + 1)
                         }
                     }
                 }
                 
-                this.teams = temp
-                
-                this.userObject?.teamRanking = Int64(self?.teams.first(where: { leader -> Bool in return leader.code == code })?.position ?? 0)
-                this.reload.onNext(())
+                self.userObject?.individualRanking = Int64(self.leaders.first(where: { leader -> Bool in return leader.code == code })?.position ?? 0)
+                self.reload.onNext(())
             }
-        })
+        }
     }
 }
 

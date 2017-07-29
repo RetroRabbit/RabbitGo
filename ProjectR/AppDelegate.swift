@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         return w
     }()
     
-   
+    
     
     var NavigationStack: UINavigationController = NavigationController()
     
@@ -46,6 +46,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         //        } catch {
         //            NSLog("❌ Error signing out - \(error.localizedDescription)")
         //        }
+        
+        // Check if authentication valid
+        auth.addStateDidChangeListener { (auth, user) in
+            // should sign in if
+            // - user is nil, or
+            // - user.uid is not same as our user
+            if user == nil {
+                self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
+            }
+        }
         
         self.window?.rootViewController = splashScreen
         self.window?.makeKeyAndVisible()

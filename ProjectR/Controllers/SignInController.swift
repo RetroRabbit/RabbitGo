@@ -207,7 +207,7 @@ extension SignInController {
     
     private func navigateToDetails() {
         if isRabbit(user: auth.currentUser) {
-            (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController = TabNavigationController()
+            (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController = RabbitHomeController.instance
         } else {
             refCurrentUser().observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
                 if let year = snapshot.childSnapshot(forPath: "year").value as? String,
