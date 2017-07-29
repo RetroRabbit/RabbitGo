@@ -19,6 +19,7 @@ var RABBIT_BOARD = "rabbit_board"
 var RABBIT_TEAM_BOARD = "rabbit_team_board"
 var PROFILE_PICS = "profile_pics"
 var RABBIT_PROFILE_PICS = "rabbit_profile_pics"
+var RABBIT_CELEBRITIES = "celebrities"
 var AutoCompleteS = "autocomplete"
 
 var auth = Auth.auth()
@@ -31,9 +32,11 @@ var refRabbits = ref.child(RABBITS)
 var refRabbitTeamBoard = ref.child(RABBIT_TEAM_BOARD)
 var refRabbitBoard = ref.child(RABBIT_BOARD)
 var refAutoComplete = ref.child(AutoCompleteS)
+var refRabbitCelebrities = ref.child(RABBIT_CELEBRITIES)
 
-var firebaseRabbits: [Rabbit?] = []
-var firebaseQuestions: [Question?] = []
+var firebaseRabbits: [Rabbit] = []
+var firebaseQuestions: [Question] = []
+var firebaseCelebrities: [Celebrity] = []
 
 func currentUserId() -> String { return auth.currentUser!.uid }
 func currentUserEmail() -> String { return auth.currentUser!.email ?? ""}
@@ -43,6 +46,7 @@ func refCurrentUserQuestions() -> DatabaseReference { return refCurrentUser().ch
 func refQuestion(questionId: String) -> DatabaseReference { return refQuestions.child(questionId) }
 func refRabbitBoard(rabbitCode: String) -> DatabaseReference { return refRabbitBoard.child(rabbitCode) }
 func refRabbitTeamBoard(team: String) -> DatabaseReference { return refRabbitTeamBoard.child(team) }
+func refRabbitCelebrities(rabbitCode: String) -> DatabaseReference { return refRabbitCelebrities.child(rabbitCode) }
 func isRabbit(user: User?) -> Bool { return user?.email?.contains("@retrorabbit.co.za") ?? false }
 
 var storeRef = Storage.storage().reference()
@@ -140,21 +144,23 @@ class Rabbit {
     }
 }
 
-class celebrity {
+class Celebrity {
+    var code: String = ""
     var displayName: String? = nil
     var bio: String? = nil
     var Category: String? = nil
-    var Abilities: Int64 = 0
-    var Weaknesses: Int64 = 0
+    var Abilities: String? = nil
+    var Weaknesses: String? = nil
     
-    static func decode(dataSnap: DataSnapshot) -> Rabbit {
-        let rabbit = Rabbit()
-        rabbit.email = dataSnap.childSnapshot(forPath: "displayName").value as? String ?? ""
-        rabbit.displayName = dataSnap.childSnapshot(forPath: "bio").value as? String ?? ""
-        rabbit.code = dataSnap.childSnapshot(forPath: "Category").value as? String ?? ""
-        rabbit.team = dataSnap.childSnapshot(forPath: "Abilities").value as? String ?? ""
-        rabbit.team = dataSnap.childSnapshot(forPath: "Weaknesses").value as? String ?? ""
-        return rabbit
+    static func decode(dataSnap: DataSnapshot) -> Celebrity {
+        let celeb = Celebrity()
+        celeb.code = dataSnap.key
+        celeb.displayName = dataSnap.childSnapshot(forPath: "displayName").value as? String ?? ""
+        celeb.bio = dataSnap.childSnapshot(forPath: "bio").value as? String ?? ""
+        celeb.Category = dataSnap.childSnapshot(forPath: "Category").value as? String ?? ""
+        celeb.Weaknesses = dataSnap.childSnapshot(forPath: "Abilities").value as? String ?? ""
+        celeb.Abilities = dataSnap.childSnapshot(forPath: "Weaknesses").value as? String ?? ""
+        return celeb
     }
 }
 

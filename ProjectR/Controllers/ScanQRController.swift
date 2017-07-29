@@ -148,17 +148,20 @@ class ScanQRController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
                 }
             }))
             alert.addAction(UIAlertAction(title: "View", style: .default, handler: { _ in
-                // TODO: Open scanned QR question
-                question?.state = 1
-                firebaseQuestions[index] = question
-                
-                refCurrentUserQuestions().observeSingleEvent(of: .value, with: { (dataSnapShot) in
-                    let answeredQuestion = dataSnapShot.childSnapshot(forPath: question?.qrCode ?? "")
-                    answeredQuestion.childSnapshot(forPath: "state").ref.setValue(1)
-                })
-                
-                self.navigationController?.popViewController(animated: true)
-                self.tabBarController?.selectedIndex = 1
+                if let question = question {
+                    question.state = 1
+                    firebaseQuestions[index] = question
+                    
+                    refCurrentUserQuestions().observeSingleEvent(of: .value, with: { (dataSnapShot) in
+                        let answeredQuestion = dataSnapShot.childSnapshot(forPath: question.qrCode ?? "")
+                        answeredQuestion.childSnapshot(forPath: "state").ref.setValue(1)
+                    })
+                    
+                    DispatchQueue.main.async {
+                        self.navigationController?.popViewController(animated: true)
+                        self.tabBarController?.selectedIndex = 1
+                    }
+                }
             }))
         }
     
@@ -168,7 +171,7 @@ class ScanQRController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
     
     func questionScanned(qrCode: String) -> (Int, Question?) {
         for (index, question) in firebaseQuestions.enumerated() {
-            if question?.qrCode == qrCode {
+            if question.qrCode == qrCode {
                 return (index, question)
             }
         }

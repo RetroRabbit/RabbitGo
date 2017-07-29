@@ -127,20 +127,14 @@ extension QuestionController: SubmitDelegate {
     }
     
     func verifyRabbitCode(code: String?, completion: @escaping () -> ()) {
-        refRabbits.observeSingleEvent(of: .value, with: { (snapshot) in
-            let enumerator = snapshot.children
-            while let rabbit = enumerator.nextObject() as? DataSnapshot {
-                if rabbit.childSnapshot(forPath: "code").value as? String == code {
-                    completion()
-                    return
-                }
-            }
+        if nil == firebaseRabbits.index(where: { rabbit -> Bool in return rabbit.code == code }) {
             // Invalid rabbit code
             let ac = UIAlertController(title: "Invalid Rabbit Code", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "Try again", style: .default))
             self.present(ac, animated: true)
-            completion()
-        })
+        }
+        
+        completion()
     }
     
     func verifyAnswer() {

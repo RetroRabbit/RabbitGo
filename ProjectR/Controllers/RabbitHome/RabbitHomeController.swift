@@ -50,8 +50,6 @@ class RabbitHomeController : UITableNavigationController {
     
     fileprivate var userObject: Rabbit?
     
-    fileprivate var rabbits: [Rabbit] = []
-    
     fileprivate var leaders: [Leader] = []
     
     fileprivate var teams: [Leader] = []
@@ -98,23 +96,11 @@ class RabbitHomeController : UITableNavigationController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        if self.rabbits.count == 0 {
-            refRabbits.observeSingleEvent(of: DataEventType.value, with: { [weak self] (rabbitSnapshot) in
-                guard let this = self else { return }
-                if let dataSnap = rabbitSnapshot.children.allObjects as? [DataSnapshot] {
-                    this.rabbits = dataSnap.flatMap({ snap -> Rabbit in
-                        return Rabbit.decode(dataSnap: snap)
-                    })
-                    
-                    this.userObject = this.rabbits.first(where: { leader -> Bool in return leader.email == currentUserEmail() })
-                    
-                    this.fetchRelevantData()
-                }
-            })
-        } else {
-            fetchRelevantData()
+        if self.userObject == nil {
+            self.userObject = firebaseRabbits.first(where: { leader -> Bool in return leader.email == currentUserEmail() })
         }
+        
+        fetchRelevantData()
     }
     
     func fetchRelevantData() {
@@ -130,7 +116,7 @@ class RabbitHomeController : UITableNavigationController {
                         return bool ? 1 : 0
                     }).reduce(0, +)
                     
-                    var leader = Leader(code: dataSnap.key, name: this.rabbits.first(where: { leader -> Bool in return leader.code == dataSnap.key })?.displayName ?? "", questionsAnswered: questionsAnswered)
+                    var leader = Leader(code: dataSnap.key, name: firebaseRabbits.first(where: { leader -> Bool in return leader.code == dataSnap.key })?.displayName ?? "", questionsAnswered: questionsAnswered)
                     if dataSnap.key == code {
                         leader.currentUser = true
                         self?.userObject?.questionsAnswered = leader.questionsAnswered

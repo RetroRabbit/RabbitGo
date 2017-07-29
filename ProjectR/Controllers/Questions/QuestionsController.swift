@@ -14,11 +14,13 @@ import RxSwift
 
 struct QuestionView {
     var code: String = ""
+    var celebrityCode: String = ""
     var state: Int64 = 0
     var image: UIImage? = UIImage(named: "image_square_grey")
     
     init(code: String, state: Int64, image: UIImage?) {
         self.code = code
+        
         self.state = state
         self.image = image
     }
@@ -34,6 +36,10 @@ struct QuestionView {
     
     mutating func update(code: String) {
         self.code = code
+    }
+    
+    mutating func update(celebrityCode: String) {
+        self.celebrityCode = celebrityCode
     }
 }
 
@@ -77,28 +83,6 @@ class QuestionsController: UIViewNavigationController {
         tabBarItem.title = "Rabbit Q,s"
         tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Questions, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
         tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Questions, textColor: Style.color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
-        
-        // Store firebase questions in a global array
-        refQuestions.observeSingleEvent(of: .value, with: { (snapshot) in
-            if let dataSnap = snapshot.children.allObjects as? [DataSnapshot] {
-                firebaseQuestions = dataSnap.flatMap({ snap -> Question? in
-                    return Question.decode(snapshot: snap)
-                })
-            }
-        })
-        
-        // Stored firebase rabbits in a global array
-        refRabbits.observeSingleEvent(of: .value, with: { (snapshop) in
-            let enumerator = snapshop.children
-            while let rabbit = enumerator.nextObject() as? DataSnapshot {
-                let storedRabbit = Rabbit()
-                storedRabbit.code = rabbit.childSnapshot(forPath: "code").value as? String
-                storedRabbit.displayName = rabbit.childSnapshot(forPath: "displayName").value as? String
-                storedRabbit.email = rabbit.childSnapshot(forPath: "email").value as? String
-                storedRabbit.team = rabbit.childSnapshot(forPath: "team").value as? String
-                firebaseRabbits.append(storedRabbit)
-            }
-        })
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -162,7 +146,7 @@ class QuestionsController: UIViewNavigationController {
                 observable.onNext(UIImage(named: "image_square_white"))
                 observable.onCompleted()
             case 2:
-                if let rabbitCode = firebaseQuestions.first(where: { obj -> Bool in return code == obj?.qrCode })??.unlocked {
+                if let rabbitCode = firebaseQuestions.first(where: { obj -> Bool in return code == obj.qrCode })?.unlocked {
                     if let image = this.profiles[rabbitCode] {
                         observable.onNext(image)
                         observable.onCompleted()
@@ -173,6 +157,10 @@ class QuestionsController: UIViewNavigationController {
                             } else {
                                 let image = UIImage(data: data!)
                                 this.profiles[rabbitCode] = image
+                                if let qIndex = this.questions.index(where: { obj -> Bool in return obj.code == code }) {
+                                    this.questions[qIndex].update(celebrityCode: rabbitCode)
+                                }
+                                
                                 observable.onNext(image)
                             }
                             observable.onCompleted()
@@ -251,15 +239,13 @@ extension QuestionsController: UICollectionViewDataSource, UICollectionViewDeleg
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // Shhhhh Wesley, our secret
         let reAdjustedIndex = indexPath.item % 3 == 0 ? indexPath.item + 2 : indexPath.item - 1
-        
-        guard let question = firebaseQuestions[indexPath.item] else { return }
-        
-        switch questions[indexPath.item].state {
+        let question = questions[indexPath.item]
+        switch question.state {
         case 1:
-            let vc = QuestionController(question: question, index: reAdjustedIndex, selectedIndex: indexPath, delegate: self)
+            let vc = QuestionController(question: firebaseQuestions[indexPath.item], index: reAdjustedIndex, selectedIndex: indexPath, delegate: self)
             self.pushViewController(vc, animated: true)
         case 2:
-            self.pushViewController(BioController(), animated: true)
+            self.pushViewController(BioController(celebrityCode: question.celebrityCode), animated: true)
             break
         default:
             // Locked question tap
