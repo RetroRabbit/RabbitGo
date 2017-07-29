@@ -10,6 +10,7 @@ import UIKit
 import Material
 import Icomoon
 import Firebase
+import RxSwift
 
 class RabbiteerHomeController : UITableNavigationController {
     static let instance = RabbiteerHomeController()
@@ -28,58 +29,77 @@ class RabbiteerHomeController : UITableNavigationController {
         tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Home, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
         tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Home, textColor: Style.color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
         tableView.allowsMultipleSelectionDuringEditing = false
+        
+        // Configure the firebase source
+        _ = onChangeListener()
+            .debounce(1, scheduler: MainScheduler.instance)
+            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { _ in
+                self.sort()
+            })
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        refRabbiteers.observeSingleEvent(of: .value, with: { [weak self] snapshot in
-            guard let this = self else { return }
-            if let dataSnap = snapshot.children.allObjects as? [DataSnapshot] {
-                this.rabbiteers = dataSnap.flatMap({ snap -> Leader? in
-                    if let name = snap.childSnapshot(forPath: "displayName").value as? String,
-                        let score = snap.childSnapshot(forPath: "score").value as? Int {
-                        
-                        if currentUserId() == snap.key {
-                            this.userObject = Player.decode(snapshot: snap)
-                            return Leader(code: snap.key, name: name, questionsAnswered: Int64(score), currentUser: true)
-                        } else {
-                            return Leader(code: snap.key, name: name, questionsAnswered: Int64(score))
-                        }
-                    }
-                    return nil
-                })
-                
-                this.rabbiteers.sort { $0.questionsAnswered > $1.questionsAnswered }
-                
-                var temp: [Leader] = []
-                
-                for (index, object) in this.rabbiteers.enumerated() {
-                    let prevIndex = (index-1)
+    func onChangeListener() -> Observable<()> {
+        return Observable.create { observable in
+            _ = refRabbiteers.observe(DataEventType.childAdded, with: { snapshot in
+                if let name = snapshot.childSnapshot(forPath: "displayName").value as? String,
+                    let score = snapshot.childSnapshot(forPath: "score").value as? Int {
                     
-                    if prevIndex < 0 {
-                        temp.append(Leader(position: 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
+                    if currentUserId() == snapshot.key {
+                        self.userObject = Player.decode(snapshot: snapshot)
+                        self.rabbiteers.append(Leader(code: snapshot.key, name: name, questionsAnswered: Int64(score), currentUser: true))
                     } else {
-                        let prevObject = temp[prevIndex]
-                        if prevObject.questionsAnswered == object.questionsAnswered {
-                            temp.append(Leader(position: prevObject.position, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
-                        } else {
-                            temp.append(Leader(position: prevObject.position + 1, code: object.code, name: object.name, questionsAnswered: object.questionsAnswered, currentUser: object.currentUser))
-                        }
+                        self.rabbiteers.append(Leader(code: snapshot.key, name: name, questionsAnswered: Int64(score)))
+                    }
+                    
+                    observable.onNext()
+                }
+            })
+            
+            _ = refRabbiteers.observe(DataEventType.childChanged, with: { snapshot in
+                if let index = self.rabbiteers.index(where: { object -> Bool in object.code == snapshot.key }),
+                    let name = snapshot.childSnapshot(forPath: "displayName").value as? String,
+                    let score = snapshot.childSnapshot(forPath: "score").value as? Int {
+                    self.rabbiteers[index].update(name: name, questionsAnswered: Int64(score))
+                    observable.onNext()
+                }
+            })
+            
+            return Disposables.create()
+        }
+    }
+    
+    func sort() {
+        DispatchQueue.main.async {
+            self.rabbiteers.sort { $0.questionsAnswered > $1.questionsAnswered }
+            
+            for (index, object) in self.rabbiteers.enumerated() {
+                let prevIndex = (index-1)
+                
+                if prevIndex < 0 {
+                    self.rabbiteers[index].update(position: 1)
+                } else {
+                    let prevObject = self.rabbiteers[prevIndex]
+                    if prevObject.questionsAnswered == object.questionsAnswered {
+                        self.rabbiteers[index].update(position: prevObject.position)
+                    } else {
+                        self.rabbiteers[index].update(position: prevObject.position + 1)
                     }
                 }
-                
-                self?.rabbiteers = temp
-                
-                this.userObject?.individualRanking = Int64(self?.rabbiteers.first(where: { leader -> Bool in return leader.code == currentUserId() })?.position ?? 0)
-                    
-                self?.tableView.reloadData()
             }
-        })
+            
+            if let user = self.rabbiteers.first(where: { leader -> Bool in return leader.code == currentUserId() }) {
+                self.userObject?.score = user.questionsAnswered
+                self.userObject?.individualRanking = Int64(user.position)
+            }
+            
+            self.tableView.reloadData()
+        }
     }
     
     override func viewDidLoad() {

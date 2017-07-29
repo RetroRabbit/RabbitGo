@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         return w
     }()
     
-   
+    
     
     var NavigationStack: UINavigationController = NavigationController()
     
@@ -47,6 +47,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         //            NSLog("❌ Error signing out - \(error.localizedDescription)")
         //        }
         
+        // Check if authentication valid
+        auth.addStateDidChangeListener { (auth, user) in
+            // should sign in if
+            // - user is nil, or
+            // - user.uid is not same as our user
+            if user == nil {
+                self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
+            }
+        }
+        
         self.window?.rootViewController = splashScreen
         self.window?.makeKeyAndVisible()
         
@@ -55,11 +65,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             .merge()
             .subscribe(onCompleted: {
                 if Auth.auth().currentUser != nil {
-                    if isRabbit(user: auth.currentUser) {
-                        self.window?.rootViewController = RabbitHomeController.instance
-                    } else {
+                    //if isRabbit(user: auth.currentUser) {
+                      //  self.window?.rootViewController = RabbitHomeController.instance
+                    //} else {
                         self.window?.rootViewController = TabNavigationController()
-                    }
+                    //}
                 } else {
                     self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
                 }
