@@ -49,8 +49,9 @@ extension QuestionController: SubmitDelegate {
         tableView.register(OptionCell.self, forCellReuseIdentifier: OptionCell.reuseIdentifier)
         tableView.register(SubmitCell.self, forCellReuseIdentifier: SubmitCell.reuseIdentifier)
         
-        /* This hides the extra separators for empty rows. See http://stackoverflow.com/a/5377569/1469018 */
-        //tableView.tableFooterView = UIView()
+        navigationItem.title = "Rabbit Go!"
+        navigationItem.titleLabel.textAlignment = .left
+        navigationItem.titleLabel.textColor = Style.color.white
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {

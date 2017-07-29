@@ -52,7 +52,7 @@ class BioController: UIViewNavigationController {
         scrollView.addSubview(imgViewDivider)
         scrollView.addSubview(lblBio)
         
-        lblHeading.attributedText = NSAttributedString(string: celeb?.displayName ?? "", attributes: Style.avenirh_extra_large_white)
+        lblHeading.attributedText = NSAttributedString(string: "About \(celeb?.displayName ?? "")", attributes: Style.avenirh_extra_large_white)
         
         let bio: NSMutableAttributedString = NSMutableAttributedString(attributedString: NSAttributedString(string: celeb?.bio ?? "", attributes: Style.avenirl_small_white))
         
@@ -64,6 +64,10 @@ class BioController: UIViewNavigationController {
         bio.append(NSAttributedString(string: celeb?.Weaknesses ?? "", attributes: Style.avenirl_small_white))
         
         lblBio.attributedText = bio
+        
+        navigationItem.title = "Rabbit Go!"
+        navigationItem.titleLabel.textAlignment = .left
+        navigationItem.titleLabel.textColor = Style.color.white
     }
     
     override func viewDidLayoutSubviews() {

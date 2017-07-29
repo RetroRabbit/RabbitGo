@@ -22,7 +22,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         imgViewSplash.clipsToBounds = true
         vc.view.addSubview(imgViewSplash)
         imgViewSplash.autoPinEdgesToSuperviewEdges()
-        imgViewSplash.contentMode = .scaleAspectFill
         return vc
     }()
     
@@ -56,7 +55,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             .merge()
             .subscribe(onCompleted: {
                 if Auth.auth().currentUser != nil {
-                    self.window?.rootViewController = TabNavigationController()
+                    if isRabbit(user: auth.currentUser) {
+                        self.window?.rootViewController = RabbitHomeController.instance
+                    } else {
+                        self.window?.rootViewController = TabNavigationController()
+                    }
                 } else {
                     self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
                 }
