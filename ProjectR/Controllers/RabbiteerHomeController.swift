@@ -15,7 +15,7 @@ import RxSwift
 class RabbiteerHomeController : UITableNavigationController {
     static let instance = RabbiteerHomeController()
     
-    fileprivate var userObject: Player?
+    internal var userObject: Player?
     
     fileprivate var rabbiteers: [Leader] = []
     
@@ -96,6 +96,9 @@ class RabbiteerHomeController : UITableNavigationController {
             if let user = self.rabbiteers.first(where: { leader -> Bool in return leader.code == currentUserId() }) {
                 self.userObject?.score = user.questionsAnswered
                 self.userObject?.individualRanking = Int64(user.position)
+                ProfileController.instance.prepareToolbar()
+                QuestionsController.instance.prepareToolbar()
+                RabbiteerHomeController.instance.prepareToolbar()
             }
             
             self.tableView.reloadData()
@@ -117,7 +120,7 @@ class RabbiteerHomeController : UITableNavigationController {
     }
     
     override func prepareToolbar() {
-        setTitle("Leaderboard Position #43", subtitle: nil)
+        setTitle("Leaderboard Position #\(RabbiteerHomeController.instance.userObject?.individualRanking ?? 0)", subtitle: nil)
     }
 }
 

@@ -179,7 +179,7 @@ class QuestionsController: UIViewNavigationController {
     }
     
     override func prepareToolbar() {
-        setTitle("Leaderboard Position #43", subtitle: nil)
+        setTitle("Leaderboard Position #\(RabbiteerHomeController.instance.userObject?.individualRanking ?? 0)", subtitle: nil)
     }
     
     override func viewDidLayoutSubviews() {
