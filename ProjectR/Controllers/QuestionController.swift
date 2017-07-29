@@ -153,7 +153,7 @@ extension QuestionController: SubmitDelegate {
             return
         }
         
-        if lastTapped.row == Int(question.answer ?? 0) {
+        if lastTapped.row + 1 == Int(question.answer ?? 0) {
             // Correct answer
             refCurrentUserQuestions().observeSingleEvent(of: .value, with: { [weak self] (dataSnapShot) in
                 guard let this = self else { return }
@@ -289,21 +289,23 @@ class OptionCell: UITableViewCell {
         let height = max(lblOption.intrinsicContentSize.height,  imgCheckMark.intrinsicContentSize.height)
         let width = Screen.width - 20
         imgOption.frame =  CGRect(x: 10, y: 10, width: width, height: height + 20)
+        let optionWidth = width - 28 - 40
+        lblOption.preferredMaxLayoutWidth = width - 28 - 40
         
         //center checkmark to text
         if lblOption.intrinsicContentSize.height > imgCheckMark.intrinsicContentSize.height {
-            lblOption.preferredMaxLayoutWidth = width - 28 - 20
-            lblOption.frame = CGRect(x: 20 + 28 + 10, y: 10, width: width, height: lblOption.intrinsicContentSize.height)
+            let optionY = ((height + 20) - lblOption.intrinsicContentSize.height) / 2
+            lblOption.frame = CGRect(x: 10 + 28 + 10, y: optionY, width: optionWidth, height: lblOption.intrinsicContentSize.height)
             
             let y = (imgOption.height - imgCheckMark.intrinsicContentSize.height) / 2
             imgCheckMark.frame = CGRect(x: 10, y: y, width: imgCheckMark.intrinsicContentSize.width, height: imgCheckMark.intrinsicContentSize.height)
             
         } else {
-            imgCheckMark.frame = CGRect(x: 10, y: 10, width: imgCheckMark.intrinsicContentSize.width, height: imgCheckMark.intrinsicContentSize.height)
+            let markY = ((height + 20) - imgCheckMark.intrinsicContentSize.height) / 2
+            imgCheckMark.frame = CGRect(x: 10, y: markY, width: imgCheckMark.intrinsicContentSize.width, height: imgCheckMark.intrinsicContentSize.height)
             
             let y = (imgOption.height - lblOption.intrinsicContentSize.height) / 2
-            lblOption.preferredMaxLayoutWidth = width - 28 - 20
-            lblOption.frame = CGRect(x: 20 + 28 + 10, y: y, width: width, height: lblOption.intrinsicContentSize.height)
+            lblOption.frame = CGRect(x: 10 + 28 + 10, y: y, width: optionWidth, height: lblOption.intrinsicContentSize.height)
         }
     }
     
@@ -317,10 +319,10 @@ class OptionCell: UITableViewCell {
     }
     
     override func sizeThatFits(_ size: CGSize) -> CGSize {
-        return CGSize(width: size.width, height: height())
+        return CGSize(width: size.width, height: calculateheight())
     }
     
-    func height() -> CGFloat {
+    func calculateheight() -> CGFloat {
         return max(lblOption.intrinsicContentSize.height,  imgCheckMark.intrinsicContentSize.height) + 40
     }
 }
@@ -337,6 +339,7 @@ class SubmitCell: UITableViewCell {
     let tfRabbitCode: ProjectRTextField = {
         let textField = ProjectRTextField()
         textField.placeholder = "Unique Rabbit Code"
+        textField.autocapitalizationType = .none
         return textField
     }()
     
@@ -368,7 +371,7 @@ class SubmitCell: UITableViewCell {
         tfRabbitCode.frame = CGRect(x: Style.input_center, y: 20, width: Style.input_width, height: 40)
         
         let submitX = (Screen.width - Style.button_width)/2
-        btnSubmit.frame = CGRect(x: submitX, y: tfRabbitCode.frame.bottom + 20, width: Style.button_width, height: Style.button_height)
+        btnSubmit.frame = CGRect(x: submitX, y: tfRabbitCode.frame.bottom + 40, width: Style.button_width, height: Style.button_height)
     }
     
     override func prepareForReuse() {
@@ -384,7 +387,7 @@ class SubmitCell: UITableViewCell {
     }
     
     func height() -> CGFloat {
-        return 40 + 20 +
+        return 40 + 40 +
         Style.button_height + 40
     }
     

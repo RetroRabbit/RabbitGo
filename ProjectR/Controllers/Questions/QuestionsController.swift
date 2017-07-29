@@ -10,6 +10,33 @@ import UIKit
 import Material
 import Icomoon
 import Firebase
+import RxSwift
+
+struct QuestionView {
+    var code: String = ""
+    var state: Int64 = 0
+    var image: UIImage? = UIImage(named: "image_square_grey")
+    
+    init(code: String, state: Int64, image: UIImage?) {
+        self.code = code
+        self.state = state
+        self.image = image
+    }
+    
+    init(image: UIImage?) {
+        self.image = image
+    }
+    
+    mutating func update(state: Int64, image: UIImage?) {
+        self.state = state
+        self.image = image
+    }
+    
+    mutating func update(code: String) {
+        self.code = code
+    }
+}
+
 
 class QuestionsController: UIViewNavigationController {
     static let instance = QuestionsController()
@@ -18,7 +45,8 @@ class QuestionsController: UIViewNavigationController {
     fileprivate let strUnlocked = "image_square_white"
     fileprivate let strAnswered = "image_square_green"
     
-    fileprivate var questions: [String] = Array(repeating: "image_square_grey", count: 21)
+    fileprivate var profiles: [String:UIImage] = [:]
+    fileprivate var questions: [QuestionView] = Array(repeating: QuestionView(image: UIImage(named: "image_square_grey")), count: 21)
     
     private let lblHeading: UILabel = {
         let label = UILabel()
@@ -33,15 +61,13 @@ class QuestionsController: UIViewNavigationController {
     fileprivate lazy var QuestionsCollection: UICollectionView = {
         let layout = QuestionsLayout()
         layout.delegate = self
-        let collection = UICollectionView(frame: CGRect(x: 0, y: 0, width: 0, height: 0), collectionViewLayout: layout)
-        collection.backgroundColor = Material.Color.grey.lighten4
+        let collection = UICollectionView(frame: CGRect(x: 0, y: 0, width: Screen.width, height: 0), collectionViewLayout: layout)
+        collection.backgroundColor = Style.color.grey_dark
         collection.dataSource = self
         collection.delegate = self
-        collection.contentInset = UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
+        collection.contentInset = UIEdgeInsets(top: 4, left: 0, bottom: 107, right: 0)
         collection.isScrollEnabled = false
-        collection.backgroundColor = Style.color.grey_dark
         collection.register(QuestionsCell.self, forCellWithReuseIdentifier: QuestionsCell.reuseIdentifier)
-        collection.contentInset = UIEdgeInsets(top: 4, left: 4, bottom: 107, right: 4)
         return collection
     }()
     
@@ -95,27 +121,73 @@ class QuestionsController: UIViewNavigationController {
         super.viewWillAppear(animated)
         refresh()
     }
-
+    
     func refresh() {
-        refCurrentUserQuestions().observeSingleEvent(of: .value, with: { (snapshot) in
-            let enumerator = snapshot.children
-            var i = 0
-            while let userQuestions = enumerator.nextObject() as? DataSnapshot {
-                let state = userQuestions.childSnapshot(forPath: "state").value as? Int ?? 1
-                switch state {
-                case 0:
-                    self.questions[i] = "image_square_grey"
-                case 1:
-                    self.questions[i] = "image_square_white"
-                case 2:
-                    self.questions[i] = "image_square_green"
-                default:
-                    self.questions[i] = "image_square_grey"
+        refCurrentUserQuestions().observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
+            guard let this = self else { return }
+            
+            if let _ = this.questions.index(where: { obj -> Bool in return obj.code.isEmpty }) { this.populateKeys(snapshot: snapshot) }
+            
+            snapshot.children.forEach({ object in
+                if let answeredQuestion = object as? DataSnapshot,
+                    let state = answeredQuestion.childSnapshot(forPath: "state").value as? Int64,
+                    let qIndex = this.questions.index(where: { obj -> Bool in return obj.code == answeredQuestion.key }),
+                    this.questions[qIndex].state != state {
+                    _ = this.getPicture(code: answeredQuestion.key, state: state).subscribe(onNext: { image in
+                        this.questions[qIndex].update(state: state, image: image)
+                        this.QuestionsCollection.reloadItems(at: [IndexPath(row: qIndex, section: 0)])
+                    })
                 }
-                i += 1
-            }
-            self.QuestionsCollection.reloadData()
+            })
         })
+    }
+    
+    func populateKeys(snapshot: DataSnapshot) {
+        for (index, object) in snapshot.children.enumerated() {
+            if let answeredQuestion = object as? DataSnapshot {
+                    self.questions[index].update(code: answeredQuestion.key)
+            }
+        }
+    }
+    
+    func getPicture(code: String, state: Int64) -> Observable<UIImage?> {
+        return Observable.create { [weak self] observable in
+            guard let this = self else { return Disposables.create() }
+            
+            switch state {
+            case 0:
+                observable.onNext(UIImage(named: "image_square_grey"))
+                observable.onCompleted()
+            case 1:
+                observable.onNext(UIImage(named: "image_square_white"))
+                observable.onCompleted()
+            case 2:
+                if let rabbitCode = firebaseQuestions.first(where: { obj -> Bool in return code == obj?.qrCode })??.unlocked {
+                    if let image = this.profiles[rabbitCode] {
+                        observable.onNext(image)
+                        observable.onCompleted()
+                    } else {
+                        rabbitProfilePic(rabbitCode: rabbitCode).getData(maxSize: 1 * 1024 * 1024, completion: { (data, error) in
+                            if let _ = error {
+                                observable.onNext(UIImage(named: "image_square_grey"))
+                            } else {
+                                let image = UIImage(data: data!)
+                                this.profiles[rabbitCode] = image
+                                observable.onNext(image)
+                            }
+                            observable.onCompleted()
+                        })
+                    }
+                } else {
+                    observable.onCompleted()
+                }
+            default:
+                observable.onNext(UIImage(named: "image_square_grey"))
+                observable.onCompleted()
+            }
+            
+            return Disposables.create()
+        }
     }
     
     override func prepareToolbar() {
@@ -136,6 +208,7 @@ class QuestionsController: UIViewNavigationController {
         
         QuestionsCollection.autoSetDimension(.height, toSize: QuestionsCell.calculateHeight() * CGFloat(questions.count / 3))
         
+        QuestionsCollection.autoSetDimension(.width, toSize: Screen.width)
         QuestionsCollection.autoPinEdge(.top, to: .bottom, of: imgViewDivider)
         QuestionsCollection.autoPinEdge(toSuperviewEdge: .left)
         QuestionsCollection.autoPinEdge(toSuperviewEdge: .right)
@@ -152,9 +225,11 @@ extension QuestionsController: QuestionsDelegate {
 }
 
 extension QuestionsController: QuestionDelegate {
+    
+    //NNNNOOOOOO
     func answeredQuestion(index item: Int, selectedIndex indexPath: IndexPath) {
-        questions[indexPath.row] = "image_square_green"
-        QuestionsCollection.reloadItems(at: [indexPath])
+        //questions[indexPath.row] = "image_square_green"
+        //QuestionsCollection.reloadItems(at: [indexPath])
     }
 }
 
@@ -169,7 +244,7 @@ extension QuestionsController: UICollectionViewDataSource, UICollectionViewDeleg
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: QuestionsCell.reuseIdentifier, for: indexPath) as! QuestionsCell
-        cell.prepareForDisplay(image: questions[indexPath.row])
+        cell.prepareForDisplay(image: questions[indexPath.row].image ?? UIImage(named: "image_square_grey")!)
         return cell
     }
     
@@ -179,13 +254,14 @@ extension QuestionsController: UICollectionViewDataSource, UICollectionViewDeleg
         
         guard let question = firebaseQuestions[indexPath.item] else { return }
         
-        if questions[indexPath.item] == strAnswered {
-            // Already answered
-            // TODO: Better show something
-        } else if questions[indexPath.item] == strUnlocked {
+        switch questions[indexPath.item].state {
+        case 1:
             let vc = QuestionController(question: question, index: reAdjustedIndex, selectedIndex: indexPath, delegate: self)
             self.pushViewController(vc, animated: true)
-        } else {
+        case 2:
+            self.pushViewController(BioController(), animated: true)
+            break
+        default:
             // Locked question tap
             let ac = UIAlertController(title: "Locked question", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "Please scan the relevant QR code", style: .default))

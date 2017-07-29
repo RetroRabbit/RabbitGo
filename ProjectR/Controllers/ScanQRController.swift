@@ -152,8 +152,7 @@ class ScanQRController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
                 question?.state = 1
                 firebaseQuestions[index] = question
                 
-                refCurrentUserQuestions().observeSingleEvent(of: .value, with: { [weak self] (dataSnapShot) in
-                    guard let this = self else { return }
+                refCurrentUserQuestions().observeSingleEvent(of: .value, with: { (dataSnapShot) in
                     let answeredQuestion = dataSnapShot.childSnapshot(forPath: question?.qrCode ?? "")
                     answeredQuestion.childSnapshot(forPath: "state").ref.setValue(1)
                 })
@@ -169,7 +168,7 @@ class ScanQRController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
     
     func questionScanned(qrCode: String) -> (Int, Question?) {
         for (index, question) in firebaseQuestions.enumerated() {
-            if question?.qrCode as? String == qrCode {
+            if question?.qrCode == qrCode {
                 return (index, question)
             }
         }

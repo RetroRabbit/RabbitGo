@@ -70,7 +70,7 @@ class ProfileController: UIViewNavigationController, UIImagePickerControllerDele
     
     fileprivate var universityEntry: AutoCompleteTextField = {
         let entry = AutoCompleteTextField()
-//        entry.autoCompleteProvider = UniversityAutoCompleteProvider()
+        //        entry.autoCompleteProvider = UniversityAutoCompleteProvider()
         entry.placeholder = "University"
         return entry
     }()
@@ -140,12 +140,20 @@ class ProfileController: UIViewNavigationController, UIImagePickerControllerDele
         
         if let profileImage = profileImage {
             imgProfilePlaceholder.image = profileImage
+        } else {
+            currentUserProfilePic.getData(maxSize: 1 * 1024 * 1024, completion: { (data, error) in
+                if let _ = error {
+                } else {
+                    let image = UIImage(data: data!)
+                    profileImage = image
+                }
+            })
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        
         view.backgroundColor = Style.color.grey_dark
         scrollView.delegate = self
         view.addSubview(scrollView)
@@ -186,7 +194,7 @@ class ProfileController: UIViewNavigationController, UIImagePickerControllerDele
             self.degreeEntry.text = snapshot.childSnapshot(forPath: "degree").value as? String
             self.yearEntry.text = snapshot.childSnapshot(forPath: "year").value as? String
         })
-
+        
     }
     
     override func prepareToolbar() {
@@ -228,7 +236,7 @@ class ProfileController: UIViewNavigationController, UIImagePickerControllerDele
 }
 
 extension ProfileController{
-
+    
     func onSave(){
         flag = true
         guard let fullname = nameEntry.text,
@@ -245,25 +253,22 @@ extension ProfileController{
                 updateTextfields()
                 return
         }
-        refCurrentUser().observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
+        refCurrentUser().observeSingleEvent(of: .value, with: { (snapshot) in
             snapshot.ref.setValue(Player(email: email, displayName: fullname, university: university, degree: degree, year: year).formatted(), withCompletionBlock: { (error, ref) in
-                    self?.navigationController?.pushViewController(ProfileController(), animated: false)
-                })
+            })
         })
         
         if let image = imgProfilePlaceholder.image,
             let imageData: Data = UIImageJPEGRepresentation(image, 0.6) {
-            let imgRef = profilePicsRef.child("\(currentUserId()).jpg")
-            var meta = StorageMetadata()
+            let meta = StorageMetadata()
             meta.setValue("image/jpeg", forKey: "contentType")
             
-            let uploadTask = imgRef.putData(imageData, metadata: meta) { (metadata, error) in
-                guard let metadata = metadata else {
+            _ = currentUserProfilePic.putData(imageData, metadata: meta) { (metadata, error) in
+                guard let _ = error else {
                     // Uh-oh, an error occurred!
                     return
                 }
                 // Metadata contains file metadata such as size, content-type, and download URL.
-                let downloadURL = metadata.downloadURL
                 self.imgProfilePlaceholder.image = image
                 self.imgProfilePlaceholder.reloadInputViews()
                 profileImage = image
@@ -274,9 +279,9 @@ extension ProfileController{
     
     func updateTextfields() {
         guard flag
-        
-        else{
-            return
+            
+            else{
+                return
         }
         
         if let fullname = nameEntry.text, fullname.isEmpty {
@@ -348,7 +353,7 @@ extension ProfileController{
         galleryPicker.delegate = self
         present(galleryPicker, animated: true)
         
-        }
+    }
     
     final class UniversityAutoCompleteProvider: AutoCompleteProvider {
         func provideSuggestionsForAutoCompleteTextField(_ textField: AutoCompleteTextField, forString string: String, toCallback callback: @escaping ([AutoCompleteTextField.Suggestion]) -> Void) {

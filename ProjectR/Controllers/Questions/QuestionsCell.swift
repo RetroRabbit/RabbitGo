@@ -29,8 +29,8 @@ class QuestionsCell: CollectionViewCell {
         super.init(coder: aDecoder)
     }
     
-    func prepareForDisplay(image: String) {
-        imgMedia.image =  UIImage(named: image)
+    func prepareForDisplay(image: UIImage) {
+        imgMedia.image =  image
     }
     
     override func prepareForReuse() {
@@ -43,12 +43,12 @@ class QuestionsCell: CollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        let imageWidth = ((Screen.width) / 3.0) - 12
+        let imageWidth = ((Screen.width) / 3.0) - 8
         imgMedia.frame = CGRect(origin: CGPoint(x: 4, y: 4), size: CGSize(width: imageWidth, height: imageWidth))
     }
     
     class func calculateHeight() -> CGFloat {
-        let imageWidth = ((Screen.width) / 3.0) - 12
+        let imageWidth = ((Screen.width) / 3.0)
         return imageWidth + 8
     }
 }

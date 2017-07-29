@@ -18,6 +18,7 @@ var RABBITS = "rabbits"
 var RABBIT_BOARD = "rabbit_board"
 var RABBIT_TEAM_BOARD = "rabbit_team_board"
 var PROFILE_PICS = "profile_pics"
+var RABBIT_PROFILE_PICS = "rabbit_profile_pics"
 var AutoCompleteS = "autocomplete"
 
 var auth = Auth.auth()
@@ -46,7 +47,10 @@ func isRabbit(user: User?) -> Bool { return user?.email?.contains("@retrorabbit.
 
 var storeRef = Storage.storage().reference()
 var profilePicsRef = storeRef.child(PROFILE_PICS)
-var currentUserProfilePic = profilePicsRef.child("${currentUserId()}.jpg")
+var currentUserProfilePic = profilePicsRef.child("\(currentUserId()).jpg")
+
+var rabbitProfilePicsRef = storeRef.child(RABBIT_PROFILE_PICS)
+func rabbitProfilePic(rabbitCode: String) -> StorageReference { return rabbitProfilePicsRef.child("\(rabbitCode).png") }
 var profileImage: UIImage?
 
 class Player {
@@ -136,6 +140,24 @@ class Rabbit {
     }
 }
 
+class celebrity {
+    var displayName: String? = nil
+    var bio: String? = nil
+    var Category: String? = nil
+    var Abilities: Int64 = 0
+    var Weaknesses: Int64 = 0
+    
+    static func decode(dataSnap: DataSnapshot) -> Rabbit {
+        let rabbit = Rabbit()
+        rabbit.email = dataSnap.childSnapshot(forPath: "displayName").value as? String ?? ""
+        rabbit.displayName = dataSnap.childSnapshot(forPath: "bio").value as? String ?? ""
+        rabbit.code = dataSnap.childSnapshot(forPath: "Category").value as? String ?? ""
+        rabbit.team = dataSnap.childSnapshot(forPath: "Abilities").value as? String ?? ""
+        rabbit.team = dataSnap.childSnapshot(forPath: "Weaknesses").value as? String ?? ""
+        return rabbit
+    }
+}
+
 class Question {
     var text: String? = nil
     var multiple: [String]? = nil
@@ -143,6 +165,7 @@ class Question {
     var answer: Int64? = nil
     var qrCode: String? = nil
     var state: Int64 = 0    // 0 = Locked, 1 = unlocked, 2 = answered
+    var unlocked: String? = nil
     
     func formatted() -> [String:Any] {
         var value: [String:Any] = [:]
@@ -161,6 +184,7 @@ class Question {
         question.free = snapshot.childSnapshot(forPath: "free").value as? String ?? ""
         question.answer = snapshot.childSnapshot(forPath: "answer").value as? Int64 ?? 0
         question.state = snapshot.childSnapshot(forPath: "state").value as? Int64 ?? 0
+        question.unlocked = snapshot.childSnapshot(forPath: "unlocked").value as? String ?? ""
         
         question.multiple = [
             snapshot.childSnapshot(forPath: "multiple").childSnapshot(forPath: "0").value as? String ?? "",
