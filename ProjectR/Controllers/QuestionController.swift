@@ -23,12 +23,17 @@ class QuestionController: UITableViewController {
     fileprivate let index: Int
     fileprivate let selectedIndex: IndexPath // Which parent collection cell brough you here
     fileprivate let questionDelegate: QuestionDelegate
+    fileprivate var isMultipleChoice: Bool = true
     
     init(question: Question, index: Int, selectedIndex: IndexPath, delegate: QuestionDelegate) {
         self.question = question
         self.index = index
         self.selectedIndex = selectedIndex
         self.questionDelegate = delegate
+        
+        if question.multiple?[0] == "" {
+            self.isMultipleChoice = false
+        }
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -47,6 +52,7 @@ extension QuestionController: SubmitDelegate {
         
         //tableView.register(QuestionHeaderCell.self, forCellReuseIdentifier: QuestionHeaderCell.reuseIdentifier)
         tableView.register(OptionCell.self, forCellReuseIdentifier: OptionCell.reuseIdentifier)
+        tableView.register(InputCell.self, forCellReuseIdentifier: InputCell.reuseIdentifier)
         tableView.register(SubmitCell.self, forCellReuseIdentifier: SubmitCell.reuseIdentifier)
         
         navigationItem.title = "Rabbit Go!"
@@ -81,7 +87,12 @@ extension QuestionController: SubmitDelegate {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return question.multiple?.count ?? 0
+            if isMultipleChoice {
+                return question.multiple?.count ?? 0
+            } else {
+                return 1
+            }
+            
         case 1:
             return 1
         default:
@@ -92,9 +103,13 @@ extension QuestionController: SubmitDelegate {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            let cell = tableView.dequeueReusableCell(withIdentifier: OptionCell.reuseIdentifier, for: indexPath as IndexPath) as! OptionCell
-            cell.prepareForDisplay(question: question, index: indexPath.row)
-            return cell
+            if isMultipleChoice {
+                let cell = tableView.dequeueReusableCell(withIdentifier: OptionCell.reuseIdentifier, for: indexPath as IndexPath) as! OptionCell
+                cell.prepareForDisplay(question: question, index: indexPath.row)
+                return cell
+            } else {
+                return tableView.dequeueReusableCell(withIdentifier: InputCell.reuseIdentifier, for: indexPath as IndexPath) as! InputCell
+            }
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: SubmitCell.reuseIdentifier, for: indexPath as IndexPath) as! SubmitCell
             cell.delegate = self
@@ -139,10 +154,35 @@ extension QuestionController: SubmitDelegate {
     }
     
     func verifyAnswer() {
+        /* Multple choice */
+        if !isMultipleChoice {
+            let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! InputCell
+            if cell.tfUserInput.text != "" {
+                // TODO: Do something with user input??
+                // Correct answer
+                increaseScore()
+                refCurrentUserQuestions().observeSingleEvent(of: .value, with: { [weak self] (dataSnapShot) in
+                    guard let this = self else { return }
+                    let answeredQuestion = dataSnapShot.childSnapshot(forPath: this.question.qrCode ?? "")
+                    answeredQuestion.childSnapshot(forPath: "state").ref.setValue(2)
+                    
+                    let ac = UIAlertController(title: "You unlocked Rabbit #\(this.index)", message: nil, preferredStyle: .alert)
+                    ac.addAction(UIAlertAction(title: "View", style: .default, handler: { _ in
+                        this.navigationController?.popViewController(animated: true)
+                        this.questionDelegate.answeredQuestion(index: this.index, selectedIndex: this.selectedIndex)
+                    }))
+                    this.present(ac, animated: true)
+                })
+                return
+            }
+        }
+        
         /* Check for selected answer */
         guard let lastTapped = lastTapped else {
             // No answer selected
-            let ac = UIAlertController(title: "Please pick an answer", message: nil, preferredStyle: .alert)
+            let ac = isMultipleChoice
+                        ? UIAlertController(title: "Please pick an answer", message: nil, preferredStyle: .alert)
+                        : UIAlertController(title: "Please enter an answer", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "Dismiss", style: .default))
             present(ac, animated: true)
             return
@@ -150,6 +190,7 @@ extension QuestionController: SubmitDelegate {
         
         if lastTapped.row + 1 == Int(question.answer ?? 0) {
             // Correct answer
+            increaseScore()
             refCurrentUserQuestions().observeSingleEvent(of: .value, with: { [weak self] (dataSnapShot) in
                 guard let this = self else { return }
                 let answeredQuestion = dataSnapShot.childSnapshot(forPath: this.question.qrCode ?? "")
@@ -168,6 +209,19 @@ extension QuestionController: SubmitDelegate {
             ac.addAction(UIAlertAction(title: "Ask another Rabbit", style: .default))
             present(ac, animated: true)
         }
+    }
+    
+    func increaseScore() {
+        refCurrentUser().observeSingleEvent(of: .value, with: { (snapshot) in
+            var currentScore = snapshot.childSnapshot(forPath: "score").value as? Int ?? 0
+            currentScore += 1
+            snapshot.childSnapshot(forPath: "score").ref.setValue(currentScore, withCompletionBlock: { (error, ref) in
+                if let error = error {
+                    NSLog("❌ Unable to increment score - \(error.localizedDescription)")
+                }
+            })
+
+        })
     }
 
 }
@@ -319,6 +373,53 @@ class OptionCell: UITableViewCell {
     
     func calculateheight() -> CGFloat {
         return max(lblOption.intrinsicContentSize.height,  imgCheckMark.intrinsicContentSize.height) + 40
+    }
+}
+
+/* Input cell */
+class InputCell: UITableViewCell {
+    class var reuseIdentifier: String { return "inputCell" }
+    
+    /* UI */
+    let tfUserInput: ProjectRTextField = {
+        let textField = ProjectRTextField()
+        textField.placeholder = "Enter answer"
+        textField.autocapitalizationType = .none
+        return textField
+    }()
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = Style.color.grey_dark
+        selectionStyle = .none
+        
+        addSubview(tfUserInput)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        tfUserInput.frame = CGRect(x: Style.input_center, y: 20, width: Style.input_width, height: 40)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        tfUserInput.placeholderText = "Enter answer"
+        
+        /* Trigger mask redraw */
+        setNeedsDisplay()
+    }
+    
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return CGSize(width: size.width, height: height())
+    }
+    
+    func height() -> CGFloat {
+        return Style.button_height + 40
     }
 }
 
