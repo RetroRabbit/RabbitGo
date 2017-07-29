@@ -180,7 +180,9 @@ extension QuestionController: SubmitDelegate {
         /* Check for selected answer */
         guard let lastTapped = lastTapped else {
             // No answer selected
-            let ac = UIAlertController(title: "Please pick an answer", message: nil, preferredStyle: .alert)
+            let ac = isMultipleChoice
+                        ? UIAlertController(title: "Please pick an answer", message: nil, preferredStyle: .alert)
+                        : UIAlertController(title: "Please enter an answer", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "Dismiss", style: .default))
             present(ac, animated: true)
             return
@@ -211,7 +213,8 @@ extension QuestionController: SubmitDelegate {
     
     func increaseScore() {
         refCurrentUser().observeSingleEvent(of: .value, with: { (snapshot) in
-            let currentScore = snapshot.childSnapshot(forPath: "score").value as? Int ?? 0 + 1
+            var currentScore = snapshot.childSnapshot(forPath: "score").value as? Int ?? 0
+            currentScore += 1
             snapshot.childSnapshot(forPath: "score").ref.setValue(currentScore, withCompletionBlock: { (error, ref) in
                 if let error = error {
                     NSLog("❌ Unable to increment score - \(error.localizedDescription)")
