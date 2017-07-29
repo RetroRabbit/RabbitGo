@@ -65,11 +65,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             .merge()
             .subscribe(onCompleted: {
                 if Auth.auth().currentUser != nil {
-                    //if isRabbit(user: auth.currentUser) {
-                      //  self.window?.rootViewController = RabbitHomeController.instance
-                    //} else {
+                    if isRabbit(user: auth.currentUser) {
+                        self.window?.rootViewController = RabbitHomeController.instance
+                    } else {
                         self.window?.rootViewController = TabNavigationController()
-                    //}
+                    }
                 } else {
                     self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
                 }

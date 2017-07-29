@@ -144,14 +144,14 @@ class RabbitHomeController : UITableNavigationController {
             })
             
             _ = refRabbitTeamBoard.observe(DataEventType.childChanged, with: { snapshot in
-                if let index = self.leaders.index(where: { object -> Bool in object.code == snapshot.key }) {
+                if let index = self.teams.index(where: { object -> Bool in object.code == snapshot.key }) {
                     let answersSnap = snapshot.children.allObjects as! [DataSnapshot]
                     let questionsAnswered = answersSnap.flatMap({ snap -> Int64 in
                         let bool = snap.value as? Bool ?? false
                         return bool ? 1 : 0
                     }).reduce(0, +)
                     
-                    self.teams[index].update(name: firebaseRabbits.first(where: { leader -> Bool in return leader.code == snapshot.key })?.displayName ?? "", questionsAnswered: questionsAnswered)
+                    self.teams[index].update(name: snapshot.key, questionsAnswered: questionsAnswered)
                     observable.onNext()
                     
                 }
