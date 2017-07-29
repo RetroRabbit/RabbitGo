@@ -32,30 +32,6 @@ class QuestionsCell: CollectionViewCell {
     func prepareForDisplay(image: String) {
         imgMedia.image =  UIImage(named: image)
     }
-
-    
-    /*override func prepareForDisplay(object: ProfileSwitchObject, otherProfile: Bool = true) {
-        super.prepareForDisplay(object: object, otherProfile: otherProfile)
-        key = object.key
-        
-        let imageWidth = ProfileXCell.calculateWidth() - 8
-        let imageHeight = imageWidth / ImageHelper.decodedRatio(object.url1)
-        
-        if object.url1 != "", let url = ImageHelperWithKingfisherCache.getURL(path: object.url1, dimensions: .exactly(width: imageWidth, height: imageHeight)) {
-            imgMedia.kf.setImage(
-                with: url,
-                placeholder: UIImage(color: ImageHelper.decodedColor(object.url1)),
-                options: [])
-            
-            imgMedia.frame.size = CGSize(width: imageWidth, height: imageHeight)
-            
-            let rectShape = CAShapeLayer()
-            rectShape.bounds = imgMedia.frame
-            rectShape.position = imgMedia.center
-            rectShape.path = UIBezierPath(roundedRect: imgMedia.bounds, byRoundingCorners: [.allCorners], cornerRadii: CGSize(width: 2, height: 2)).cgPath
-            imgMedia.layer.mask = rectShape
-        }
-    }*/
     
     override func prepareForReuse() {
         super.prepareForReuse()

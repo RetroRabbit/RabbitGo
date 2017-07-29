@@ -151,8 +151,15 @@ class ScanQRController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
                 // TODO: Open scanned QR question
                 question?.state = 1
                 firebaseQuestions[index] = question
+                
+                refCurrentUserQuestions().observeSingleEvent(of: .value, with: { [weak self] (dataSnapShot) in
+                    guard let this = self else { return }
+                    let answeredQuestion = dataSnapShot.childSnapshot(forPath: question?.qrCode ?? "")
+                    answeredQuestion.childSnapshot(forPath: "state").ref.setValue(1)
+                })
+                
                 self.navigationController?.popViewController(animated: true)
-                self.tabBarController?.selectedIndex = 0
+                self.tabBarController?.selectedIndex = 1
             }))
         }
     

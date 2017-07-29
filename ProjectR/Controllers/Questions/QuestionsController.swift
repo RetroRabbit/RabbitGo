@@ -14,30 +14,11 @@ import Firebase
 class QuestionsController: UIViewNavigationController {
     static let instance = QuestionsController()
     fileprivate let scrollView = UIScrollView(forAutoLayout: ())
+    fileprivate let strLocked = "image_square_grey"
+    fileprivate let strUnlocked = "image_square_white"
+    fileprivate let strAnswered = "image_square_green"
     
-    fileprivate var questions: [String] = [
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey",
-        "image_square_grey"
-    ]
+    fileprivate var questions: [String] = Array(repeating: "image_square_grey", count: 21)
     
     private let lblHeading: UILabel = {
         let label = UILabel()
@@ -73,19 +54,23 @@ class QuestionsController: UIViewNavigationController {
         
         // Store firebase questions in a global array
         refQuestions.observeSingleEvent(of: .value, with: { (snapshot) in
-            let enumerator = snapshot.children
-            while let question = enumerator.nextObject() as? DataSnapshot {
-                let storedQuestion = Question()
-                storedQuestion.qrCode = question.key as? NSString
-                storedQuestion.answer = question.childSnapshot(forPath: "answer").value as? NSNumber
-                storedQuestion.text = question.childSnapshot(forPath: "text").value as? NSString
-                
-                var multiple: [NSString] = []
-                multiple.append(question.childSnapshot(forPath: "mutiple").childSnapshot(forPath: "0").value as? NSString ?? "")
-                multiple.append(question.childSnapshot(forPath: "mutiple").childSnapshot(forPath: "1").value as? NSString ?? "")
-                multiple.append(question.childSnapshot(forPath: "mutiple").childSnapshot(forPath: "2").value as? NSString ?? "")
-                storedQuestion.multiple = multiple
-                firebaseQuestions.append(storedQuestion)
+            if let dataSnap = snapshot.children.allObjects as? [DataSnapshot] {
+                firebaseQuestions = dataSnap.flatMap({ snap -> Question? in
+                    return Question.decode(snapshot: snap)
+                })
+            }
+        })
+        
+        // Stored firebase rabbits in a global array
+        refRabbits.observeSingleEvent(of: .value, with: { (snapshop) in
+            let enumerator = snapshop.children
+            while let rabbit = enumerator.nextObject() as? DataSnapshot {
+                let storedRabbit = Rabbit()
+                storedRabbit.code = rabbit.childSnapshot(forPath: "code").value as? String
+                storedRabbit.displayName = rabbit.childSnapshot(forPath: "displayName").value as? String
+                storedRabbit.email = rabbit.childSnapshot(forPath: "email").value as? String
+                storedRabbit.team = rabbit.childSnapshot(forPath: "team").value as? String
+                firebaseRabbits.append(storedRabbit)
             }
         })
     }
@@ -108,14 +93,29 @@ class QuestionsController: UIViewNavigationController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        for (index, question) in firebaseQuestions.enumerated() {
-            if question?.state == 1 {
-                questions[index] = "image_square_white"
-            } else if question?.state == 2 {
-                questions[index] = "image_square_green"
+        refresh()
+    }
+
+    func refresh() {
+        refCurrentUserQuestions().observeSingleEvent(of: .value, with: { (snapshot) in
+            let enumerator = snapshot.children
+            var i = 0
+            while let userQuestions = enumerator.nextObject() as? DataSnapshot {
+                let state = userQuestions.childSnapshot(forPath: "state").value as? Int ?? 1
+                switch state {
+                case 0:
+                    self.questions[i] = "image_square_grey"
+                case 1:
+                    self.questions[i] = "image_square_white"
+                case 2:
+                    self.questions[i] = "image_square_green"
+                default:
+                    self.questions[i] = "image_square_grey"
+                }
+                i += 1
             }
-        }
-        QuestionsCollection.reloadData()
+            self.QuestionsCollection.reloadData()
+        })
     }
     
     override func prepareToolbar() {
@@ -151,6 +151,13 @@ extension QuestionsController: QuestionsDelegate {
     }
 }
 
+extension QuestionsController: QuestionDelegate {
+    func answeredQuestion(index item: Int, selectedIndex indexPath: IndexPath) {
+        questions[indexPath.row] = "image_square_green"
+        QuestionsCollection.reloadItems(at: [indexPath])
+    }
+}
+
 extension QuestionsController: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -167,9 +174,22 @@ extension QuestionsController: UICollectionViewDataSource, UICollectionViewDeleg
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let question = firebaseQuestions[indexPath.item] {
-            let vc = QuestionController(question: question, index: indexPath.item + 1)
+        // Shhhhh Wesley, our secret
+        let reAdjustedIndex = indexPath.item % 3 == 0 ? indexPath.item + 2 : indexPath.item - 1
+        
+        guard let question = firebaseQuestions[indexPath.item] else { return }
+        
+        if questions[indexPath.item] == strAnswered {
+            // Already answered
+            // TODO: Better show something
+        } else if questions[indexPath.item] == strUnlocked {
+            let vc = QuestionController(question: question, index: reAdjustedIndex, selectedIndex: indexPath, delegate: self)
             self.pushViewController(vc, animated: true)
+        } else {
+            // Locked question tap
+            let ac = UIAlertController(title: "Locked question", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Please scan the relevant QR code", style: .default))
+            present(ac, animated: true)
         }
     }
 }

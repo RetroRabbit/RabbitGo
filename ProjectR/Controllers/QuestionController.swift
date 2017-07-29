@@ -10,16 +10,25 @@ import Foundation
 import UIKit
 import PureLayout
 import Material
+import Firebase
+
+protocol QuestionDelegate {
+    func answeredQuestion(index: Int, selectedIndex: IndexPath)
+}
 
 class QuestionController: UITableViewController {
     /* Data */
-    fileprivate var lastTapped = -1
+    fileprivate var lastTapped: IndexPath?   // Which self.tableView cell was last tapped
     fileprivate let question: Question
     fileprivate let index: Int
+    fileprivate let selectedIndex: IndexPath // Which parent collection cell brough you here
+    fileprivate let questionDelegate: QuestionDelegate
     
-    init(question: Question, index: Int) {
+    init(question: Question, index: Int, selectedIndex: IndexPath, delegate: QuestionDelegate) {
         self.question = question
         self.index = index
+        self.selectedIndex = selectedIndex
+        self.questionDelegate = delegate
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -28,7 +37,7 @@ class QuestionController: UITableViewController {
     }
 }
 
-extension QuestionController {
+extension QuestionController: SubmitDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.separatorStyle = .none
@@ -86,11 +95,90 @@ extension QuestionController {
             cell.prepareForDisplay(question: question, index: indexPath.row)
             return cell
         case 1:
-            return tableView.dequeueReusableCell(withIdentifier: SubmitCell.reuseIdentifier, for: indexPath as IndexPath) as! SubmitCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: SubmitCell.reuseIdentifier, for: indexPath as IndexPath) as! SubmitCell
+            cell.delegate = self
+            return cell
         default:
             return UITableViewCell()
         }
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Remove previous check mark
+        if indexPath.section == 0 {
+            if let lastTapped = lastTapped {
+                let cell = tableView.cellForRow(at: lastTapped) as! OptionCell
+                cell.imgCheckMark.isHidden = true
+            }
+            
+            // Set new check mark
+            lastTapped = indexPath
+            let cell = tableView.cellForRow(at: indexPath) as! OptionCell
+            cell.imgCheckMark.isHidden = false
+        }
+    }
+    
+    /* Protocol submit */
+    func onSubmit() {
+        let tfCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as! SubmitCell
+        let rabbitCode = tfCell.tfRabbitCode.text
+        
+        verifyRabbitCode(code: rabbitCode, completion: verifyAnswer)
+    }
+    
+    func verifyRabbitCode(code: String?, completion: @escaping () -> ()) {
+        refRabbits.observeSingleEvent(of: .value, with: { (snapshot) in
+            let enumerator = snapshot.children
+            while let rabbit = enumerator.nextObject() as? DataSnapshot {
+                if rabbit.childSnapshot(forPath: "code").value as? String == code {
+                    completion()
+                    return
+                }
+            }
+            // Invalid rabbit code
+            let ac = UIAlertController(title: "Invalid Rabbit Code", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Try again", style: .default))
+            self.present(ac, animated: true)
+            completion()
+        })
+    }
+    
+    func verifyAnswer() {
+        /* Check for selected answer */
+        guard let lastTapped = lastTapped else {
+            // No answer selected
+            let ac = UIAlertController(title: "Please pick an answer", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Dismiss", style: .default))
+            present(ac, animated: true)
+            return
+        }
+        
+        if lastTapped.row == Int(question.answer ?? 0) {
+            // Correct answer
+            refCurrentUserQuestions().observeSingleEvent(of: .value, with: { [weak self] (dataSnapShot) in
+                guard let this = self else { return }
+                let answeredQuestion = dataSnapShot.childSnapshot(forPath: this.question.qrCode ?? "")
+                answeredQuestion.childSnapshot(forPath: "state").ref.setValue(2)
+
+                let ac = UIAlertController(title: "You unlocked Rabbit #\(this.index)", message: nil, preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "View", style: .default, handler: { _ in
+                    this.navigationController?.popViewController(animated: true)
+                    this.questionDelegate.answeredQuestion(index: this.index, selectedIndex: this.selectedIndex)
+                }))
+                this.present(ac, animated: true)
+            })
+        } else {
+            // Incorrect answer
+            let ac = UIAlertController(title: "Wrong answer!", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Ask another Rabbit", style: .default))
+            present(ac, animated: true)
+        }
+    }
+
+}
+
+protocol SubmitDelegate: class {
+    func onSubmit()
 }
 
 
@@ -110,7 +198,7 @@ class QuestionHeaderCell: UIView {
     fileprivate let lblQuestion: UILabel = {
         let label = UILabel()
         label.preferredMaxLayoutWidth = Screen.width
-        label.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_extra_large_grey_dark_center)
+        label.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_large_grey_dark_center)
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         return label
@@ -129,7 +217,7 @@ class QuestionHeaderCell: UIView {
     
     final func prepareForDisplay(question: Question, index: Int) {
         lblQuestionNumber.attributedText = NSAttributedString(string: "Question #\(index)", attributes: Style.avenirh_small_grey_dark_center)
-        lblQuestion.attributedText = NSAttributedString(string: question.text as String? ?? "", attributes: Style.avenirh_extra_large_grey_dark_center)
+        lblQuestion.attributedText = NSAttributedString(string: question.text as String? ?? "", attributes: Style.avenirh_large_grey_dark_center)
         
         layoutIfNeeded()
     }
@@ -142,7 +230,7 @@ class QuestionHeaderCell: UIView {
     }
     
     static func height(question: Question, index: Int) -> CGFloat {
-        return NSAttributedString(string: question.text as String? ?? "", attributes: Style.avenirh_extra_large_grey_dark_center).height(forWidth: Screen.width) + 15 +
+        return NSAttributedString(string: question.text as String? ?? "", attributes: Style.avenirh_large_grey_dark_center).height(forWidth: Screen.width) + 15 +
                 NSAttributedString(string: "Question #\(index)", attributes: Style.avenirh_small_grey_dark_center).height(forWidth: Screen.width) + 30
     }
 }
@@ -164,6 +252,7 @@ class OptionCell: UITableViewCell {
         let img = UIImageView(image: UIImage(named: "checkmark"))
         img.contentMode = .scaleAspectFit
         img.clipsToBounds = true
+        img.isHidden = true
         return img
     }()
     
@@ -241,8 +330,11 @@ class OptionCell: UITableViewCell {
 class SubmitCell: UITableViewCell {
     class var reuseIdentifier: String { return "submitCell" }
     
+    /* Data */
+    weak var delegate: SubmitDelegate?
+    
     /* UI */
-    private let tfRabbitCode: ProjectRTextField = {
+    let tfRabbitCode: ProjectRTextField = {
         let textField = ProjectRTextField()
         textField.placeholder = "Unique Rabbit Code"
         return textField
@@ -251,7 +343,7 @@ class SubmitCell: UITableViewCell {
     lazy var btnSubmit :ProjectRButton = {
         let btn = ProjectRButton()
         btn.setTitle("SUBMIT", for: .normal)
-        btn.addTarget(self, action: #selector(SignInController.onNext), for: UIControlEvents.touchUpInside)
+        btn.addTarget(self, action: #selector(onSubmit), for: UIControlEvents.touchUpInside)
         return btn
     }()
     
@@ -295,4 +387,9 @@ class SubmitCell: UITableViewCell {
         return 40 + 20 +
         Style.button_height + 40
     }
+    
+    func onSubmit() {
+        delegate?.onSubmit()
+    }
+    
 }
