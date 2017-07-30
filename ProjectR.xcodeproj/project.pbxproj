@@ -26,6 +26,7 @@
 		C72AB7E31F2A94B4001F8C2B /* RabbitHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72AB7E21F2A94B4001F8C2B /* RabbitHeaderView.swift */; };
 		C72AB7E51F2A94E4001F8C2B /* RabbiteerHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72AB7E41F2A94E4001F8C2B /* RabbiteerHeaderCell.swift */; };
 		C7C674961F2C95E900053544 /* BioContoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C674951F2C95E900053544 /* BioContoller.swift */; };
+		C7C674981F2E74AC00053544 /* RabbiteerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C674971F2E74AC00053544 /* RabbiteerCell.swift */; };
 		C7DB094A1F290A67008CC5C3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7DB09491F290A67008CC5C3 /* GoogleService-Info.plist */; };
 		C7DB09521F291753008CC5C3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7DB094E1F291753008CC5C3 /* Assets.xcassets */; };
 		C7DB09531F291753008CC5C3 /* Avenir.ttc in Resources */ = {isa = PBXBuildFile; fileRef = C7DB09501F291753008CC5C3 /* Avenir.ttc */; };
@@ -89,6 +90,7 @@
 		C72AB7E21F2A94B4001F8C2B /* RabbitHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RabbitHeaderView.swift; sourceTree = "<group>"; };
 		C72AB7E41F2A94E4001F8C2B /* RabbiteerHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RabbiteerHeaderCell.swift; sourceTree = "<group>"; };
 		C7C674951F2C95E900053544 /* BioContoller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BioContoller.swift; sourceTree = "<group>"; };
+		C7C674971F2E74AC00053544 /* RabbiteerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RabbiteerCell.swift; sourceTree = "<group>"; };
 		C7DB09491F290A67008CC5C3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "ProjectR/GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		C7DB094E1F291753008CC5C3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C7DB09501F291753008CC5C3 /* Avenir.ttc */ = {isa = PBXFileReference; lastKnownFileType = file; path = Avenir.ttc; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 			children = (
 				C72AB7E01F2A9427001F8C2B /* RabbiteerHomeController.swift */,
 				C72AB7E41F2A94E4001F8C2B /* RabbiteerHeaderCell.swift */,
+				C7C674971F2E74AC00053544 /* RabbiteerCell.swift */,
 			);
 			name = RabbiteerHome;
 			sourceTree = "<group>";
@@ -433,6 +436,7 @@
 				56818B7C1F12598C006CD915 /* AppDelegate.swift in Sources */,
 				C7E9AD141F28797300E1A148 /* ViewNavigationController.swift in Sources */,
 				C72AB7E11F2A9427001F8C2B /* RabbiteerHomeController.swift in Sources */,
+				C7C674981F2E74AC00053544 /* RabbiteerCell.swift in Sources */,
 				C7E9AD0A1F28557700E1A148 /* ScanQRController.swift in Sources */,
 				C72AB7E31F2A94B4001F8C2B /* RabbitHeaderView.swift in Sources */,
 				E97CC95D1F1D32F800AE4A67 /* PopupHelper.swift in Sources */,

@@ -29,8 +29,9 @@ class QuestionsCell: CollectionViewCell {
         super.init(coder: aDecoder)
     }
     
-    func prepareForDisplay(image: UIImage) {
-        imgMedia.image =  image
+    func prepareForDisplay(image: UIImageView) {
+        imgMedia.addSubview(image)
+        image.autoPinEdgesToSuperviewEdges()
     }
     
     override func prepareForReuse() {

@@ -16,22 +16,41 @@ struct QuestionView {
     var code: String = ""
     var celebrityCode: String = ""
     var state: Int64 = 0
-    var image: UIImage? = UIImage(named: "image_square_grey")
+    var image: UIImageView = UIImageView(image: UIImage(named: "image_square_grey"))
+    var lockedCodes: [String] = []
     
-    init(code: String, state: Int64, image: UIImage?) {
+    init(code: String, state: Int64, lockedCodes: [String]) {
         self.code = code
-        
         self.state = state
-        self.image = image
+        self.lockedCodes = lockedCodes
     }
     
-    init(image: UIImage?) {
-        self.image = image
-    }
-    
-    mutating func update(state: Int64, image: UIImage?) {
+    init(code: String, state: Int64, image: UIImageView, lockedCodes: [String]) {
+        self.code = code
         self.state = state
         self.image = image
+        self.lockedCodes = lockedCodes
+    }
+    
+    init(image: UIImageView) {
+        self.image = image
+        self.image.contentMode = .scaleAspectFit
+        self.image.clipsToBounds = true
+    }
+    
+    mutating func update(state: Int64, image: UIImageView) {
+        self.state = state
+        self.image = image
+        self.image.contentMode = .scaleAspectFit
+        self.image.clipsToBounds = true
+    }
+    
+    mutating func update(state: Int64, image: UIImageView, lockedCodes: [String]) {
+        self.state = state
+        self.image = image
+        self.image.contentMode = .scaleAspectFit
+        self.image.clipsToBounds = true
+        self.lockedCodes = lockedCodes
     }
     
     mutating func update(code: String) {
@@ -51,8 +70,7 @@ class QuestionsController: UIViewNavigationController {
     fileprivate let strUnlocked = "image_square_white"
     fileprivate let strAnswered = "image_square_green"
     
-    fileprivate var profiles: [String:UIImage] = [:]
-    fileprivate var questions: [QuestionView] = Array(repeating: QuestionView(image: UIImage(named: "image_square_grey")), count: 21)
+    fileprivate var questions: [QuestionView] = []
     
     private let lblHeading: UILabel = {
         let label = UILabel()
@@ -83,6 +101,56 @@ class QuestionsController: UIViewNavigationController {
         tabBarItem.title = "Rabbit Q,s"
         tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Questions, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
         tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Questions, textColor: Style.color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
+        
+        //added
+        refCurrentUserQuestions().observeSingleEvent(of: .value, with: { (snapshot) in
+            snapshot.children.forEach({ object in
+                if let answeredQuestion = object as? DataSnapshot,
+                    let state = answeredQuestion.childSnapshot(forPath: "state").value as? Int {
+                    
+                    var lockedCodes: [String] = []
+                    if let _lockedCodes = answeredQuestion.childSnapshot(forPath: "lockedCodes").value as? String {
+                        lockedCodes = _lockedCodes.components(separatedBy: ",")
+                    }
+                    
+                    self.questions.append(QuestionView(code: answeredQuestion.key, state: Int64(state), lockedCodes: lockedCodes))
+                    
+                    if state > 0,
+                        let qIndex = self.questions.index(where: { obj -> Bool in return obj.code == answeredQuestion.key }) {
+                        _ = self.getPicture(code: answeredQuestion.key, state: Int64(state)).subscribe(onNext: { image in
+                            self.questions[qIndex].update(state: Int64(state), image: image)
+                            DispatchQueue.main.async {
+                                self.QuestionsCollection.reloadItems(at: [IndexPath(row: qIndex, section: 0)])
+                            }
+                        })
+                    }
+                    
+                }
+            })
+        })
+        
+        //need to listen on main node can't listen on subnode
+        _ = refCurrentUser().observe(.childChanged, with: { snapshot in
+            snapshot.children.allObjects.forEach({ object in
+                if let answeredQuestion = object as? DataSnapshot,
+                    let state = answeredQuestion.childSnapshot(forPath: "state").value as? Int,
+                    let qIndex = self.questions.index(where: { obj -> Bool in return obj.code == answeredQuestion.key }),
+                    self.questions[qIndex].state != Int64(state) {
+                    
+                    var lockedCodes: [String] = []
+                    if let _lockedCodes = answeredQuestion.childSnapshot(forPath: "lockedCodes").value as? String {
+                        lockedCodes = _lockedCodes.components(separatedBy: ",")
+                    }
+                    
+                    _ = self.getPicture(code: answeredQuestion.key, state: Int64(state)).subscribe(onNext: { image in
+                        self.questions[qIndex].update(state: Int64(state), image: image, lockedCodes: lockedCodes)
+                        DispatchQueue.main.async {
+                            self.QuestionsCollection.reloadItems(at: [IndexPath(row: qIndex, section: 0)])
+                        }
+                    })
+                }
+            })
+        })
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -101,76 +169,65 @@ class QuestionsController: UIViewNavigationController {
         scrollView.addSubview(QuestionsCollection)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        refresh()
-    }
-    
-    func refresh() {
-        refCurrentUserQuestions().observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
-            guard let this = self else { return }
-            
-            if let _ = this.questions.index(where: { obj -> Bool in return obj.code.isEmpty }) { this.populateKeys(snapshot: snapshot) }
-            
-            snapshot.children.forEach({ object in
-                if let answeredQuestion = object as? DataSnapshot,
-                    let state = answeredQuestion.childSnapshot(forPath: "state").value as? Int64,
-                    let qIndex = this.questions.index(where: { obj -> Bool in return obj.code == answeredQuestion.key }),
-                    this.questions[qIndex].state != state {
-                    _ = this.getPicture(code: answeredQuestion.key, state: state).subscribe(onNext: { image in
-                        this.questions[qIndex].update(state: state, image: image)
-                        this.QuestionsCollection.reloadItems(at: [IndexPath(row: qIndex, section: 0)])
-                    })
-                }
-            })
-        })
-    }
-    
-    func populateKeys(snapshot: DataSnapshot) {
-        for (index, object) in snapshot.children.enumerated() {
-            if let answeredQuestion = object as? DataSnapshot {
-                    self.questions[index].update(code: answeredQuestion.key)
-            }
-        }
-    }
-    
-    func getPicture(code: String, state: Int64) -> Observable<UIImage?> {
+    func getPicture(code: String, state: Int64) -> Observable<UIImageView> {
         return Observable.create { [weak self] observable in
             guard let this = self else { return Disposables.create() }
-            
             switch state {
             case 0:
-                observable.onNext(UIImage(named: "image_square_grey"))
+                observable.onNext(UIImageView(image: UIImage(named: "image_square_grey")))
                 observable.onCompleted()
             case 1:
-                observable.onNext(UIImage(named: "image_square_white"))
-                observable.onCompleted()
+                if let rabbitCode = firebaseQuestions.first(where: { obj -> Bool in return code == obj.qrCode })?.unlocked {
+                    rabbitProfilePic(rabbitCode: "\(rabbitCode)_line").getData(maxSize: 1 * 1024 * 1024, completion: { (data, error) in
+                        if let _ = error {
+                            print("ffuuuccckkk")
+                        } else {
+                            let imageView = UIImageView(image: UIImage(named: "image_square_white"))
+                            let image = UIImageView(image: UIImage(data: data!))
+                            imageView.addSubview(image)
+                            imageView.bringSubview(toFront: image)
+                            image.autoPinEdge(toSuperviewEdge: .top, withInset: 5)
+                            image.autoPinEdge(toSuperviewEdge: .bottom, withInset: 5)
+                            image.autoPinEdge(toSuperviewEdge: .left, withInset: 5)
+                            image.autoPinEdge(toSuperviewEdge: .right, withInset: 5)
+                            
+                            if let qIndex = this.questions.index(where: { obj -> Bool in return obj.code == code }) {
+                                this.questions[qIndex].update(celebrityCode: rabbitCode)
+                            }
+                            
+                            observable.onNext(imageView)
+                        }
+                        observable.onCompleted()
+                    })
+                } else {
+                    observable.onCompleted()
+                }
             case 2:
                 if let rabbitCode = firebaseQuestions.first(where: { obj -> Bool in return code == obj.qrCode })?.unlocked {
-                    if let image = this.profiles[rabbitCode] {
-                        observable.onNext(image)
-                        observable.onCompleted()
-                    } else {
-                        rabbitProfilePic(rabbitCode: rabbitCode).getData(maxSize: 1 * 1024 * 1024, completion: { (data, error) in
-                            if let _ = error {
-                                observable.onNext(UIImage(named: "image_square_grey"))
-                            } else {
-                                let image = UIImage(data: data!)
-                                this.profiles[rabbitCode] = image
-                                if let qIndex = this.questions.index(where: { obj -> Bool in return obj.code == code }) {
-                                    this.questions[qIndex].update(celebrityCode: rabbitCode)
-                                }
-                                
-                                observable.onNext(image)
+                    rabbitProfilePic(rabbitCode: rabbitCode).getData(maxSize: 1 * 1024 * 1024, completion: { (data, error) in
+                        if let _ = error {
+                        } else {
+                            let imageView = UIImageView(image: UIImage(named: "image_square_green"))
+                            let image = UIImageView(image: UIImage(data: data!))
+                            imageView.addSubview(image)
+                            imageView.bringSubview(toFront: image)
+                            image.autoPinEdge(toSuperviewEdge: .top, withInset: 5)
+                            image.autoPinEdge(toSuperviewEdge: .bottom, withInset: 5)
+                            image.autoPinEdge(toSuperviewEdge: .left, withInset: 5)
+                            image.autoPinEdge(toSuperviewEdge: .right, withInset: 5)
+                            
+                            if let qIndex = this.questions.index(where: { obj -> Bool in return obj.code == code }) {
+                                this.questions[qIndex].update(celebrityCode: rabbitCode)
                             }
-                            observable.onCompleted()
-                        })
-                    }
+                            
+                            observable.onNext(imageView)
+                        }
+                        observable.onCompleted()
+                    })
                 } else {
                     observable.onCompleted()
                 }
             default:
-                observable.onNext(UIImage(named: "image_square_grey"))
                 observable.onCompleted()
             }
             
@@ -212,15 +269,6 @@ extension QuestionsController: QuestionsDelegate {
     }
 }
 
-extension QuestionsController: QuestionDelegate {
-    
-    //NNNNOOOOOO
-    func answeredQuestion(index item: Int, selectedIndex indexPath: IndexPath) {
-        //questions[indexPath.row] = "image_square_green"
-        //QuestionsCollection.reloadItems(at: [indexPath])
-    }
-}
-
 extension QuestionsController: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -232,20 +280,21 @@ extension QuestionsController: UICollectionViewDataSource, UICollectionViewDeleg
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: QuestionsCell.reuseIdentifier, for: indexPath) as! QuestionsCell
-        cell.prepareForDisplay(image: questions[indexPath.row].image ?? UIImage(named: "image_square_grey")!)
+        cell.prepareForDisplay(image: questions[indexPath.row].image)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // Shhhhh Wesley, our secret
         let reAdjustedIndex = indexPath.item % 3 == 0 ? indexPath.item + 2 : indexPath.item - 1
-        let question = questions[indexPath.item]
-        switch question.state {
+        let playerQuestion = questions[indexPath.item]
+        switch playerQuestion.state {
         case 1:
-            let vc = QuestionController(question: firebaseQuestions[indexPath.item], index: reAdjustedIndex, selectedIndex: indexPath, delegate: self)
-            self.pushViewController(vc, animated: true)
+            if let question = firebaseQuestions.first(where: { object -> Bool in return object.qrCode == playerQuestion.code }) {
+                self.pushViewController(QuestionController(question: question, index: reAdjustedIndex, lockedCodes: playerQuestion.lockedCodes), animated: true)
+            }
         case 2:
-            self.pushViewController(BioController(celebrityCode: question.celebrityCode), animated: true)
+            self.pushViewController(BioController(celebrityCode: playerQuestion.celebrityCode), animated: true)
             break
         default:
             // Locked question tap

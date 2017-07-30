@@ -253,8 +253,22 @@ extension ProfileController{
                 updateTextfields()
                 return
         }
+        
         refCurrentUser().observeSingleEvent(of: .value, with: { (snapshot) in
-            snapshot.ref.setValue(Player(email: email, displayName: fullname, university: university, degree: degree, year: year).formatted(), withCompletionBlock: { (error, ref) in
+            var player = Player(email: email, displayName: fullname, university: university, degree: degree, year: year).formatted()
+            var questions: [String:Any] = [:]
+            snapshot.childSnapshot(forPath: "questions").children.allObjects.forEach({ object in
+                if let question = object as? DataSnapshot {
+                    questions[question.key] = PlayerQuestion.decode(snapshot: question).formatted()
+                }
+            })
+            
+            player["questions"] = questions
+            
+            snapshot.ref.setValue(player, withCompletionBlock: { [weak self] _ in
+                let ac = UIAlertController(title: "Profile Updated", message: nil, preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "OK", style: .default))
+                self?.present(ac, animated: true)
             })
         })
         

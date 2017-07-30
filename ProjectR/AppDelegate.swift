@@ -40,46 +40,55 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         
         InternalSetup()
         
-        // Enable this to allow signing out by testing accounts
-        //        do {
-        //            try Auth.auth().signOut()
-        //        } catch {
-        //            NSLog("❌ Error signing out - \(error.localizedDescription)")
-        //        }
-        
-        // Check if authentication valid
-        auth.addStateDidChangeListener { (auth, user) in
-            // should sign in if
-            // - user is nil, or
-            // - user.uid is not same as our user
-            if user == nil {
-                self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
-            }
-        }
-        
         self.window?.rootViewController = splashScreen
         self.window?.makeKeyAndVisible()
         
-        _ = Observable
-            .from([fetchQuestions(), fetchRabbits(), fetchCelebrities()])
-            .merge()
-            .subscribe(onCompleted: {
-                if Auth.auth().currentUser != nil {
-                    if isRabbit(user: auth.currentUser) {
-                        self.window?.rootViewController = RabbitHomeController.instance
-                    } else {
-                        self.window?.rootViewController = TabNavigationController()
-                    }
-                } else {
-                    self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
-                }
-            })
+        ref.keepSynced(true)
         
+        _ = fetchData().subscribe(onError: { _ in
+            if Auth.auth().currentUser != nil {
+                do {
+                    try Auth.auth().signOut()
+                } catch {
+                    NSLog("❌ Error signing out - \(error.localizedDescription)")
+                }
+            }
+            self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
+        }, onCompleted: {
+            if Auth.auth().currentUser != nil {
+                /*if isRabbit(user: auth.currentUser) {
+                    self.window?.rootViewController = RabbitHomeController.instance
+                } else {*/
+                    self.window?.rootViewController = TabNavigationController()
+                //}
+            } else {
+                self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
+            }
+        })
+        
+        IQKeyboardManager.sharedManager().keyboardDistanceFromTextField = 150
         IQKeyboardManager.sharedManager().enable = true
         IQKeyboardManager.sharedManager().enableAutoToolbar = false
         IQKeyboardManager.sharedManager().shouldShowTextFieldPlaceholder = false
         
         return true
+    }
+    
+    func fetchData() -> Observable<()> {
+        return Observable.create { [weak self] observable in
+            guard let this = self else { return Disposables.create()}
+            _ = Observable
+                .from([this.fetchQuestions(), this.fetchRabbits(), this.fetchCelebrities()])
+                .merge()
+                .timeout(5, scheduler: MainScheduler.instance)
+                .subscribe(onError: { err in
+                    observable.onError(err)
+                }, onCompleted: {
+                    observable.onCompleted()
+                })
+            
+            return Disposables.create()
+        }
     }
     
     func fetchQuestions() -> Observable<()> {
@@ -102,8 +111,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     func fetchRabbits() -> Observable<()> {
         return Observable.create { observable in
             // Stored firebase rabbits in a global array
-            refRabbits.observeSingleEvent(of: .value, with: { (snapshop) in
-                if let dataSnap = snapshop.children.allObjects as? [DataSnapshot] {
+            refRabbits.observeSingleEvent(of: .value, with: { (snapshot) in
+                if let dataSnap = snapshot.children.allObjects as? [DataSnapshot] {
                     firebaseRabbits = dataSnap.flatMap({ snap -> Rabbit? in
                         return Rabbit.decode(dataSnap: snap)
                     })

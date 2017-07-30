@@ -70,6 +70,60 @@ class RabbiteerHomeController : UITableNavigationController {
                 }
             })
             
+            _ = refRabbiteers.queryOrdered(byChild: SCORE).queryStarting(atValue: 500).observe(.value, with: { dataSnapshot in
+                if dataSnapshot.hasChildren() {
+                    switch dataSnapshot.childrenCount {
+                    case 1 where (dataSnapshot.children.allObjects[0] as? DataSnapshot)?.key != currentUserId():
+                        if let first = UserDefaults.standard.object(forKey: "1st") as? Bool,
+                            first {
+                            break
+                        }
+                        
+                        UserDefaults.standard.set(true, forKey: "1st")
+                        let ac = UIAlertController(title: "ATTENTION!", message: "Someone just won 1st \n place! But 2nd & 3rd place \n is still up for the taking!", preferredStyle: .alert)
+                        ac.addAction(UIAlertAction(title: "GAME ON!", style: .default, handler: { _ in
+                        }))
+                        DispatchQueue.main.async {
+                            self.present(ac, animated: true)
+                        }
+                        break
+                    case 2 where (dataSnapshot.children.allObjects[0] as? DataSnapshot)?.key != currentUserId():
+                        if let second = UserDefaults.standard.object(forKey: "2nd") as? Bool,
+                            second {
+                            break
+                        }
+                        
+                        UserDefaults.standard.set(true, forKey: "2nd")
+                        
+                        let ac = UIAlertController(title: "ATTENTION!", message:"Someone just won 2nd \n place! But 3rd place \n is still up for the taking!", preferredStyle: .alert)
+                        ac.addAction(UIAlertAction(title: "GAME ON!", style: .default, handler: { _ in
+                        }))
+                        DispatchQueue.main.async {
+                            self.present(ac, animated: true)
+                        }
+                        break
+                    case 3 where (dataSnapshot.children.allObjects[0] as? DataSnapshot)?.key != currentUserId():
+                        if let third = UserDefaults.standard.object(forKey: "3rd") as? Bool,
+                            third {
+                            break
+                        }
+                        
+                        UserDefaults.standard.set(true, forKey: "3rd")
+                        
+                        let ac = UIAlertController(title: "ATTENTION!", message: "Someone just won 3rd \n place! Thanks for playing", preferredStyle: .alert)
+                        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+                        }))
+                        DispatchQueue.main.async {
+                            self.present(ac, animated: true)
+                        }
+                        break
+                    default:
+                        break
+                        
+                    }
+                }
+            })
+            
             return Disposables.create()
         }
     }
@@ -111,7 +165,7 @@ class RabbiteerHomeController : UITableNavigationController {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 100
         tableView.register(RabbiteerHeaderCell.self, forCellReuseIdentifier: RabbiteerHeaderCell.reuseIdentifier)
-        tableView.register(LeaderBoardCell.self, forCellReuseIdentifier: LeaderBoardCell.reuseIdentifier)
+        tableView.register(RabbiteerCell.self, forCellReuseIdentifier: RabbiteerCell.reuseIdentifier)
         tableView.alwaysBounceVertical = false
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
         
@@ -148,7 +202,7 @@ extension RabbiteerHomeController {
             cell.prepareForDisplay(object: userObject)
             return cell
         case 1:
-            let cell = tableView.dequeueReusableCell(withIdentifier: LeaderBoardCell.reuseIdentifier) as! LeaderBoardCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: RabbiteerCell.reuseIdentifier) as! RabbiteerCell
             cell.prepareForDisplay(object: rabbiteers[indexPath.row])
             return cell
         default:

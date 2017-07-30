@@ -33,6 +33,7 @@ class BioController: UIViewNavigationController {
     
     init(celebrityCode: String) {
         super.init()
+        self.hidesBottomBarWhenPushed = true
         celeb = firebaseCelebrities.first(where: { object -> Bool in return object.code == celebrityCode })
     }
     

@@ -65,6 +65,9 @@ PODS:
   - Material (2.6.3):
     - Material/Core (= 2.6.3)
   - Material/Core (2.6.3)
+  - NVActivityIndicatorView (3.7.0):
+    - NVActivityIndicatorView/Presenter (= 3.7.0)
+  - NVActivityIndicatorView/Presenter (3.7.0)
   - PureLayout (3.0.2)
   - RxCocoa (3.5.0):
     - RxSwift (~> 3.4)
@@ -79,6 +82,7 @@ DEPENDENCIES:
   - GoogleSignIn
   - IQKeyboardManagerSwift (= 4.0.10)
   - Material
+  - NVActivityIndicatorView
   - PureLayout
   - RxCocoa
   - RxSwift
@@ -100,10 +104,11 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 30d874b96d0d76028f61fbd122801e3f030d47db
   IQKeyboardManagerSwift: 75ba21a23794a1e6b6fe6d9a267ea17f80e06771
   Material: af607a7ec0e9978ef85cf189a3d8ceeeb650400f
+  NVActivityIndicatorView: d3738df7e2e476aca0ba6bf32a8c9fbcfc33d64b
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
   RxCocoa: a0a09f45d0e5b48ecb6a4a7b4b4c89c88d3f633f
   RxSwift: 18ee9d78b45edb3b0b7e79916b47a116e6dbc842
 
-PODFILE CHECKSUM: f0e52076149289061e519717360b26b5141afa25
+PODFILE CHECKSUM: 1562b3b5f5e4fb5c1a6d1cb9036e4e574fc78a46
 
 COCOAPODS: 1.2.0

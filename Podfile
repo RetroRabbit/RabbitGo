@@ -17,6 +17,7 @@ target 'ProjectR' do
     pod 'RxCocoa'
     pod 'FBSDKLoginKit'
     pod 'IQKeyboardManagerSwift', '4.0.10'
+    pod 'NVActivityIndicatorView'
     
     # Remove modular include warning
     post_install do |installer|

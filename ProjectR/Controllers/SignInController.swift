@@ -14,10 +14,13 @@ import GoogleSignIn
 import Material
 import PureLayout
 import RxSwift
+import NVActivityIndicatorView
 
 class SignInController: BaseSignInController, UITextFieldDelegate {
     /* Data */
     let userDetails = Notification.Name(rawValue:"UserDetails")
+    
+    let loader = NVActivityIndicatorView(frame: CGRect(x: (Screen.width - Style.button_height)/2, y: (Screen.height - Style.button_height) - 30, width: Style.button_height, height: Style.button_height), type: NVActivityIndicatorType.pacman, color: Style.color.green)
     
     /*UI*/
     fileprivate let txtName: ProjectRTextField = {
@@ -34,13 +37,6 @@ class SignInController: BaseSignInController, UITextFieldDelegate {
         return entry
     }()
     
-    private lazy var facebookButton: ProjectRButton = {
-        let btn = ProjectRButton()
-        btn.setTitle("FACEBOOK", for: .normal)
-        btn.addTarget(self, action: #selector(onFacebook), for: UIControlEvents.touchUpInside)
-        return btn
-    }()
-    
     private lazy var googleButton: ProjectRButton = {
         let btn = ProjectRButton()
         btn.setTitle("GOOGLE +", for: .normal)
@@ -55,9 +51,9 @@ class SignInController: BaseSignInController, UITextFieldDelegate {
         
         headingLabel.attributedText = NSAttributedString(string: "LOGIN", attributes: Style.rhino_large_white)
         
+        view.addSubview(loader)
         view.addSubview(txtName)
         view.addSubview(txtEmail)
-        view.addSubview(facebookButton)
         view.addSubview(googleButton)
         
         txtName.delegate = self
@@ -79,22 +75,20 @@ class SignInController: BaseSignInController, UITextFieldDelegate {
         
         txtEmail.frame = CGRect(x: 30, y: txtName.frame.bottom + 30, width: Screen.width - 60, height: 40)
         
-        let width = Screen.width - (Style.button_width * 2) - 20
+        let width = (Screen.width - Style.button_width)/2
         
-        facebookButton.frame = CGRect(x: width/2, y: txtEmail.frame.bottom + 30, width: Style.button_width, height: Style.button_height)
-        
-        googleButton.frame = CGRect(x: facebookButton.frame.right + 20, y: txtEmail.frame.bottom + 30, width: Style.button_width, height: Style.button_height)
+        googleButton.frame = CGRect(x: width, y: txtEmail.frame.bottom + 60, width: Style.button_width, height: Style.button_height)
     }
     
     func onAuthenticate(notification: Notification) {
         guard let userInfo = notification.userInfo,
             let fullName: String = userInfo["fullName"] as? String,
             let email: String = userInfo["email"] as? String else { return }
-
+        
         txtName.text = fullName
         txtEmail.text = email
         
-        onNext()
+        self.checkRedirect()
     }
 }
 
@@ -142,10 +136,13 @@ extension SignInController {
                 return
         }
         
-        Auth.auth().createUser(withEmail: email, password: email) { [weak self] (user, error) in
+        nextButton.isHidden = true
+        loader.startAnimating()
+        Auth.auth().createUser(withEmail: email.lowercased().trimmed, password: email.lowercased().trimmed) { [weak self] (user, error) in
             if let _ = error {
-                Auth.auth().signIn(withEmail: email, password: email, completion: { (user, error) in
+                Auth.auth().signIn(withEmail: email, password: email, completion: { [weak self] (user, error) in
                     if let error = error {
+                        self?.loader.stopAnimating()
                         NSLog("❌ Firebase SigIn error - \(error.localizedDescription)")
                     } else {
                         self?.checkRedirect()
@@ -165,7 +162,7 @@ extension SignInController {
         
     }
     
-    private func checkRedirect() {
+    fileprivate func checkRedirect() {
         guard let fullname = txtName.text,
             !fullname.isEmpty
             else {
@@ -175,51 +172,54 @@ extension SignInController {
                 return
         }
         
-        refCurrentUser().observeSingleEvent(of: DataEventType.value, with: { [weak self] (snapshot) in
-            if (!snapshot.hasChildren()) {
-                snapshot.ref.setValue(Player(email: auth.currentUser?.email, displayName: fullname).formatted(), withCompletionBlock: { (error, ref) in
-                    self?.createQuestions()
-                })
+        _ = (UIApplication.shared.delegate as! AppDelegate).fetchData().subscribe(onCompleted: { [weak self] in
+            if isRabbit(user: auth.currentUser) {
+                self?.loader.stopAnimating()
+                (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController = RabbitHomeController.instance
             } else {
-                if !snapshot.hasChild("questions") {
-                    self?.createQuestions()
-                } else {
-                    self?.navigateToDetails()
-                }
+                refCurrentUser().observeSingleEvent(of: DataEventType.value, with: { [weak self] (snapshot) in
+                    if (!snapshot.hasChildren()) {
+                        snapshot.ref.setValue(Player(email: auth.currentUser?.email, displayName: fullname).formatted(), withCompletionBlock: { (error, ref) in
+                            self?.createQuestions()
+                        })
+                    } else {
+                        if !snapshot.hasChild("questions") {
+                            self?.createQuestions()
+                        } else {
+                            self?.navigateToDetails()
+                        }
+                    }
+                })
             }
+            
         })
     }
     
     private func createQuestions() {
-        refQuestions.observeSingleEvent(of: .value, with: { (questionSnapshot) in
-            for child in questionSnapshot.children {
-                if let snap = child as? DataSnapshot {
-                    refCurrentUserQuestions().child(snap.key).setValue(PlayerQuestion(state: QuestionState.locked.rawValue).formatted(), withCompletionBlock: { (err, ref) in
-                        if let error = err {
-                            NSLog("❌ Question creation error - \(error.localizedDescription)\nRef: \(ref)")
-                        }
-                    })
-                }
-            }
-        })
-        navigateToDetails()
-    }
-    
-    private func navigateToDetails() {
-        if isRabbit(user: auth.currentUser) {
-            (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController = RabbitHomeController.instance
-        } else {
-            refCurrentUser().observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
-                if let year = snapshot.childSnapshot(forPath: "year").value as? String,
-                    let degree = snapshot.childSnapshot(forPath: "degree").value as? String,
-                    let university = snapshot.childSnapshot(forPath: "university").value as? String,
-                    year.isEmpty, degree.isEmpty, university.isEmpty {
-                    self.navigationController?.pushViewController(profileCreateController(), animated: true)
-                } else {
-                    self.navigationController?.pushViewController(WelcomeController(), animated: true)
+        firebaseQuestions.forEach { question in
+            refCurrentUserQuestions().child(question.qrCode ?? "").setValue(PlayerQuestion(state: QuestionState.locked.rawValue).formatted(), withCompletionBlock: { (err, ref) in
+                if let error = err {
+                    NSLog("❌ Question creation error - \(error.localizedDescription)\nRef: \(ref)")
                 }
             })
         }
+        
+        self.navigateToDetails()
+    }
+    
+    private func navigateToDetails() {
+        refCurrentUser().observeSingleEvent(of: DataEventType.value, with: { [weak self] (snapshot) in
+            if let year = snapshot.childSnapshot(forPath: "year").value as? String,
+                let degree = snapshot.childSnapshot(forPath: "degree").value as? String,
+                let university = snapshot.childSnapshot(forPath: "university").value as? String,
+                year.isEmpty, degree.isEmpty, university.isEmpty {
+                self?.loader.stopAnimating()
+                self?.navigationController?.pushViewController(profileCreateController(), animated: true)
+            } else {
+                self?.loader.stopAnimating()
+                self?.navigationController?.pushViewController(WelcomeController(), animated: true)
+            }
+        })
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

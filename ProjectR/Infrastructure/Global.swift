@@ -20,6 +20,10 @@ var RABBIT_TEAM_BOARD = "rabbit_team_board"
 var PROFILE_PICS = "profile_pics"
 var RABBIT_PROFILE_PICS = "rabbit_profile_pics"
 var RABBIT_CELEBRITIES = "celebrities"
+var FIRST_PLACE = 10000
+var SECOND_PLACE = 9999
+var THIRD_PLACE = 9998
+
 var AutoCompleteS = "autocomplete"
 
 var auth = Auth.auth()
@@ -43,6 +47,7 @@ func currentUserEmail() -> String { return auth.currentUser!.email ?? ""}
 func refCurrentUser() -> DatabaseReference { return refRabbiteers.child(currentUserId()) }
 func refCurrentRabbit() -> DatabaseQuery { return refRabbits.queryOrdered(byChild: "email").queryEqual(toValue: currentUserEmail()) }
 func refCurrentUserQuestions() -> DatabaseReference { return refCurrentUser().child(QUESTIONS) }
+func refCurrentUserQuestion(qrCode: String) -> DatabaseReference { return refCurrentUserQuestions().child(qrCode) }
 func refQuestion(questionId: String) -> DatabaseReference { return refQuestions.child(questionId) }
 func refRabbitBoard(rabbitCode: String) -> DatabaseReference { return refRabbitBoard.child(rabbitCode) }
 func refRabbitTeamBoard(team: String) -> DatabaseReference { return refRabbitTeamBoard.child(team) }
@@ -203,36 +208,60 @@ class Question {
 }
 
 class PlayerQuestion {
-    var state: NSNumber? = nil
-    var answer: NSString? = nil
-    var rabbitCode: NSString? = nil
+    var state: Int? = nil
+    var value: String? = nil
+    var answer: String? = nil
+    var rabbitCode: String? = nil
+    var lockedCodes: [String] = []
     
+    init() {
+    }
     
-    init(state: NSNumber?) {
-        if let _state = state as NSNumber? {
+    init(state: Int?) {
+        if let _state = state as Int? {
             self.state = _state
         }
     }
     
-    init(state: NSNumber?, answer: String?, rabbitCode: String?) {
+    init(state: Int?, lockedCodes: [String]) {
+        if let _state = state as Int? {
+            self.state = _state
+        }
+        
+        self.lockedCodes = lockedCodes
+    }
+    
+    init(state: Int?, answer: String?, rabbitCode: String?) {
         self.state = state
         
-        if let _answer = answer as NSString? {
+        if let _answer = answer as String? {
             self.answer = _answer
         }
         
-        if let _rabbitCode = rabbitCode as NSString? {
+        if let _rabbitCode = rabbitCode as String? {
             self.rabbitCode = _rabbitCode
         }
     }
     
     func formatted() -> [String:Any] {
-        var value: [String:Any] = [:]
-        if let _state = state { value["state"] = _state }
-        if let _answer = answer { value["answer"] = _answer }
-        if let _rabbitCode = rabbitCode { value["rabbitCode"] = _rabbitCode }
+        var formattedValue: [String:Any] = [:]
         
-        return value
+        if let _state = state { formattedValue["state"] = _state }
+        if let _value = value { formattedValue["value"] = _value }
+        if let _answer = answer { formattedValue["answer"] = _answer }
+        if let _rabbitCode = rabbitCode { formattedValue["rabbitCode"] = _rabbitCode }
+        if lockedCodes.count > 0 { formattedValue["lockedCodes"] = lockedCodes.joined(separator: ",") }
+        return formattedValue
+    }
+    
+    static func decode(snapshot: DataSnapshot) -> PlayerQuestion {
+        let playerQuestion = PlayerQuestion()
+        playerQuestion.state = snapshot.childSnapshot(forPath: "state").value as? Int ?? 0
+        if let val = snapshot.childSnapshot(forPath: "value").value as? String { playerQuestion.value = val }
+        if let ans = snapshot.childSnapshot(forPath: "answer").value as? String { playerQuestion.answer = ans }
+        if let rabCode = snapshot.childSnapshot(forPath: "rabbitCode").value as? String { playerQuestion.rabbitCode = rabCode }
+        if let SlockedCodes = snapshot.childSnapshot(forPath: "lockedCodes").value as? String { playerQuestion.lockedCodes = SlockedCodes.components(separatedBy: ",") }
+        return playerQuestion
     }
 }
 
@@ -250,7 +279,7 @@ class AutoComplete {
     }
 }
 
-enum QuestionState: NSNumber {
+enum QuestionState: Int {
     case locked = 0
     case unlocked = 1
     case done = 2

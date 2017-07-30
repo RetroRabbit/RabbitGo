@@ -173,7 +173,17 @@ extension profileCreateController {
         refCurrentUser().observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
             if  let email = snapshot.childSnapshot(forPath: "email").value as? String,
                 let displayName = snapshot.childSnapshot(forPath: "displayName").value as? String {
-                snapshot.ref.setValue(Player(email: email, displayName: displayName, university: university, degree: degree, year: year).formatted(), withCompletionBlock: { (error, ref) in
+                var player = Player(email: email, displayName: displayName, university: university, degree: degree, year: year).formatted()
+                var questions: [String:Any] = [:]
+                snapshot.childSnapshot(forPath: "questions").children.allObjects.forEach({ object in
+                    if let question = object as? DataSnapshot {
+                        questions[question.key] = PlayerQuestion.decode(snapshot: question).formatted()
+                    }
+                })
+                
+                player["questions"] = questions
+                
+                snapshot.ref.setValue(player, withCompletionBlock: { [weak self] _ in
                     self?.navigationController?.pushViewController(WelcomeController(), animated: true)
                 })
             }

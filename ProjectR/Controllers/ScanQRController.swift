@@ -14,14 +14,23 @@ import Icomoon
 
 // Source: https://www.hackingwithswift.com/example-code/media/how-to-scan-a-qr-code
 
-class ScanQRController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+class ScanQRController: UIViewNavigationController, AVCaptureMetadataOutputObjectsDelegate {
     static let instance = ScanQRController()
     
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer!
     
+    private let flashToggle: IconButton = {
+        let button = IconButton(image: Material.Icon.flashOn)
+        button.tintColor = Style.color.green
+        button.contentEdgeInsetsPreset = .none
+        button.pulseAnimation = .none
+        button.addTarget(self, action: #selector(toggleFlash), for: .touchUpInside)
+        return button
+    }()
+    
     init() {
-        super.init(nibName: nil, bundle: nil)
+        super.init()
         
         tabBarItem.setTitleTextAttributes(Style.avenirh_xsmall_white_center, for: .normal)
         tabBarItem.title = "ScanQR"
@@ -72,7 +81,17 @@ class ScanQRController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
         previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
         view.layer.addSublayer(previewLayer);
         
-        captureSession.startRunning();
+        captureSession.startRunning()
+        
+        view.addSubview(flashToggle)
+        flashToggle.bringSubview(toFront: flashToggle)
+        flashToggle.autoSetDimensions(to: CGSize(width: 80, height: 80))
+        flashToggle.autoPinEdge(toSuperviewEdge: .bottom, withInset: 60)
+        flashToggle.autoAlignAxis(toSuperviewAxis: .vertical)
+    }
+    
+    override func prepareToolbar() {
+        setTitle("Scan QR Code", subtitle: nil)
     }
     
     func failed() {
@@ -92,7 +111,7 @@ class ScanQRController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+        flashToggle.image = Material.Icon.flashOn
         if (captureSession?.isRunning == true) {
             captureSession.stopRunning();
         }
@@ -177,5 +196,29 @@ class ScanQRController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
         }
         
         return (-1, nil)
+    }
+    
+    func toggleFlash() {
+        
+        if let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo),
+            device.hasTorch {
+            do {
+                try device.lockForConfiguration()
+                if (device.torchMode == AVCaptureTorchMode.on) {
+                    flashToggle.image = Material.Icon.flashOn
+                    device.torchMode = AVCaptureTorchMode.off
+                } else {
+                    flashToggle.image = Material.Icon.flashOff
+                    do {
+                        try device.setTorchModeOnWithLevel(1.0)
+                    } catch {
+                        print(error)
+                    }
+                }
+                device.unlockForConfiguration()
+            } catch {
+                print(error)
+            }
+        }
     }
 }

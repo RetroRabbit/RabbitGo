@@ -25,7 +25,12 @@ class WelcomeController: UIViewController {
         return label
     }()
 
-    fileprivate var imgViewDivider: UIImageView
+    fileprivate var imgViewDivider: UIImageView = {
+        let view = UIImageView(image: UIImage(named: "textfield_line"))
+        view.contentMode = .scaleAspectFit
+        view.clipsToBounds = true
+        return view
+    }()
 
     fileprivate let lblBody: UILabel = {
         let label = UILabel()
@@ -65,9 +70,26 @@ class WelcomeController: UIViewController {
         return label
     }()
     
-    fileprivate var imgLocked: UIImageView
-    fileprivate var imgUnlocked: UIImageView
-    fileprivate var imgAnswered: UIImageView
+    fileprivate var imgLocked: UIImageView = {
+        let view = UIImageView(image: UIImage(named: "image_square_grey"))
+        view.contentMode = .scaleAspectFit
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    fileprivate var imgUnlocked: UIImageView = {
+        let view = UIImageView(image: UIImage(named: "image_square_white"))
+        view.contentMode = .scaleAspectFit
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    fileprivate var imgAnswered: UIImageView = {
+        let view = UIImageView(image: UIImage(named: "image_square_green"))
+        view.contentMode = .scaleAspectFit
+        view.clipsToBounds = true
+        return view
+    }()
     
     fileprivate let lblSubImageText: UILabel = {
         let label = UILabel()
@@ -87,22 +109,6 @@ class WelcomeController: UIViewController {
     internal let nextButton:ProjectRNext = ProjectRNext()
     
     init() {
-        imgViewDivider = UIImageView(image: UIImage(named: "textfield_line"))
-        imgViewDivider.contentMode = .scaleAspectFit
-        imgViewDivider.clipsToBounds = true
-        
-        imgLocked = UIImageView(image: UIImage(named: "image_square_grey"))
-        imgLocked.contentMode = .scaleAspectFit
-        imgLocked.clipsToBounds = true
-        
-        imgUnlocked = UIImageView(image: UIImage(named: "image_square_white"))
-        imgUnlocked.contentMode = .scaleAspectFit
-        imgUnlocked.clipsToBounds = true
-        
-        imgAnswered = UIImageView(image: UIImage(named: "image_square_green"))
-        imgAnswered.contentMode = .scaleAspectFit
-        imgAnswered.clipsToBounds = true
-        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -133,6 +139,40 @@ class WelcomeController: UIViewController {
         scrollView.addSubview(nextButton)
         
         nextButton.addTarget(self, action: #selector(onNext), for: UIControlEvents.touchUpInside)
+        
+        rabbitProfilePic(rabbitCode: "thcr072").getData(maxSize: 1 * 1024 * 1024, completion: { [weak self] (data, error) in
+            guard let this = self else { return }
+            if let _ = error {
+                
+            } else {
+                let image = UIImageView(image: UIImage(data: data!))
+                image.contentMode = .scaleAspectFit
+                image.clipsToBounds = true
+                this.imgAnswered.addSubview(image)
+                this.imgAnswered.bringSubview(toFront: image)
+                image.autoPinEdge(toSuperviewEdge: .top, withInset: 5)
+                image.autoPinEdge(toSuperviewEdge: .bottom, withInset: 5)
+                image.autoPinEdge(toSuperviewEdge: .left, withInset: 5)
+                image.autoPinEdge(toSuperviewEdge: .right, withInset: 5)
+            }
+        })
+        
+        rabbitProfilePic(rabbitCode: "thcr072_line").getData(maxSize: 1 * 1024 * 1024, completion: { [weak self] (data, error) in
+            guard let this = self else { return }
+            if let _ = error {
+                
+            } else {
+                let image = UIImageView(image: UIImage(data: data!))
+                image.contentMode = .scaleAspectFit
+                image.clipsToBounds = true
+                this.imgUnlocked.addSubview(image)
+                this.imgUnlocked.bringSubview(toFront: image)
+                image.autoPinEdge(toSuperviewEdge: .top, withInset: 5)
+                image.autoPinEdge(toSuperviewEdge: .bottom, withInset: 5)
+                image.autoPinEdge(toSuperviewEdge: .left, withInset: 5)
+                image.autoPinEdge(toSuperviewEdge: .right, withInset: 5)
+            }
+        })
     }
     
     override func viewDidLayoutSubviews() {
@@ -151,17 +191,17 @@ class WelcomeController: UIViewController {
         
         lblStatesHead.frame = CGRect(x: margin, y: lblBody.frame.bottom + margin * 2, width: Screen.width, height: lblStatesHead.intrinsicContentSize.height)
         
+        let width = (Screen.width - (28.0 * 2) - 8)/3
         let imgTopPadding = lblStatesHead.frame.bottom + margin * 2
-        let imgInterSpacing = (Screen.width - margin * 2 - Style.image_medium * 3) / 2
         let imgTextPosition = lblStatesHead.frame.bottom + margin
         
-        imgLocked.frame = CGRect(x: margin, y: imgTopPadding, width: Style.image_medium, height: Style.image_medium)
-        imgUnlocked.frame = CGRect(x: imgLocked.frame.right + imgInterSpacing, y: imgTopPadding, width: Style.image_medium, height: Style.image_medium)
-        imgAnswered.frame = CGRect(x: imgUnlocked.frame.right + imgInterSpacing, y: imgTopPadding, width: Style.image_medium, height: Style.image_medium)
+        imgLocked.frame = CGRect(x: 28, y: imgTopPadding, width: width, height: width)
+        imgUnlocked.frame = CGRect(x: imgLocked.frame.right + 4, y: imgTopPadding, width: width, height: width)
+        imgAnswered.frame = CGRect(x: imgUnlocked.frame.right + 4, y: imgTopPadding, width: width, height: width)
         
-        lblLocked.frame = CGRect(x: margin, y: imgTextPosition, width: lblLocked.intrinsicContentSize.width, height: lblLocked.intrinsicContentSize.height)
-        lblUnlocked.frame = CGRect(x: imgUnlocked.frame.left, y: imgTextPosition, width: lblUnlocked.intrinsicContentSize.width, height: lblUnlocked.intrinsicContentSize.height)
-        lblAnswered.frame = CGRect(x: imgAnswered.frame.left, y: imgTextPosition, width: lblAnswered.intrinsicContentSize.width, height: lblAnswered.intrinsicContentSize.height)
+        lblLocked.frame = CGRect(x: 28 + ((width - lblLocked.intrinsicContentSize.width)/2), y: imgTextPosition, width: lblLocked.intrinsicContentSize.width, height: lblLocked.intrinsicContentSize.height)
+        lblUnlocked.frame = CGRect(x: imgUnlocked.frame.left + ((width - lblUnlocked.intrinsicContentSize.width)/2), y: imgTextPosition, width: lblUnlocked.intrinsicContentSize.width, height: lblUnlocked.intrinsicContentSize.height)
+        lblAnswered.frame = CGRect(x: imgAnswered.frame.left + ((width - lblAnswered.intrinsicContentSize.width)/2), y: imgTextPosition, width: lblAnswered.intrinsicContentSize.width, height: lblAnswered.intrinsicContentSize.height)
         
         lblSubImageText.frame = CGRect(x: 0, y: imgLocked.frame.bottom + margin, width: Screen.width, height: lblSubImageText.intrinsicContentSize.height)
         lblGoodLuck.frame = CGRect(x: 0, y: lblSubImageText.frame.bottom + margin, width: Screen.width, height: lblGoodLuck.intrinsicContentSize.height)
