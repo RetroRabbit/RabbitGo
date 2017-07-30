@@ -66,6 +66,13 @@ class SignInController: BaseSignInController, UITextFieldDelegate {
         // Get authenticated user details via notification center from AppDelegate
         let nc = NotificationCenter.default
         nc.addObserver(forName: userDetails, object:nil, queue:nil, using: onAuthenticate)
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+    }
+    
+    //Calls this function when the tap is recognized.
+    func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
     }
     
     override func viewDidLayoutSubviews() {

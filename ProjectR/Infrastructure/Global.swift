@@ -81,6 +81,15 @@ class Player {
         self.displayName = displayName
     }
     
+    init(email: String?, displayName: String?, university: String?, degree: String?, year: String?, score: Int64) {
+        self.email = email
+        self.displayName = displayName
+        self.university = university ?? ""
+        self.degree = degree ?? ""
+        self.year = year ?? ""
+        self.score = score
+    }
+    
     init(email: String?, displayName: String?, university: String?, degree: String?, year: String?) {
         self.email = email
         self.displayName = displayName
@@ -163,8 +172,8 @@ class Celebrity {
         celeb.displayName = dataSnap.childSnapshot(forPath: "displayName").value as? String ?? ""
         celeb.bio = dataSnap.childSnapshot(forPath: "bio").value as? String ?? ""
         celeb.Category = dataSnap.childSnapshot(forPath: "Category").value as? String ?? ""
-        celeb.Weaknesses = dataSnap.childSnapshot(forPath: "Abilities").value as? String ?? ""
-        celeb.Abilities = dataSnap.childSnapshot(forPath: "Weaknesses").value as? String ?? ""
+        celeb.Weaknesses = dataSnap.childSnapshot(forPath: "Weaknesses").value as? String ?? ""
+        celeb.Abilities = dataSnap.childSnapshot(forPath: "Abilities").value as? String ?? ""
         return celeb
     }
 }

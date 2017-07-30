@@ -64,6 +64,7 @@ class ProfileController: UIViewNavigationController, UIImagePickerControllerDele
     fileprivate let emailEntry: ProjectRTextField = {
         let entry = ProjectRTextField()
         entry.placeholder = "Email"
+        entry.isEnabled = false
         return entry
     }()
     
@@ -195,6 +196,13 @@ class ProfileController: UIViewNavigationController, UIImagePickerControllerDele
             self.yearEntry.text = snapshot.childSnapshot(forPath: "year").value as? String
         })
         
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+    }
+    
+    //Calls this function when the tap is recognized.
+    func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
     }
     
     override func prepareToolbar() {
@@ -255,7 +263,8 @@ extension ProfileController{
         }
         
         refCurrentUser().observeSingleEvent(of: .value, with: { (snapshot) in
-            var player = Player(email: email, displayName: fullname, university: university, degree: degree, year: year).formatted()
+            guard let score =  snapshot.childSnapshot(forPath: "score").value as? Int else { return }
+            var player = Player(email: email, displayName: fullname, university: university, degree: degree, year: year, score: Int64(score)).formatted()
             var questions: [String:Any] = [:]
             snapshot.childSnapshot(forPath: "questions").children.allObjects.forEach({ object in
                 if let question = object as? DataSnapshot {

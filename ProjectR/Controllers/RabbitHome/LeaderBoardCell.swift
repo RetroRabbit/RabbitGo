@@ -23,8 +23,8 @@ class LeaderBoardCell: UITableViewCell {
     
     let lblFullname: UILabel = {
         let label = UILabel()
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 1
+        label.lineBreakMode = .byTruncatingTail
         return label
     }()
     
@@ -74,7 +74,8 @@ class LeaderBoardCell: UITableViewCell {
         let width = Screen.width - lblPosition.frame.right - 20
         contentView.frame = CGRect(x: lblPosition.frame.right + 10, y: Style.padding.s, width: width, height: 40)
         
-        lblFullname.frame = CGRect(x: 10, y: (40 - lblFullname.intrinsicContentSize.height)/2, width: lblFullname.intrinsicContentSize.width, height: lblFullname.intrinsicContentSize.height)
+        lblFullname.preferredMaxLayoutWidth = width - 30 - lblQuestionsAnswered.intrinsicContentSize.width
+        lblFullname.frame = CGRect(x: 10, y: (40 - lblFullname.intrinsicContentSize.height)/2, width: width - 30 - lblQuestionsAnswered.intrinsicContentSize.width, height: lblFullname.intrinsicContentSize.height)
         
         lblQuestionsAnswered.frame = CGRect(x: width - 10 - lblQuestionsAnswered.intrinsicContentSize.width, y: (40 - lblQuestionsAnswered.intrinsicContentSize.height)/2, width: lblQuestionsAnswered.intrinsicContentSize.width, height: lblQuestionsAnswered.intrinsicContentSize.height)
     }

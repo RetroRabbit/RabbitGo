@@ -97,6 +97,13 @@ class profileCreateController: BaseSignInController {
         txtYear.addTarget(self, action: #selector(onYearChanged), for: .editingChanged)
         
         nextButton.addTarget(self, action: #selector(onLogin), for: UIControlEvents.touchUpInside)
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+    }
+    
+    //Calls this function when the tap is recognized.
+    func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
     }
     
     override func viewDidLayoutSubviews() {
@@ -171,9 +178,10 @@ extension profileCreateController {
         }
         
         refCurrentUser().observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
+            guard let score =  snapshot.childSnapshot(forPath: "score").value as? Int else { return }
             if  let email = snapshot.childSnapshot(forPath: "email").value as? String,
                 let displayName = snapshot.childSnapshot(forPath: "displayName").value as? String {
-                var player = Player(email: email, displayName: displayName, university: university, degree: degree, year: year).formatted()
+                var player = Player(email: email, displayName: displayName, university: university, degree: degree, year: year, score: Int64(score)).formatted()
                 var questions: [String:Any] = [:]
                 snapshot.childSnapshot(forPath: "questions").children.allObjects.forEach({ object in
                     if let question = object as? DataSnapshot {

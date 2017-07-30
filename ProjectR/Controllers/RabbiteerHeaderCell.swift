@@ -115,7 +115,7 @@ class RabbiteerHeaderCell: UITableViewCell {
     }
     
     func prepareForDisplay(object: Player?) {
-        lblHeading.attributedText = NSAttributedString(string: "Hi \(object?.displayName?.components(separatedBy: " ").first ?? "")!", attributes: Style.avenirh_extra_large_white)
+        lblHeading.attributedText = NSAttributedString(string: "Hi \(object?.displayName?.components(separatedBy: " ").first ?? "")!", attributes: Style.avenirh_extra_large_white_center)
         let att = NSMutableAttributedString(attributedString: NSAttributedString(string: "\(min(object?.score ?? 0, 21))", attributes: Style.rhino_big_green_center))
         att.append(NSAttributedString(string: "/21", attributes: Style.rhino_large_green))
         
@@ -129,7 +129,8 @@ class RabbiteerHeaderCell: UITableViewCell {
         contentView.frame = CGRect(x: 0, y: 0, width: Screen.width, height: height())
         
         lblHeading.autoPinEdge(toSuperviewEdge: .top, withInset: 20)
-        lblHeading.autoAlignAxis(toSuperviewAxis: .vertical)
+        lblHeading.autoPinEdge(toSuperviewEdge: .left)
+        lblHeading.autoPinEdge(toSuperviewEdge: .right)
         
         imgViewDivider.autoPinEdge(.top, to: .bottom, of: lblHeading, withOffset: -30)
         imgViewDivider.autoPinEdge(toSuperviewEdge: .left, withInset: 20)

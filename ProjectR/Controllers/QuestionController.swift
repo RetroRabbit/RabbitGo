@@ -38,9 +38,9 @@ class QuestionController: UITableViewController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
-
-extension QuestionController: SubmitDelegate {
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.separatorStyle = .none
@@ -56,8 +56,17 @@ extension QuestionController: SubmitDelegate {
         navigationItem.title = "Rabbit Go!"
         navigationItem.titleLabel.textAlignment = .left
         navigationItem.titleLabel.textColor = Style.color.white
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
     }
     
+    //Calls this function when the tap is recognized.
+    func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
+    }
+}
+
+extension QuestionController: SubmitDelegate {
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
@@ -138,14 +147,20 @@ extension QuestionController: SubmitDelegate {
     /* Protocol submit - this is sssoooo badly written thanx!*/
     func onSubmit() {
         /* Check for selected answer */
-        guard let lastTapped = lastTapped else {
-            // No answer selected
-            let ac = isMultipleChoice
-                ? UIAlertController(title: "Please pick an answer", message: nil, preferredStyle: .alert)
-                : UIAlertController(title: "Please enter an answer", message: nil, preferredStyle: .alert)
+        let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? InputCell
+        switch isMultipleChoice {
+        case true where lastTapped == nil:
+            let ac = UIAlertController(title: "Please pick an answer", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "Dismiss", style: .default))
             present(ac, animated: true)
             return
+        case false where cell?.tfUserInput.text?.isEmpty ?? true :
+            let ac = UIAlertController(title: "Please enter an answer", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Dismiss", style: .default))
+            present(ac, animated: true)
+            return
+        default:
+            break
         }
         
         let tfCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as! SubmitCell
@@ -161,7 +176,8 @@ extension QuestionController: SubmitDelegate {
         }
         
         //check question correct
-        if lastTapped.row + 1 != Int(question.answer ?? 0) && !lockedCodes.contains(rabbitCode) {
+        if let lastTapped = lastTapped,
+            lastTapped.row + 1 != Int(question.answer ?? 0) && !lockedCodes.contains(rabbitCode) {
             lockedCodes.append(rabbitCode)
             _ = updateUserFields(rabbitCode: rabbitCode, playerQuestion: PlayerQuestion(state: QuestionState.unlocked.rawValue, lockedCodes: lockedCodes.unique()))
                 .subscribe( onCompleted: { [weak self] in
@@ -178,8 +194,7 @@ extension QuestionController: SubmitDelegate {
         
         /* Multple choice */
         if !isMultipleChoice,
-            let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? InputCell,
-            !(cell.tfUserInput.text?.isEmpty ?? true){
+            !(cell?.tfUserInput.text?.isEmpty ?? true) {
             // Correct answer
             player = PlayerQuestion(state: QuestionState.done.rawValue)
         } else {
