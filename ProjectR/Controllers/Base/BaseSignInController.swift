@@ -8,6 +8,7 @@
 
 import Material
 import UIKit
+import Firebase
 
 class BaseSignInController: BaseNextController {
     internal let logo: UIImageView = {
@@ -23,6 +24,23 @@ class BaseSignInController: BaseNextController {
         
         view.addSubview(logo)
         view.addSubview(headingLabel)
+        
+        logo.isUserInteractionEnabled = true
+        logo.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(signOut))) 
+    }
+    
+    func signOut() {
+        do {
+            try Auth.auth().signOut()
+        } catch {
+            NSLog("❌ Error signing out - \(error.localizedDescription)")
+        }
+        
+        let ac = UIAlertController(title: "Signed out, please sign in again.", message: nil, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController = UINavigationController(rootViewController: SignInController())
+        }))
+        self.present(ac, animated: true)
     }
     
     override func viewDidLayoutSubviews() {

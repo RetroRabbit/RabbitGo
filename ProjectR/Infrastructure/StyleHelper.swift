@@ -186,7 +186,7 @@ struct Style {
     
     static let button_height: CGFloat = 40
     static let button_width: CGFloat = 116
-    static let input_width: CGFloat = Screen.width - 60
+    static let input_width: CGFloat = min(260, Screen.width - 60)
     static let input_center: CGFloat = (Screen.width - input_width)/2
 }
 

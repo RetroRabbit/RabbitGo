@@ -78,9 +78,9 @@ class SignInController: BaseSignInController, UITextFieldDelegate {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        txtName.frame = CGRect(x: 30, y: headingLabel.frame.bottom + 30 , width: Screen.width - 60, height: 40)
+        txtName.frame = CGRect(x: Style.input_center, y: headingLabel.frame.bottom + 30 , width: Style.input_width, height: 40)
         
-        txtEmail.frame = CGRect(x: 30, y: txtName.frame.bottom + 30, width: Screen.width - 60, height: 40)
+        txtEmail.frame = CGRect(x: Style.input_center, y: txtName.frame.bottom + 30, width: Style.input_width, height: 40)
         
         let width = (Screen.width - Style.button_width)/2
         

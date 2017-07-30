@@ -45,7 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         
         ref.keepSynced(true)
         
-        _ = fetchData().subscribe(onError: { _ in
+        _ = self.fetchData().subscribe(onError: { _ in
             if Auth.auth().currentUser != nil {
                 do {
                     try Auth.auth().signOut()
@@ -56,11 +56,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
         }, onCompleted: {
             if Auth.auth().currentUser != nil {
-                /*if isRabbit(user: auth.currentUser) {
+                if isRabbit(user: auth.currentUser) {
                     self.window?.rootViewController = RabbitHomeController.instance
-                } else {*/
+                } else {
                     self.window?.rootViewController = TabNavigationController()
-                //}
+                }
             } else {
                 self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
             }
@@ -139,6 +139,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             
             return Disposables.create()
         }
+    }
+    
+    static func topViewController(_ base: UIViewController? = rootViewController) -> UIViewController {
+        if  let nav = base as? UINavigationController,
+            let visibleViewController = nav.visibleViewController {
+            return visibleViewController
+        }
+        
+        if  let tab = base as? UITabBarController,
+            let selected = tab.selectedViewController {
+            return topViewController(selected)
+        }
+        
+        if let presented = base?.presentedViewController {
+            return topViewController(presented)
+        }
+        
+        return base ?? UIViewController() // crashes :(
     }
     
     func applicationWillResignActive(_ application: UIApplication) {
@@ -224,24 +242,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     static var rootViewController: UIViewController? {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         return appDelegate.window?.rootViewController
-    }
-    
-    static func topViewController(_ base: UIViewController? = rootViewController) -> UIViewController {
-        if  let nav = base as? UINavigationController,
-            let visibleViewController = nav.visibleViewController {
-            return visibleViewController
-        }
-        
-        if  let tab = base as? UITabBarController,
-            let selected = tab.selectedViewController {
-            return topViewController(selected)
-        }
-        
-        if let presented = base?.presentedViewController {
-            return topViewController(presented)
-        }
-        
-        return base ?? UIViewController() // crashes :(
     }
 }
 

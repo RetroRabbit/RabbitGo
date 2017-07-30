@@ -8,6 +8,7 @@
 
 import UIKit
 import Material
+import Firebase
 
 class RabbitHeaderCell: UITableViewCell {
     class var reuseIdentifier: String { return "RabbitHeaderCell" }
@@ -99,6 +100,9 @@ class RabbitHeaderCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
         contentView.backgroundColor = Style.color.grey_dark
+        
+        lblHeading.isUserInteractionEnabled = true
+        lblHeading.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(signOut)))
         
         headingBackground.addSubview(lblHeading)
         contentView.addSubview(headingBackground)
@@ -204,6 +208,20 @@ class RabbitHeaderCell: UITableViewCell {
                 lblIndividualRankingHeader.intrinsicContentSize.height + 10 +
                 lblIndividualRanking.intrinsicContentSize.height + 20 +
                 imgViewMarvin.intrinsicContentSize.height + 30 + 15
+    }
+    
+    func signOut() {
+        do {
+            try Auth.auth().signOut()
+        } catch {
+            NSLog("❌ Error signing out - \(error.localizedDescription)")
+        }
+        
+        let ac = UIAlertController(title: "Signed out, please sign in again.", message: nil, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController = UINavigationController(rootViewController: SignInController())
+        }))
+        AppDelegate.topViewController().present(ac, animated: true)
     }
 }
 

@@ -18,7 +18,7 @@ class WelcomeController: UIViewController {
     
     fileprivate let lblMainHead: UILabel = {
         let label = UILabel()
-        label.attributedText = NSAttributedString(string: "Welcome\nto Rabbittania", attributes: Style.avenirh_extra_large_white)
+        label.attributedText = NSAttributedString(string: "Welcome\nto Rabbitania", attributes: Style.avenirh_extra_large_white)
         label.textColor = Material.Color.white
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping

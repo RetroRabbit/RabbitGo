@@ -109,11 +109,11 @@ class profileCreateController: BaseSignInController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        txtUniversity.frame = CGRect(x: 30, y: headingLabel.frame.bottom + 30 , width: Screen.width - 60, height: 40)
+        txtUniversity.frame = CGRect(x: Style.input_center, y: headingLabel.frame.bottom + 30 , width: Style.input_width, height: 40)
         
-        txtDegree.frame = CGRect(x: 30, y: txtUniversity.frame.bottom + 30, width: Screen.width - 60, height: 40)
+        txtDegree.frame = CGRect(x: Style.input_center, y: txtUniversity.frame.bottom + 30, width: Style.input_width, height: 40)
         
-        txtYear.frame = CGRect(x: 30, y: txtDegree.frame.bottom + 30, width: Screen.width - 60, height: 40)
+        txtYear.frame = CGRect(x: Style.input_center, y: txtDegree.frame.bottom + 30, width: Style.input_width, height: 40)
     }
 }
 

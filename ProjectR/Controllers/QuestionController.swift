@@ -39,8 +39,6 @@ class QuestionController: UITableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.separatorStyle = .none
@@ -56,13 +54,6 @@ class QuestionController: UITableViewController {
         navigationItem.title = "Rabbit Go!"
         navigationItem.titleLabel.textAlignment = .left
         navigationItem.titleLabel.textColor = Style.color.white
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
-    }
-    
-    //Calls this function when the tap is recognized.
-    func dismissKeyboard() {
-        //Causes the view (or one of its embedded text fields) to resign the first responder status.
-        view.endEditing(true)
     }
 }
 
@@ -377,7 +368,7 @@ class QuestionHeaderCell: UIView {
     fileprivate let lblQuestion: UILabel = {
         let label = UILabel()
         label.preferredMaxLayoutWidth = Screen.width
-        label.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_large_grey_dark_center)
+        label.attributedText = NSAttributedString(string: "", attributes: Style.avenirh_medium_grey_dark_center)
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         return label
@@ -404,13 +395,13 @@ class QuestionHeaderCell: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        lblQuestionNumber.frame = CGRect(x: 0, y: 15, width: Screen.width, height: lblQuestionNumber.intrinsicContentSize.height)
-        lblQuestion.frame = CGRect(x: 0, y: lblQuestionNumber.frame.bottom + 15, width: Screen.width, height: lblQuestion.intrinsicContentSize.height)
+        lblQuestionNumber.frame = CGRect(x: 0, y: 0, width: Screen.width, height: lblQuestionNumber.intrinsicContentSize.height)
+        lblQuestion.frame = CGRect(x: 0, y: lblQuestionNumber.frame.bottom, width: Screen.width, height: lblQuestion.intrinsicContentSize.height)
     }
     
     static func height(question: Question, index: Int) -> CGFloat {
-        return NSAttributedString(string: question.text as String? ?? "", attributes: Style.avenirh_large_grey_dark_center).height(forWidth: Screen.width) + 15 +
-            NSAttributedString(string: "Question #\(index)", attributes: Style.avenirh_small_grey_dark_center).height(forWidth: Screen.width) + 30
+        return NSAttributedString(string: question.text as String? ?? "", attributes: Style.avenirh_large_grey_dark_center).height(forWidth: Screen.width) +
+            NSAttributedString(string: "Question #\(index)", attributes: Style.avenirh_small_grey_dark_center).height(forWidth: Screen.width)
     }
 }
 

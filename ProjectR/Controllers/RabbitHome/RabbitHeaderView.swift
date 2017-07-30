@@ -151,11 +151,13 @@ extension RabbitHeaderView {
             lblIndividual.attributedText = NSAttributedString(string: "INDIVIDUAL", attributes: Style.avenirh_medium_grey_dark_center)
             lblTeam.backgroundColor = Style.color.grey_dark
             lblTeam.attributedText = NSAttributedString(string: "TEAM", attributes: Style.avenirh_medium_white_center)
+            lblRankTitle.attributedText = NSAttributedString(string: "RABBIT", attributes: Style.avenirl_extra_small_white)
         } else {
             lblIndividual.backgroundColor = Style.color.grey_dark
             lblIndividual.attributedText = NSAttributedString(string: "INDIVIDUAL", attributes: Style.avenirh_medium_white_center)
             lblTeam.backgroundColor = Style.color.green
             lblTeam.attributedText = NSAttributedString(string: "TEAM", attributes: Style.avenirh_medium_grey_dark_center)
+            lblRankTitle.attributedText = NSAttributedString(string: "TEAM", attributes: Style.avenirl_extra_small_white)
         }
     }
 }

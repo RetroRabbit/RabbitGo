@@ -159,6 +159,9 @@ class ProfileController: UIViewNavigationController, UIImagePickerControllerDele
         scrollView.delegate = self
         view.addSubview(scrollView)
         
+        lblHeading.isUserInteractionEnabled = true
+        lblHeading.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(signOut)))
+        
         scrollView.addSubview(lblHeading)
         scrollView.addSubview(imgViewDivider)
         scrollView.addSubview(imgProfilePlaceholder)
@@ -244,6 +247,20 @@ class ProfileController: UIViewNavigationController, UIImagePickerControllerDele
 }
 
 extension ProfileController{
+    
+    func signOut() {
+        do {
+            try Auth.auth().signOut()
+        } catch {
+            NSLog("❌ Error signing out - \(error.localizedDescription)")
+        }
+        
+        let ac = UIAlertController(title: "Signed out, please sign in again.", message: nil, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController = UINavigationController(rootViewController: SignInController())
+        }))
+        self.present(ac, animated: true)
+    }
     
     func onSave(){
         flag = true
