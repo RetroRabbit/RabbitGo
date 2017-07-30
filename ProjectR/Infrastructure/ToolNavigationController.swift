@@ -8,7 +8,6 @@
 
 import UIKit
 import Material
-import Icomoon
 
 class ToolNavigationController: Material.NavigationController, ToolNavigationDelegate {
     static let barColor = Color.black
@@ -20,7 +19,7 @@ class ToolNavigationController: Material.NavigationController, ToolNavigationDel
             navBar.backgroundColor = ToolNavigationController.barColor
             navBar.tintColor = Color.white
             if shouldShowBackButton {
-                navBar.backButtonImage = UIImage.iconWithName(Icomoon.Icon.Arrow_Left, textColor: Material.Color.white, fontSize: 20)
+                navBar.backButtonImage = UIImage(named: "arrow_left")?.withRenderingMode(.alwaysOriginal).tint(with: Style.color.white)
             }
             navBar.backButtonImage?.accessibilityIdentifier = "ToolNavigationController.backButtonImage.Left"
         }

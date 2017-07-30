@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import Material
-import Icomoon
 import Firebase
 
 class ProfileController: UIViewNavigationController, UIImagePickerControllerDelegate {
@@ -101,8 +100,8 @@ class ProfileController: UIViewNavigationController, UIImagePickerControllerDele
         super.init()
         tabBarItem.setTitleTextAttributes(Style.avenirh_xsmall_white_center, for: .normal)
         tabBarItem.title = "My Profile"
-        tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Profile, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
-        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Profile, textColor: Style.color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
+        tabBarItem.image = UIImage(named: "profile")?.withRenderingMode(.alwaysOriginal).tint(with: Style.color.white)
+        tabBarItem.selectedImage = UIImage(named: "profile")?.withRenderingMode(.alwaysOriginal).tint(with: Style.color.green)
         
     }
     

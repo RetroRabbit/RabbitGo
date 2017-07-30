@@ -35,6 +35,7 @@ class TabNavigationController: Material.BottomNavigationController {
         tabBar.tintColor = Style.color.green
         tabBar.unselectedItemTintColor = Style.color.white
         
+        
         let tabBarItemApperance = UITabBarItem.appearance()
         tabBarItemApperance.setTitleTextAttributes([NSForegroundColorAttributeName:Style.color.white], for: .normal)
         tabBarItemApperance.setTitleTextAttributes([NSForegroundColorAttributeName:Style.color.green], for: .selected)

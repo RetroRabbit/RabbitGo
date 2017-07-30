@@ -116,7 +116,7 @@ struct Style {
     static let avenirh_large_green = [NSForegroundColorAttributeName: Style.color.green, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_large), NSParagraphStyleAttributeName: left]
     static let avenirh_medium_grey_dark_center = [NSForegroundColorAttributeName: Style.color.grey_dark, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_medium), NSParagraphStyleAttributeName: center]
     static let avenirh_medium_white_center = [NSForegroundColorAttributeName: Style.color.white, NSFontAttributeName: ProjectRFont.AvenirHeavy(with: Style.font.font_medium), NSParagraphStyleAttributeName: center]
-    static let avenirh_xsmall_white_center = [NSForegroundColorAttributeName:Style.color.white, NSFontAttributeName: ProjectRFont.AvenirLightOblique(with: Style.font.font_extra_small), NSParagraphStyleAttributeName: center]
+    static let avenirh_xsmall_white_center = [NSForegroundColorAttributeName:Style.color.white, NSFontAttributeName: ProjectRFont.AvenirLightOblique(with: 8), NSParagraphStyleAttributeName: center]
 
     
     

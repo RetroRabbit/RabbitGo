@@ -17,7 +17,6 @@
 		C7136DDB1F2222C7001D0695 /* ProjectRFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7136DDA1F2222C7001D0695 /* ProjectRFont.swift */; };
 		C7136DDF1F224D2A001D0695 /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7136DDE1F224D2A001D0695 /* Global.swift */; };
 		C7136DE31F2270FD001D0695 /* AutoCompleteTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7136DE21F2270FD001D0695 /* AutoCompleteTextField.swift */; };
-		C71A69461F29195800500815 /* Icomoon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C7DB09551F291764008CC5C3 /* Icomoon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C71A69481F291C1F00500815 /* TableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71A69471F291C1F00500815 /* TableNavigationController.swift */; };
 		C72AB7DA1F2A7C5D001F8C2B /* RabbitHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72AB7D91F2A7C5D001F8C2B /* RabbitHeaderCell.swift */; };
 		C72AB7DC1F2A8A1E001F8C2B /* LeaderBoardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72AB7DB1F2A8A1E001F8C2B /* LeaderBoardCell.swift */; };
@@ -31,7 +30,6 @@
 		C7DB09521F291753008CC5C3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7DB094E1F291753008CC5C3 /* Assets.xcassets */; };
 		C7DB09531F291753008CC5C3 /* Avenir.ttc in Resources */ = {isa = PBXBuildFile; fileRef = C7DB09501F291753008CC5C3 /* Avenir.ttc */; };
 		C7DB09541F291753008CC5C3 /* Rhinos-rocks.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7DB09511F291753008CC5C3 /* Rhinos-rocks.ttf */; };
-		C7DB09571F291776008CC5C3 /* Icomoon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7DB09551F291764008CC5C3 /* Icomoon.framework */; };
 		C7E9AD031F28557700E1A148 /* BaseNextController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9ACF81F28557700E1A148 /* BaseNextController.swift */; };
 		C7E9AD041F28557700E1A148 /* BaseSignInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9ACF91F28557700E1A148 /* BaseSignInController.swift */; };
 		C7E9AD051F28557700E1A148 /* RabbitHomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9ACFA1F28557700E1A148 /* RabbitHomeController.swift */; };
@@ -62,7 +60,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C71A69461F29195800500815 /* Icomoon.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -95,7 +92,6 @@
 		C7DB094E1F291753008CC5C3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C7DB09501F291753008CC5C3 /* Avenir.ttc */ = {isa = PBXFileReference; lastKnownFileType = file; path = Avenir.ttc; sourceTree = "<group>"; };
 		C7DB09511F291753008CC5C3 /* Rhinos-rocks.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Rhinos-rocks.ttf"; sourceTree = "<group>"; };
-		C7DB09551F291764008CC5C3 /* Icomoon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Icomoon.framework; path = ProjectR/Resources/Icomoon.framework; sourceTree = SOURCE_ROOT; };
 		C7E9ACF81F28557700E1A148 /* BaseNextController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseNextController.swift; sourceTree = "<group>"; };
 		C7E9ACF91F28557700E1A148 /* BaseSignInController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseSignInController.swift; sourceTree = "<group>"; };
 		C7E9ACFA1F28557700E1A148 /* RabbitHomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RabbitHomeController.swift; sourceTree = "<group>"; };
@@ -126,7 +122,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7DB09571F291776008CC5C3 /* Icomoon.framework in Frameworks */,
 				72C0BC25DDF3DCB453E21494 /* Pods_ProjectR.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -206,7 +201,6 @@
 		C7136DD21F22210C001D0695 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C7DB09551F291764008CC5C3 /* Icomoon.framework */,
 				C7DB094E1F291753008CC5C3 /* Assets.xcassets */,
 				C7DB094F1F291753008CC5C3 /* Fonts */,
 			);

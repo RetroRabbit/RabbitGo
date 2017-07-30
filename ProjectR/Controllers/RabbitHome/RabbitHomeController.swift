@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import Material
-import Icomoon
 import Firebase
 import FirebaseAuth
 import RxSwift
@@ -72,8 +71,8 @@ class RabbitHomeController : UITableNavigationController {
         
         tabBarItem.setTitleTextAttributes(Style.avenirh_xsmall_white_center, for: .normal)
         tabBarItem.title = "Home"
-        tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Home, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
-        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Home, textColor: Style.color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
+        tabBarItem.image = UIImage(named: "home")?.withRenderingMode(.alwaysOriginal).tint(with: Style.color.white)
+        tabBarItem.selectedImage = UIImage(named: "home")?.withRenderingMode(.alwaysOriginal).tint(with: Style.color.green)
         tableView.allowsMultipleSelectionDuringEditing = false
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
         

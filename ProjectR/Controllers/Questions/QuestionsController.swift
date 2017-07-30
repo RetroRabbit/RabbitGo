@@ -8,7 +8,6 @@
 
 import UIKit
 import Material
-import Icomoon
 import Firebase
 import RxSwift
 
@@ -99,8 +98,8 @@ class QuestionsController: UIViewNavigationController {
         super.init()
         tabBarItem.setTitleTextAttributes(Style.avenirh_xsmall_white_center, for: .normal)
         tabBarItem.title = "Rabbit Q,s"
-        tabBarItem.image = UIImage.iconWithName(Icomoon.Icon.Questions, textColor: Material.Color.white, fontSize: 20).withRenderingMode(.alwaysOriginal)
-        tabBarItem.selectedImage = UIImage.iconWithName(Icomoon.Icon.Questions, textColor: Style.color.green, fontSize: 20).withRenderingMode(.alwaysOriginal)
+        tabBarItem.image = UIImage(named: "questions")?.withRenderingMode(.alwaysOriginal).tint(with: Style.color.white)
+        tabBarItem.selectedImage = UIImage(named: "questions")?.withRenderingMode(.alwaysOriginal).tint(with: Style.color.green)
         
         //added
         refCurrentUserQuestions().observeSingleEvent(of: .value, with: { (snapshot) in
