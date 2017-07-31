@@ -45,26 +45,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         
         ref.keepSynced(true)
         
-        _ = self.fetchData().subscribe(onError: { _ in
-            if Auth.auth().currentUser != nil {
-                do {
-                    try Auth.auth().signOut()
-                } catch {
-                    NSLog("❌ Error signing out - \(error.localizedDescription)")
+        if Auth.auth().currentUser != nil {
+            _ = self.fetchData().subscribe(onError: { _ in
+                if Auth.auth().currentUser != nil {
+                    do {
+                        try Auth.auth().signOut()
+                    } catch {
+                        NSLog("❌ Error signing out - \(error.localizedDescription)")
+                    }
                 }
-            }
-            self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
-        }, onCompleted: {
-            if Auth.auth().currentUser != nil {
-                if isRabbit(user: auth.currentUser) {
-                    self.window?.rootViewController = RabbitHomeController.instance
-                } else {
-                    self.window?.rootViewController = TabNavigationController()
-                }
-            } else {
                 self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
-            }
-        })
+            }, onCompleted: {
+                if Auth.auth().currentUser != nil {
+                    if isRabbit(user: auth.currentUser) {
+                        self.window?.rootViewController = RabbitHomeController.instance
+                    } else {
+                        self.window?.rootViewController = TabNavigationController()
+                    }
+                } else {
+                    self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
+                }
+            })
+        } else {
+            self.window?.rootViewController = UINavigationController(rootViewController: SignInController())
+        }
         
         IQKeyboardManager.sharedManager().keyboardDistanceFromTextField = 150
         IQKeyboardManager.sharedManager().enable = true
@@ -80,7 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             _ = Observable
                 .from([this.fetchQuestions(), this.fetchRabbits(), this.fetchCelebrities()])
                 .merge()
-                .timeout(5, scheduler: MainScheduler.instance)
+                .timeout(10, scheduler: MainScheduler.instance)
                 .subscribe(onError: { err in
                     observable.onError(err)
                 }, onCompleted: {

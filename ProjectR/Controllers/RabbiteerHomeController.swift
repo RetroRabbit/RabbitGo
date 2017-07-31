@@ -69,7 +69,7 @@ class RabbiteerHomeController : UITableNavigationController {
                 }
             })
             
-            _ = refRabbiteers.queryOrdered(byChild: SCORE).queryStarting(atValue: 500).observe(.value, with: { dataSnapshot in
+            _ = refRabbiteers.queryOrdered(byChild: SCORE).queryStarting(atValue: 9000).observe(.value, with: { dataSnapshot in
                 if dataSnapshot.hasChildren() {
                     switch dataSnapshot.childrenCount {
                     case 1 where (dataSnapshot.children.allObjects[0] as? DataSnapshot)?.key != currentUserId():
