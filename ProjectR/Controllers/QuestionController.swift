@@ -288,7 +288,8 @@ extension QuestionController: SubmitDelegate {
     }
     
     func updateScore(playerQuestion: PlayerQuestion) -> Observable<()>  {
-        return Observable.create { observable in
+        return Observable.create { [weak self] observable in
+            guard let this = self else { return Disposables.create()}
             if playerQuestion.state == 2 {
                 refCurrentUser().observeSingleEvent(of: .value, with: { (snapshot) in
                     var currentScore = snapshot.childSnapshot(forPath: "score").value as? Int ?? 0
@@ -299,43 +300,43 @@ extension QuestionController: SubmitDelegate {
                                 if rabbiteers.hasChildren() {
                                     switch rabbiteers.childrenCount {
                                     case 1 where (rabbiteers.children.allObjects[0] as? DataSnapshot)?.key == currentUserId():
-                                        refCurrentUser().child("score").setValue(FIRST_PLACE, withCompletionBlock: { _ in
+                                        _ = this.setUserScore(score: FIRST_PLACE).subscribe(onCompleted: {
                                             let ac = UIAlertController(title: "CONGRATULATIONS!", message: "You are 2017 \n Rabbit Go Winner!", preferredStyle: .alert)
                                             ac.addAction(UIAlertAction(title: "HOORAH!", style: .default, handler: { _ in
                                                 observable.onCompleted()
                                             }))
                                             
                                             DispatchQueue.main.async {
-                                                self.present(ac, animated: true)
+                                                this.present(ac, animated: true)
                                             }
                                         })
                                         break
                                     case 2 where (rabbiteers.children.allObjects[0] as? DataSnapshot)?.key == currentUserId():
-                                        refCurrentUser().child("score").setValue(SECOND_PLACE, withCompletionBlock: { _ in
+                                        _ = this.setUserScore(score: SECOND_PLACE).subscribe(onCompleted: {
                                             let ac = UIAlertController(title: "CONGRATULATIONS!", message: "You have taken 2nd place!", preferredStyle: .alert)
                                             ac.addAction(UIAlertAction(title: "HOORAH!", style: .default, handler: { _ in
                                                 observable.onCompleted()
                                             }))
                                             
                                             DispatchQueue.main.async {
-                                                self.present(ac, animated: true)
+                                                this.present(ac, animated: true)
                                             }
                                         })
-                                        break
+                                    break
                                     case 3 where (rabbiteers.children.allObjects[0] as? DataSnapshot)?.key == currentUserId():
-                                        refCurrentUser().child("score").setValue(THIRD_PLACE, withCompletionBlock: { _ in
+                                        _ = this.setUserScore(score: THIRD_PLACE).subscribe(onCompleted: {
                                             let ac = UIAlertController(title: "CONGRATULATIONS!", message: "You have taken 3rd place!", preferredStyle: .alert)
                                             ac.addAction(UIAlertAction(title: "HOORAH!", style: .default, handler: { _ in
                                                 observable.onCompleted()
                                             }))
                                             
                                             DispatchQueue.main.async {
-                                                self.present(ac, animated: true)
+                                                this.present(ac, animated: true)
                                             }
                                         })
                                         break
                                     default:
-                                        refCurrentUser().child("score").setValue(FIRST_PLACE - Int(rabbiteers.childrenCount), withCompletionBlock: { _ in
+                                        refCurrentUser().child("score").setValue(Int(FIRST_PLACE) - Int(rabbiteers.childrenCount), withCompletionBlock: { _ in
                                             //just hang in there
                                         })
                                         break
@@ -356,6 +357,35 @@ extension QuestionController: SubmitDelegate {
         }
     }
     
+    func setUserScore(score: Int64) -> Observable<()> {
+        return Observable.create { observable in
+            refCurrentUser().observeSingleEvent(of: .value, with: { (snapshot) in
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+                
+                let player = Player.decode(snapshot: snapshot)
+                player.win = dateFormatter.string(from: Date())
+                player.score = score
+                
+                var playerformat = player.formatted()
+                var questions: [String:Any] = [:]
+                snapshot.childSnapshot(forPath: "questions").children.allObjects.forEach({ object in
+                    if let question = object as? DataSnapshot {
+                        questions[question.key] = PlayerQuestion.decode(snapshot: question).formatted()
+                    }
+                })
+                
+                playerformat["questions"] = questions
+                
+                snapshot.ref.setValue(playerformat, withCompletionBlock: { _ in
+                    observable.onCompleted()
+                })
+            })
+            
+            return Disposables.create()
+        }
+    }
 }
 
 protocol SubmitDelegate: class {

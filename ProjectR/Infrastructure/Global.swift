@@ -20,9 +20,9 @@ var RABBIT_TEAM_BOARD = "rabbit_team_board"
 var PROFILE_PICS = "profile_pics"
 var RABBIT_PROFILE_PICS = "rabbit_profile_pics"
 var RABBIT_CELEBRITIES = "celebrities"
-var FIRST_PLACE = 10000
-var SECOND_PLACE = 9999
-var THIRD_PLACE = 9998
+var FIRST_PLACE: Int64 = 10000
+var SECOND_PLACE: Int64 = 9999
+var THIRD_PLACE: Int64 = 9998
 
 var AutoCompleteS = "autocomplete"
 
@@ -71,6 +71,8 @@ class Player {
     var degree: String = ""
     var year: String = ""
     var individualRanking: Int64 = 0
+    //yyyy-MM-dd'T'HH:mm:ss'Z'`
+    var win: String = ""
     
     init() {
         
@@ -112,6 +114,7 @@ class Player {
         value["university"] = university
         value["degree"] = degree
         value["year"] = year
+        value["win"] = win
         
         return value
     }
@@ -124,6 +127,7 @@ class Player {
         player.university = snapshot.childSnapshot(forPath: "university").value as? String ?? ""
         player.degree = snapshot.childSnapshot(forPath: "degree").value as? String ?? ""
         player.year = snapshot.childSnapshot(forPath: "year").value as? String ?? ""
+        player.win = snapshot.childSnapshot(forPath: "win").value as? String ?? ""
         return player
     }
 }
