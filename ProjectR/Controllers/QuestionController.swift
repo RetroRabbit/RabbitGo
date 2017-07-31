@@ -135,8 +135,16 @@ extension QuestionController: SubmitDelegate {
         }
     }
     
+    func enableSubmit() {
+        let submitCell = tableView.dequeueReusableCell(withIdentifier: SubmitCell.reuseIdentifier, for: IndexPath(row: 0, section: 1)) as! SubmitCell
+        submitCell.btnSubmit.isEnabled = true
+        tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .none)
+    }
+    
     /* Protocol submit - this is sssoooo badly written thanx!*/
     func onSubmit() {
+        
+        
         /* Check for selected answer */
         let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? InputCell
         switch isMultipleChoice {
@@ -144,11 +152,13 @@ extension QuestionController: SubmitDelegate {
             let ac = UIAlertController(title: "Please pick an answer", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "Dismiss", style: .default))
             present(ac, animated: true)
+            enableSubmit()
             return
         case false where cell?.tfUserInput.text?.isEmpty ?? true :
             let ac = UIAlertController(title: "Please enter an answer", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "Dismiss", style: .default))
             present(ac, animated: true)
+            enableSubmit()
             return
         default:
             break
@@ -163,6 +173,7 @@ extension QuestionController: SubmitDelegate {
             let ac = UIAlertController(title: rabbitCode.isEmpty ? "Please provide a rabbit code" : "Invalid Rabbit Code", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "Try again", style: .default))
             self.present(ac, animated: true)
+            enableSubmit()
             return
         }
         
@@ -176,8 +187,8 @@ extension QuestionController: SubmitDelegate {
                     let ac = UIAlertController(title: "Wrong answer!", message: nil, preferredStyle: .alert)
                     ac.addAction(UIAlertAction(title: "Ask another Rabbit", style: .default))
                     self?.present(ac, animated: true)
+                    self?.enableSubmit()
                 })
-            
             return
         }
         
@@ -562,7 +573,6 @@ class SubmitCell: UITableViewCell {
     lazy var btnSubmit :ProjectRButton = {
         let btn = ProjectRButton()
         btn.setTitle("SUBMIT", for: .normal)
-        btn.addTarget(self, action: #selector(onSubmit), for: UIControlEvents.touchUpInside)
         return btn
     }()
     
@@ -573,6 +583,11 @@ class SubmitCell: UITableViewCell {
         
         addSubview(tfRabbitCode)
         addSubview(btnSubmit)
+        
+        _ = btnSubmit.rx.tap.take(1).subscribe(onNext: { [weak self] _ in
+            self?.btnSubmit.isEnabled = false
+            self?.onSubmit()
+        })
     }
     
     required init?(coder aDecoder: NSCoder) {
