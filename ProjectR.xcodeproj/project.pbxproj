@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -80,6 +80,7 @@
 		C7136DDE1F224D2A001D0695 /* Global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
 		C7136DE21F2270FD001D0695 /* AutoCompleteTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoCompleteTextField.swift; sourceTree = "<group>"; };
 		C71A69471F291C1F00500815 /* TableNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableNavigationController.swift; sourceTree = "<group>"; };
+		C7295B731F2FAE73005AA172 /* ProjectR.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ProjectR.entitlements; sourceTree = "<group>"; };
 		C72AB7D91F2A7C5D001F8C2B /* RabbitHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RabbitHeaderCell.swift; sourceTree = "<group>"; };
 		C72AB7DB1F2A8A1E001F8C2B /* LeaderBoardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeaderBoardCell.swift; sourceTree = "<group>"; };
 		C72AB7DD1F2A8BB1001F8C2B /* String+ProjectR.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+ProjectR.swift"; sourceTree = "<group>"; };
@@ -150,6 +151,7 @@
 		56818B7A1F12598C006CD915 /* ProjectR */ = {
 			isa = PBXGroup;
 			children = (
+				C7295B731F2FAE73005AA172 /* ProjectR.entitlements */,
 				C7E9ACF61F28557700E1A148 /* Controllers */,
 				C7136DD21F22210C001D0695 /* Resources */,
 				5695DC981F125EE500E55AAE /* Infrastructure */,
@@ -315,13 +317,17 @@
 				TargetAttributes = {
 					56818B771F12598C006CD915 = {
 						CreatedOnToolsVersion = 8.3;
-						DevelopmentTeam = NDH97745WS;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
 			buildConfigurationList = 56818B731F12598C006CD915 /* Build configuration list for PBXProject "ProjectR" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -559,7 +565,8 @@
 			baseConfigurationReference = D3DE7480DB050A51D6CC9087 /* Pods-ProjectR.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = NDH97745WS;
+				CODE_SIGN_ENTITLEMENTS = ProjectR/ProjectR.entitlements;
+				DEVELOPMENT_TEAM = MWL86J36DE;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ProjectR/Resources",
@@ -579,7 +586,8 @@
 			baseConfigurationReference = F306D2510C458A2CEB38E535 /* Pods-ProjectR.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = NDH97745WS;
+				CODE_SIGN_ENTITLEMENTS = ProjectR/ProjectR.entitlements;
+				DEVELOPMENT_TEAM = MWL86J36DE;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ProjectR/Resources",
