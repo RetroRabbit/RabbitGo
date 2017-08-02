@@ -40,7 +40,7 @@ class ScanQRController: UIViewNavigationController, AVCaptureMetadataOutputObjec
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -137,12 +137,10 @@ class ScanQRController: UIViewNavigationController, AVCaptureMetadataOutputObjec
     
     /* Once QR code is detected */
     func found(code: String) {
-//        refQuestion(questionId: code).observeSingleEvent(of: .value, with: { (snapshot) in
-//            
-//        })
-        
         let alert: UIAlertController
         let (index, question) = questionScanned(qrCode: code)
+        
+        let reAdjustedIndex = (index % 3 == 0 ? index + 2 : index - 1) + 1
         
         if index == -1 {
             alert = UIAlertController(title: "Invalid QR code scanned", message: nil, preferredStyle: UIAlertControllerStyle.alert)
@@ -159,19 +157,23 @@ class ScanQRController: UIViewNavigationController, AVCaptureMetadataOutputObjec
                 }
             }))
         } else {
-            alert = UIAlertController(title: "You scanned QR #\(index)", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+            alert = UIAlertController(title: "You scanned QR #\(reAdjustedIndex)", message: nil, preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.cancel, handler: { _ in
                 if (self.captureSession?.isRunning == false) {
                     self.captureSession.startRunning();
                 }
+                
+                if let question_ = question {
+                    refCurrentUserQuestions().observeSingleEvent(of: .value, with: { (dataSnapShot) in
+                        let answeredQuestion = dataSnapShot.childSnapshot(forPath: question_.code)
+                        answeredQuestion.childSnapshot(forPath: "state").ref.setValue(1)
+                    })
+                }
             }))
             alert.addAction(UIAlertAction(title: "View", style: .default, handler: { _ in
-                if let question = question {
-                    question.state = 1
-                    firebaseQuestions[index] = question
-                    
+                if let question_ = question {
                     refCurrentUserQuestions().observeSingleEvent(of: .value, with: { (dataSnapShot) in
-                        let answeredQuestion = dataSnapShot.childSnapshot(forPath: question.qrCode ?? "")
+                        let answeredQuestion = dataSnapShot.childSnapshot(forPath: question_.code)
                         answeredQuestion.childSnapshot(forPath: "state").ref.setValue(1)
                     })
                     
@@ -182,14 +184,14 @@ class ScanQRController: UIViewNavigationController, AVCaptureMetadataOutputObjec
                 }
             }))
         }
-    
+        
         
         present(alert, animated: true, completion: nil)
     }
     
-    func questionScanned(qrCode: String) -> (Int, Question?) {
-        for (index, question) in firebaseQuestions.enumerated() {
-            if question.qrCode == qrCode {
+    func questionScanned(qrCode: String) -> (Int, QuestionView?) {
+        for (index, question) in QuestionsController.instance.questions.enumerated() {
+            if question.code == qrCode {
                 return (index, question)
             }
         }

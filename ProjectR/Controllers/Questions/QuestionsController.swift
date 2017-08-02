@@ -75,7 +75,7 @@ class QuestionsController: UIViewNavigationController {
     fileprivate let strUnlocked = "image_square_white"
     fileprivate let strAnswered = "image_square_green"
     
-    fileprivate var questions: [QuestionView] = []
+    internal var questions: [QuestionView] = []
     
     private let lblHeading: UILabel = {
         let label = UILabel()

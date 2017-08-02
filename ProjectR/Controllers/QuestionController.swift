@@ -207,9 +207,13 @@ extension QuestionController: SubmitDelegate {
         _ = updateUserFields(rabbitCode: rabbitCode, playerQuestion: player).subscribe(onCompleted: { [weak self] in
             guard let this = self else { return }
             
-            let ac = UIAlertController(title: "You unlocked Rabbit #\(this.index)", message: nil, preferredStyle: .alert)
+            let ac = UIAlertController(title: "You unlocked Rabbit #\(this.index + 1)", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "View", style: .default, handler: { _ in
                 this.navigationController?.popViewController(animated: true)
+                
+                if let playerQuestion = QuestionsController.instance.questions.filter({ object -> Bool in return object.celebrityCode == this.question.unlocked ?? "" }).first {
+                    this.navigationController?.pushViewController(BioController(celebrityCode: playerQuestion.celebrityCode, image: playerQuestion.profileImage), animated: true)
+                }
             }))
             this.present(ac, animated: true)
         })
@@ -427,7 +431,7 @@ class QuestionHeaderCell: UIView {
     }
     
     final func prepareForDisplay(question: Question, index: Int) {
-        lblQuestionNumber.attributedText = NSAttributedString(string: "Question #\(index)", attributes: Style.avenirh_small_grey_dark_center)
+        lblQuestionNumber.attributedText = NSAttributedString(string: "Question #\(index + 1)", attributes: Style.avenirh_small_grey_dark_center)
         lblQuestion.attributedText = NSAttributedString(string: question.text as String? ?? "", attributes: Style.avenirh_large_grey_dark_center)
         
         layoutIfNeeded()
