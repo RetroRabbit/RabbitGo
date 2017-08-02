@@ -24,6 +24,13 @@ class BioController: UIViewNavigationController {
     
     private let imgViewDivider = UIImageView(image: UIImage(named: "textfield_line"))
     
+    fileprivate let lblBioImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+    
     fileprivate let lblBio: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -31,10 +38,11 @@ class BioController: UIViewNavigationController {
         return label
     }()
     
-    init(celebrityCode: String) {
+    init(celebrityCode: String, image: UIImage?) {
         super.init()
         self.hidesBottomBarWhenPushed = true
         celeb = firebaseCelebrities.first(where: { object -> Bool in return object.code == celebrityCode })
+        lblBioImage.image = image
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -51,6 +59,7 @@ class BioController: UIViewNavigationController {
         
         scrollView.addSubview(lblHeading)
         scrollView.addSubview(imgViewDivider)
+        scrollView.addSubview(lblBioImage)
         scrollView.addSubview(lblBio)
         
         lblHeading.attributedText = NSAttributedString(string: "About \(celeb?.displayName ?? "")", attributes: Style.avenirh_extra_large_white)
@@ -84,7 +93,12 @@ class BioController: UIViewNavigationController {
         imgViewDivider.autoPinEdge(.top, to: .bottom, of: lblHeading, withOffset: -40)
         imgViewDivider.autoAlignAxis(toSuperviewAxis: .vertical)
         
-        lblBio.autoPinEdge(.top, to: .bottom, of: imgViewDivider, withOffset: 30)
+        lblBioImage.autoPinEdge(.top, to: .bottom, of: imgViewDivider, withOffset: 15)
+        lblBioImage.autoPinEdge(toSuperviewEdge: .left, withInset: Style.input_center)
+        lblBioImage.autoPinEdge(toSuperviewEdge: .right, withInset: Style.input_center)
+        lblBioImage.autoMatch(.height, to: .width, of: lblBioImage, withOffset: 0)
+        
+        lblBio.autoPinEdge(.top, to: .bottom, of: lblBioImage, withOffset: 15)
         lblBio.autoPinEdge(toSuperviewEdge: .left, withInset: Style.input_center)
         lblBio.autoPinEdge(toSuperviewEdge: .right, withInset: Style.input_center)
         lblBio.autoPinEdge(toSuperviewEdge: .bottom)

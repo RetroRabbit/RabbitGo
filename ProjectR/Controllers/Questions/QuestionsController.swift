@@ -17,6 +17,7 @@ struct QuestionView {
     var state: Int64 = 0
     var image: UIImageView = UIImageView(image: UIImage(named: "image_square_grey"))
     var lockedCodes: [String] = []
+    var profileImage: UIImage? = nil
     
     init(code: String, state: Int64, lockedCodes: [String]) {
         self.code = code
@@ -58,6 +59,11 @@ struct QuestionView {
     
     mutating func update(celebrityCode: String) {
         self.celebrityCode = celebrityCode
+    }
+    
+    mutating func update(celebrityCode: String, profileImage: UIImage?) {
+        self.celebrityCode = celebrityCode
+        self.profileImage = profileImage
     }
 }
 
@@ -207,6 +213,7 @@ class QuestionsController: UIViewNavigationController {
                         if let _ = error {
                         } else {
                             let imageView = UIImageView(image: UIImage(named: "image_square_green"))
+                            let profileImage = UIImage(data: data!)
                             let image = UIImageView(image: UIImage(data: data!))
                             imageView.addSubview(image)
                             imageView.bringSubview(toFront: image)
@@ -216,7 +223,7 @@ class QuestionsController: UIViewNavigationController {
                             image.autoPinEdge(toSuperviewEdge: .right, withInset: 5)
                             
                             if let qIndex = this.questions.index(where: { obj -> Bool in return obj.code == code }) {
-                                this.questions[qIndex].update(celebrityCode: rabbitCode)
+                                this.questions[qIndex].update(celebrityCode: rabbitCode, profileImage: profileImage)
                             }
                             
                             observable.onNext(imageView)
@@ -293,7 +300,7 @@ extension QuestionsController: UICollectionViewDataSource, UICollectionViewDeleg
                 self.pushViewController(QuestionController(question: question, index: reAdjustedIndex, lockedCodes: playerQuestion.lockedCodes), animated: true)
             }
         case 2:
-            self.pushViewController(BioController(celebrityCode: playerQuestion.celebrityCode), animated: true)
+            self.pushViewController(BioController(celebrityCode: playerQuestion.celebrityCode, image: playerQuestion.profileImage), animated: true)
             break
         default:
             // Locked question tap
